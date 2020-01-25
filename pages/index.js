@@ -4,7 +4,7 @@ let http = require('http');
 // Use PORT environemnt variable
 // Else use CLI argument
 // Else use port 8080
-port = process.env.PORT || process.argv[2] || 8080;
+let port = process.env.PORT || process.argv[2] || 8080;
 
 // Hello World server
 /*
