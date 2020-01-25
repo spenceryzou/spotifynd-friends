@@ -2,7 +2,7 @@
   "name": "darian-hello",
   "version": "1.0.0",
   "description": "Simple hello world application",
-  "main": "index.js",
+  "main": "pages/index.js",
   "engines": {
     "node": "12.14.1"
   },
