@@ -1,0 +1,7 @@
+{
+    "name" : "darian-hello",
+    "description": "Simple Hello World type application",
+    "author": "Darian Sung",
+    "main": "hello.js",
+    "version" : "1.0.0"
+}
