@@ -1,7 +1,19 @@
 {
-    "name" : "darian-hello",
-    "description": "Simple Hello World type application",
-    "author": "Darian Sung",
-    "main": "hello.js",
-    "version" : "1.0.0"
+  "name": "darian-hello",
+  "version": "1.0.0",
+  "description": "Simple hello world application",
+  "main": "hello.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ucsb-cs48-w20/Spotify.git"
+  },
+  "author": "Darian Sung",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ucsb-cs48-w20/Spotify/issues"
+  },
+  "homepage": "https://github.com/ucsb-cs48-w20/Spotify#readme"
 }
