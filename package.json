@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/ucsb-cs48-w20/Spotify/issues"
   },
-  "homepage": "https://github.com/ucsb-cs48-w20/Spotify#readme"
+  "homepage": "https://github.com/ucsb-cs48-w20/Spotify#readme",
+  "engines": {
+    "node": "12.14.1"
+  }
 }
