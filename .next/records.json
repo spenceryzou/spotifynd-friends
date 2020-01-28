@@ -12,10 +12,17 @@
       "commons": 0,
       "static/runtime/webpack.js": 1,
       "framework": 2,
+<<<<<<< HEAD
       "6ea0bf33f4f4fda39dbc858d9bea37f9df565674": 3,
       "static/_BrejbCbmsd6Qj6vbqVLl/pages/_app.js": 4,
       "static/_BrejbCbmsd6Qj6vbqVLl/pages/_error.js": 5,
       "static/_BrejbCbmsd6Qj6vbqVLl/pages/index.js": 6,
+=======
+      "5b3393a7be7754d365d89d1848ee4106f3299a86": 3,
+      "static/5VQ454ZnLcK9Zl1eJrEau/pages/_app.js": 4,
+      "static/5VQ454ZnLcK9Zl1eJrEau/pages/_error.js": 5,
+      "static/5VQ454ZnLcK9Zl1eJrEau/pages/index.js": 6,
+>>>>>>> 42878f6da7a166466a4397f9f595b46460f7d2aa
       "static/runtime/main.js": 7,
       "static/runtime/polyfills.js": 8
     },
