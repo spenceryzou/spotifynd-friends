@@ -1,1 +1,0 @@
-My name is Lan-Chi and I'm a third year CS major. I originally had the idea to create a program that would assess compatibility between different Spotify playlists, in order to see which music you had in common with other people. If we get further, then the program could give suggestions about new people who liked the same music as you in the same area. 
