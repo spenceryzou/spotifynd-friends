@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 5000
+var port = process.env.port || 3000;
 
 app.use('/', express.static('./dist', {index: "index.html"}))
 app.get('/callback/', express.static('./dist', {index: "index.html"}))
