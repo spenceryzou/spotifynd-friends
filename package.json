@@ -2,9 +2,9 @@
   "name": "hello-next",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "dev": "next",
+    "dev": "node ssr-server.js",
     "build": "next build",
     "start": "next start -p $PORT",
     "heroku-postbuild": "npm run build"

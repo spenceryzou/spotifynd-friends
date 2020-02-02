@@ -88,7 +88,7 @@ module.exports =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -104,29 +104,98 @@ module.exports =
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-var _jsxFileName = "/Users/changminyang/spotify/pages/index.js";
-
+/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! next/router */ "next/router");
+/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_1__);
 var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
-const Index = () => __jsx("div", {
-  __source: {
-    fileName: _jsxFileName,
-    lineNumber: 4
-  },
-  __self: undefined
-}, __jsx("p", {
-  __source: {
-    fileName: _jsxFileName,
-    lineNumber: 6
-  },
-  __self: undefined
-}, "Hello Next.js"));
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-/* harmony default export */ __webpack_exports__["default"] = (Index);
+
+ //import { spotifyWebApiURL } from '../constants/'
+
+var querystring = __webpack_require__(/*! querystring */ "querystring");
+
+var client_id = '2923d79235804ea58633989710346f3d'; // Your client id
+
+var client_secret = 'd4813d196edf4940b58ba0aeedbf9ebc'; // Your secret
+
+var redirect_uri = 'https://spotifynd-friends.herokuapp.com/';
+var scope = 'user-read-private user-read-email';
+
+class Spotify extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
+  constructor(props) {
+    super(props);
+
+    _defineProperty(this, "componentDidMount", () => {
+      let url = window.location.href;
+
+      if (url.indexOf('_token') > -1) {
+        let access_token = url.split('_token=')[1].split("&")[0].trim();
+        this.setState({
+          access_token
+        });
+      }
+    });
+
+    _defineProperty(this, "generateRandomString", length => {
+      var text = '';
+      var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+      for (var i = 0; i < length; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      }
+
+      return text;
+    });
+
+    _defineProperty(this, "makeSpotifyProfileCall", event => {
+      event.preventDefault();
+      const {
+        access_token
+      } = this.state;
+
+      if (access_token === '') {
+        window.location = 'https://accounts.spotify.com/authorize?' + querystring.stringify({
+          response_type: 'code',
+          client_id: client_id,
+          scope: scope,
+          redirect_uri: redirect_uri,
+          state: this.generateRandomString(16)
+        });
+      } else {
+        next_router__WEBPACK_IMPORTED_MODULE_1___default.a.push({
+          pathname: '/user',
+          query: {
+            access_token
+          }
+        });
+      }
+    });
+
+    this.state = {
+      access_token: ''
+    };
+  }
+
+  render() {
+    const {
+      access_token
+    } = this.state;
+    return __jsx("div", {
+      className: "row justify-content-center mt-5"
+    }, __jsx("button", {
+      onClick: event => this.makeSpotifyProfileCall(event),
+      className: "btn btn-success"
+    }, access_token !== '' ? 'Proceed to spotifyNext' : 'Login'));
+  }
+
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Spotify);
 
 /***/ }),
 
-/***/ 3:
+/***/ 4:
 /*!******************************!*\
   !*** multi ./pages/index.js ***!
   \******************************/
@@ -135,6 +204,28 @@ const Index = () => __jsx("div", {
 
 module.exports = __webpack_require__(/*! /Users/changminyang/spotify/pages/index.js */"./pages/index.js");
 
+
+/***/ }),
+
+/***/ "next/router":
+/*!******************************!*\
+  !*** external "next/router" ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("next/router");
+
+/***/ }),
+
+/***/ "querystring":
+/*!******************************!*\
+  !*** external "querystring" ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("querystring");
 
 /***/ }),
 
