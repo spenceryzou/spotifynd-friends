@@ -79,7 +79,7 @@ class Spotify extends Component {
         return (
             <div>
                 <div>
-                    <h1>{response}</h1>
+                    <h1>{access_token}</h1>
                 </div>
                 <div className="row justify-content-center mt-5">
                     <button onClick={event => this.makeSpotifyProfileCall(event)} className="btn btn-success">
