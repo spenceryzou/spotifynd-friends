@@ -8,6 +8,7 @@ var client_id = '2923d79235804ea58633989710346f3d'; // Your client id
 var client_secret = 'd4813d196edf4940b58ba0aeedbf9ebc'; // Your secret
 var redirect_uri = 'https://spotifynd-friends.herokuapp.com/';
 var scope = 'user-read-private user-read-email';
+var local = false;
 
 class Spotify extends Component {
 
@@ -19,13 +20,26 @@ class Spotify extends Component {
     }
 
     
-    componentDidMount = () => {
-        let url = window.location.href
-        if(url.indexOf('code')>-1){            
-            let access_token = url.split('code=')[1].trim()
-            this.setState({ access_token })
-        }
-    }
+    // componentDidMount = () => {
+    //     let url = window.location.href
+    //     if(url.indexOf('localhost') > 0){
+    //         local = true;
+    //     }
+    //     if(url.indexOf('code')>-1){            
+    //         let access_token = url.substring(url.indexOf('=') + 1, url.lastIndexOf('&'))
+
+    //         var xhr = new XMLHttpRequest()
+    //         xhr.addEventListener('load', () =>{
+    //             console.log(xhr.responseText);
+    //         })
+    //         xhr.open('POST', 'https://accounts.spotify.com/api/token')
+    //         xhr.send(JSON.stringify({ grant_type: 'authorization_code', 
+    //         code: access_token, redirect_uri: redirect_uri, client_id: client_id,
+    //         client_secret: client_secret}))
+
+    //         this.setState({ access_token })
+    //     }
+    // }
 
     generateRandomString = (length) => {
       var text = '';
