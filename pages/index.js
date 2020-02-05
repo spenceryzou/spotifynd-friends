@@ -7,9 +7,9 @@ var SpotifyWebApi = require('spotify-web-api-node');
 var client_id ='2923d79235804ea58633989710346f3d';
 var redirect_uri = 'https://spotifynd-friends.herokuapp.com/';
 var credentials = {
-  redirectUri : 'https://spotifynd-friends.herokuapp.com/',
   clientId : '2923d79235804ea58633989710346f3d',
-  clientSecret : 'd4813d196edf4940b58ba0aeedbf9ebc'
+  clientSecret : 'd4813d196edf4940b58ba0aeedbf9ebc',
+  redirectUri : 'https://spotifynd-friends.herokuapp.com/'
 };
 var spotifyApi = new SpotifyWebApi(credentials);
 
@@ -25,12 +25,12 @@ class Spotify extends Component {
     }
 
     
-     componentDidMount = () => {
+     componentWillMount = () => {
          let url = window.location.href
          if(url.indexOf('code')>-1){            
              //code = url.substring(url.indexOf('=') + 1, url.lastIndexOf('&'))
              let code = url.split('code=')[1].split("&")[0].trim()
-             spotifyApi.authorizationCodeGrant(code).then(
+             this.spotifyApi.authorizationCodeGrant(code).then(
               function(data) {
                 // Set the access token on the API object to use it in later calls
                 spotifyApi.setAccessToken(data.body['access_token']);
