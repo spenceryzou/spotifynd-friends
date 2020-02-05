@@ -20,7 +20,7 @@ class Spotify extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            access_token: ''
+            access_token: '',
             url: window.location.href
         }
     }
