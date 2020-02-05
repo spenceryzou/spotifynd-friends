@@ -4,6 +4,8 @@ import Router from 'next/router'
 
 var querystring = require('querystring');
 var SpotifyWebApi = require('spotify-web-api-node');
+var client_id ='2923d79235804ea58633989710346f3d';
+var redirect_uri = 'https://spotifynd-friends.herokuapp.com/';
 var credentials = {
   redirectUri : 'https://spotifynd-friends.herokuapp.com/',
   clientId : '2923d79235804ea58633989710346f3d',
