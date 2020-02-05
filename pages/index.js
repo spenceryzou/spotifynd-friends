@@ -22,7 +22,7 @@ class Spotify extends Component {
     componentDidMount = () => {
         let url = window.location.href
         if(url.indexOf('code')>-1){            
-            let access_token = url.split('_token=')[1].split("&")[0].trim()
+            let access_token = url.split('code=')[1].trim()
             this.setState({ access_token })
         }
     }
