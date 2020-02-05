@@ -9,6 +9,7 @@ var client_secret = 'd4813d196edf4940b58ba0aeedbf9ebc'; // Your secret
 var redirect_uri = 'https://spotifynd-friends.herokuapp.com/';
 var scope = 'user-read-private user-read-email';
 var local = false;
+var response = 'response text';
 
 class Spotify extends Component {
 
@@ -20,26 +21,28 @@ class Spotify extends Component {
     }
 
     
-    // componentDidMount = () => {
-    //     let url = window.location.href
-    //     if(url.indexOf('localhost') > 0){
-    //         local = true;
-    //     }
-    //     if(url.indexOf('code')>-1){            
-    //         let access_token = url.substring(url.indexOf('=') + 1, url.lastIndexOf('&'))
+    componentDidMount = () => {
+        let url = window.location.href
+        // if(url.indexOf('localhost') > 0){
+        //     local = true;
+        //     redirect_uri = 'localhost:3000';
+        // }
+        if(url.indexOf('code')>-1){            
+            let access_token = url.substring(url.indexOf('=') + 1, url.lastIndexOf('&'))
 
-    //         var xhr = new XMLHttpRequest()
-    //         xhr.addEventListener('load', () =>{
-    //             console.log(xhr.responseText);
-    //         })
-    //         xhr.open('POST', 'https://accounts.spotify.com/api/token')
-    //         xhr.send(JSON.stringify({ grant_type: 'authorization_code', 
-    //         code: access_token, redirect_uri: redirect_uri, client_id: client_id,
-    //         client_secret: client_secret}))
+            var xhr = new XMLHttpRequest()
+            xhr.addEventListener('load', () =>{
+                response = xhr.responseText
+            })
+            xhr.open('POST', 'https://accounts.spotify.com/api/token')
+            xhr.send(JSON.stringify({ grant_type: 'authorization_code', 
+            code: access_token, redirect_uri: redirect_uri, client_id: client_id,
+            client_secret: client_secret}))
 
-    //         this.setState({ access_token })
-    //     }
-    // }
+            this.setState({ access_token })
+        }
+        console.log('hi')
+    }
 
     generateRandomString = (length) => {
       var text = '';
@@ -74,12 +77,16 @@ class Spotify extends Component {
     render() {
         const { access_token } = this.state
         return (
-                
+            <div>
+                <div>
+                    <h1>{response}</h1>
+                </div>
                 <div className="row justify-content-center mt-5">
                     <button onClick={event => this.makeSpotifyProfileCall(event)} className="btn btn-success">
                         { access_token !== '' ? 'Click to enter Spotifynd' : 'Login' }
                     </button>
                 </div>
+            </div>
         );
     }
 }
