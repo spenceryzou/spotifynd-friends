@@ -21,12 +21,12 @@ class Spotify extends Component {
         super(props);
         this.state = {
             access_token: ''
+            url: window.location.href
         }
     }
 
     
      componentWillMount = () => {
-         let url = window.location.href
          if(url.indexOf('code')>-1){            
              //code = url.substring(url.indexOf('=') + 1, url.lastIndexOf('&'))
              let code = url.split('code=')[1].split("&")[0].trim()
