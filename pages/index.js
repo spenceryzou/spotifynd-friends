@@ -3,10 +3,14 @@ import Router from 'next/router'
 //import { spotifyWebApiURL } from '../constants/'
 
 var querystring = require('querystring');
+var SpotifyWebApi = require('spotify-web-api-node');
+var credentials = {
+  redirectUri : 'https://spotifynd-friends.herokuapp.com/',
+  clientId : '2923d79235804ea58633989710346f3d',
+  clientSecret : 'd4813d196edf4940b58ba0aeedbf9ebc'
+};
+var spotifyApi = new SpotifyWebApi(credentials);
 
-var client_id = '2923d79235804ea58633989710346f3d'; // Your client id
-var client_secret = 'd4813d196edf4940b58ba0aeedbf9ebc'; // Your secret
-var redirect_uri = 'https://spotifynd-friends.herokuapp.com/';
 var scope = 'user-read-private user-read-email';
 
 class Spotify extends Component {
@@ -19,13 +23,23 @@ class Spotify extends Component {
     }
 
     
-    // componentDidMount = () => {
-    //     let url = window.location.href
-    //     if(url.indexOf('_token')>-1){            
-    //         let access_token = url.split('_token=')[1].split("&")[0].trim()
-    //         this.setState({ access_token })
-    //     }
-    // }
+     componentDidMount = () => {
+         let url = window.location.href
+         if(url.indexOf('code=')>-1){            
+             code = url.substring(url.indexOf('=') + 1, url.lastIndexOf('&'))
+             spotifyApi.authorizationCodeGrant(code).then(
+              function(data) {
+              // Set the access token on the API object to use it in later calls
+               spotifyApi.setAccessToken(data.body['access_token']);
+               spotifyApi.setRefreshToken(data.body['refresh_token']);
+           },
+              function(err) {
+              console.log('Something went wrong!', err);
+              }
+              )
+             this.setState({ access_token })
+       }
+   }
 
     generateRandomString = (length) => {
       var text = '';
@@ -69,5 +83,37 @@ class Spotify extends Component {
         );
     }
 }
+
+
+/*var SpotifyWebApi = require('spotify-web-api-node');
+
+var credentials = {
+  redirectUri : 'https://spotifynd-friends.herokuapp.com/',
+  clientId : '2923d79235804ea58633989710346f3d',
+  clientSecret : 'd4813d196edf4940b58ba0aeedbf9ebc'
+};
+var scopes = ['user-read-private', 'user-read-email'];
+var state = 'some-state-of-my-choice';
+
+var spotifyApi = new SpotifyWebApi(credentials);
+var authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
+console.log(authorizeURL);
+
+var code = 'AQCgJdgpnp5j0nm16PEZlbOw9rK6_XeXQyqAP4VdIuCrHTevRZMxUgNZGUYMn0SB80KT90F958ObO3vqUz9Bw5I47gC_8pUbjaFYDLnhRfrtRQJefSr8MXJKTQHrzt3L948WWi2q33Ok2fqre3BO1NKFmT10ZmX2rWqY08o3PbmCM6BjDj6gTruQ72cU4UxjNir63W2D11VrI5G3_QfYdqfA0JV7zaDLPnVikDg0DHULWT5SjuShViY2wx1-PLSkf2c'
+
+spotifyApi.authorizationCodeGrant(code).then(
+  function(data) {
+    console.log('The token expires in ' + data.body['expires_in']);
+    console.log('The access token is ' + data.body['access_token']);
+    console.log('The refresh token is ' + data.body['refresh_token']);
+
+    // Set the access token on the API object to use it in later calls
+    spotifyApi.setAccessToken(data.body['access_token']);
+    spotifyApi.setRefreshToken(data.body['refresh_token']);
+  },
+  function(err) {
+    console.log('Something went wrong!', err);
+  }
+);*/
 
 export default Spotify;
