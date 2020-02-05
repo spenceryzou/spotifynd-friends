@@ -26,9 +26,9 @@ class Spotify extends Component {
       let url = window.location.href
       if(url.indexOf('_token')>-1){
                let code = url.split('code=')[1].split("&")[0].trim()
-               console.log(code)
+               document.write(code)
            }
-      
+
     }
     // componentDidMount = () => {
     //     let url = window.location.href
