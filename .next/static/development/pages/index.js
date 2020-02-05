@@ -8292,18 +8292,6 @@ function (_Component) {
 
     _this = Object(_babel_runtime_corejs2_helpers_esm_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_2__["default"])(this, Object(_babel_runtime_corejs2_helpers_esm_getPrototypeOf__WEBPACK_IMPORTED_MODULE_3__["default"])(Spotify).call(this, props));
 
-    Object(_babel_runtime_corejs2_helpers_esm_defineProperty__WEBPACK_IMPORTED_MODULE_6__["default"])(Object(_babel_runtime_corejs2_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4__["default"])(_this), "componentDidMount", function () {
-      var url = window.location.href;
-
-      if (url.indexOf('_token') > -1) {
-        var access_token = url.split('_token=')[1].split("&")[0].trim();
-
-        _this.setState({
-          access_token: access_token
-        });
-      }
-    });
-
     Object(_babel_runtime_corejs2_helpers_esm_defineProperty__WEBPACK_IMPORTED_MODULE_6__["default"])(Object(_babel_runtime_corejs2_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4__["default"])(_this), "generateRandomString", function (length) {
       var text = '';
       var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -8341,7 +8329,14 @@ function (_Component) {
       access_token: ''
     };
     return _this;
-  }
+  } // componentDidMount = () => {
+  //     let url = window.location.href
+  //     if(url.indexOf('_token')>-1){            
+  //         let access_token = url.split('_token=')[1].split("&")[0].trim()
+  //         this.setState({ access_token })
+  //     }
+  // }
+
 
   Object(_babel_runtime_corejs2_helpers_esm_createClass__WEBPACK_IMPORTED_MODULE_1__["default"])(Spotify, [{
     key: "render",
@@ -8356,7 +8351,7 @@ function (_Component) {
           return _this2.makeSpotifyProfileCall(event);
         },
         className: "btn btn-success"
-      }, access_token !== '' ? 'Proceed to spotifyNext' : 'Login'));
+      }, access_token !== '' ? 'Click to enter Spotifynd' : 'Login'));
     }
   }]);
 

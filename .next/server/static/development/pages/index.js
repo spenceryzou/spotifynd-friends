@@ -88,7 +88,7 @@ module.exports =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -125,17 +125,6 @@ var scope = 'user-read-private user-read-email';
 class Spotify extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
   constructor(props) {
     super(props);
-
-    _defineProperty(this, "componentDidMount", () => {
-      let url = window.location.href;
-
-      if (url.indexOf('_token') > -1) {
-        let access_token = url.split('_token=')[1].split("&")[0].trim();
-        this.setState({
-          access_token
-        });
-      }
-    });
 
     _defineProperty(this, "generateRandomString", length => {
       var text = '';
@@ -175,7 +164,14 @@ class Spotify extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     this.state = {
       access_token: ''
     };
-  }
+  } // componentDidMount = () => {
+  //     let url = window.location.href
+  //     if(url.indexOf('_token')>-1){            
+  //         let access_token = url.split('_token=')[1].split("&")[0].trim()
+  //         this.setState({ access_token })
+  //     }
+  // }
+
 
   render() {
     const {
@@ -186,7 +182,7 @@ class Spotify extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     }, __jsx("button", {
       onClick: event => this.makeSpotifyProfileCall(event),
       className: "btn btn-success"
-    }, access_token !== '' ? 'Proceed to spotifyNext' : 'Login'));
+    }, access_token !== '' ? 'Click to enter Spotifynd' : 'Login'));
   }
 
 }
@@ -195,7 +191,7 @@ class Spotify extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
 /***/ }),
 
-/***/ 4:
+/***/ 3:
 /*!******************************!*\
   !*** multi ./pages/index.js ***!
   \******************************/

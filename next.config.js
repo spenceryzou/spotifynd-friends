@@ -1,8 +1,11 @@
 module.exports = {
-    exportPathMap: function () {
-      return {
-        '/': { page: '/' },
-        '/app': { page: '/app' }
-      }
-    }
-}
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.node = {
+        fs: 'empty',
+        net: 'empty',
+        tls: 'empty'
+      };
+    }    return config;
+  },
+};
