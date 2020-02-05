@@ -27,21 +27,22 @@ class Spotify extends Component {
     
      componentDidMount = () => {
          let url = window.location.href
-         if(url.indexOf('code=')>-1){            
-             code = url.substring(url.indexOf('=') + 1, url.lastIndexOf('&'))
+         if(url.indexOf('code')>-1){            
+             //code = url.substring(url.indexOf('=') + 1, url.lastIndexOf('&'))
+             let code = url.split('code=')[1].split("&")[0].trim()
              spotifyApi.authorizationCodeGrant(code).then(
               function(data) {
-              // Set the access token on the API object to use it in later calls
-               spotifyApi.setAccessToken(data.body['access_token']);
-               spotifyApi.setRefreshToken(data.body['refresh_token']);
-           },
+                // Set the access token on the API object to use it in later calls
+                spotifyApi.setAccessToken(data.body['access_token']);
+                spotifyApi.setRefreshToken(data.body['refresh_token']);
+                this.setState({ access_token })
+              },
               function(err) {
-              console.log('Something went wrong!', err);
+                console.log('Something went wrong!', err);
               }
-              )
-             this.setState({ access_token })
-       }
-   }
+             )
+         }
+     }
 
     generateRandomString = (length) => {
       var text = '';
