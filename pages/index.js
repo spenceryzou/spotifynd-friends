@@ -27,6 +27,8 @@ class Spotify extends Component {
     //     }
     // }
 
+    
+
     generateRandomString = (length) => {
       var text = '';
       var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -69,5 +71,7 @@ class Spotify extends Component {
         );
     }
 }
+
+
 
 export default Spotify;
