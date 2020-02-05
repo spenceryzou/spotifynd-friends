@@ -39,6 +39,7 @@ class Spotify extends Component {
             code: access_token, redirect_uri: redirect_uri, client_id: client_id,
             client_secret: client_secret}))
 
+            let access_token = response
             this.setState({ access_token })
         }
         console.log('hi')
