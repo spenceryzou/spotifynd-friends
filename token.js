@@ -19,8 +19,10 @@ export function getAccessToken(code){
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
   };
-    return fetch(url, fetchData)
+    let resJson = fetch(url, fetchData)
       .then(response => response.json())
       .then(json => json);
 
+    console.log(resJson);
+    return resJson;
 };
