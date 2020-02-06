@@ -76,7 +76,7 @@ class Spotify extends Component {
     }
 }
 
-Spotify.getInitialProps = async({req}) => {
+Spotify.getInitialProps = async() => {
 //  const baseUrl = `${req.protocol}://${req.get('host')}`
 // return ({ baseUrl })
 }
