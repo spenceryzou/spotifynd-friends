@@ -8,6 +8,8 @@ const path = require('path');
 const SpotifyWebApi = require('spotify-web-api-node');
 const request = require('request'); // "Request" library
 const querystring = require('querystring');
+var bodyParser = require('body-parser');
+var cors = require('cors');
 
 var credentials = {
     clientId : '2923d79235804ea58633989710346f3d',
@@ -22,6 +24,9 @@ var redirect_uri = 'https://spotifynd-friends.herokuapp.com/'; // Your redirect 
 app.prepare()
    .then(() => {
        const server = express();
+       server.use(cors()); //Must be before BodyParser**
+       server.use(bodyParser.urlencoded({ extended: true }));
+       server.use(bodyParser.json());
 
        server.get('/access', (req, res) => {
             var code = req.query.code || null;
