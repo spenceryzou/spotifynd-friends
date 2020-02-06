@@ -11,7 +11,7 @@ var scope = 'user-read-private user-read-email';
 
 class Spotify extends Component {
 
-  static async getInitialProps({req}) {
+  /*static async getInitialProps({req}) {
     let fullUrl
     if (req) {
        // Server side rendering
@@ -21,7 +21,7 @@ class Spotify extends Component {
        fullUrl = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port: '')
      }
      return { fullUrl: fullUrl }
-   }
+   }*/
 
     constructor(props) {
         super(props);
