@@ -2,12 +2,14 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 //import { spotifyWebApiURL } from '../constants/'
 const port = process.env.PORT || 5000;
+const axios = require('axios')
 var querystring = require('querystring');
 var url = require('url');
 var client_id ='2923d79235804ea58633989710346f3d';
 var redirect_uri = 'https://spotifynd-friends.herokuapp.com/';
 
 var scope = 'user-read-private user-read-email';
+var temp = this;
 
 class Spotify extends Component {
 
@@ -28,9 +30,14 @@ class Spotify extends Component {
     }
     
     getAccess = () => {
-      const res = fetch(`/access`)
-      const json = res.json()
-      this.setState({ access_token: json.at });
+      axios.get('/access')
+      .then(function(res){
+        console.log(res);
+        temp.setState({access_token: res.at})
+      })
+      .catch(function(error){
+        console.log(error);
+      });
     }
 
     generateRandomString = (length) => {
