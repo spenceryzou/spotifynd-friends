@@ -30,11 +30,12 @@ app.prepare()
           // Set the access token on the API object to use it in later calls
                 spotifyApi.setAccessToken(data.body['access_token']);
                 spotifyApi.setRefreshToken(data.body['refresh_token']);
-                res.redirect('/#' +
+                res.send({access_token : access_token});
+                /*res.redirect('/#' +
                 querystring.stringify({
                 access_token: access_token,
                 refresh_token: refresh_token
-                }));
+                }));*/
             })
        });
 

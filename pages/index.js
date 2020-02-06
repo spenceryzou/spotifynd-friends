@@ -31,6 +31,9 @@ class Spotify extends Component {
     
     getAccess = () => {
       fetch(`https://spotifynd-friends.herokuapp.com/code`)
+      const res = await fetch('https://api.github.com/repos/zeit/next.js')
+      access_token = await res.send()
+      this.setState({ access_token: access_token })
     }
 
     generateRandomString = (length) => {
