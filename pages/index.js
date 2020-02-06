@@ -23,6 +23,7 @@ class Spotify extends Component {
     componentDidMount = () => {
          let url = window.location.href;
          if(url.indexOf('code')>-1){    
+            console.log('inside if')
             this.getAccess()       
              //code = url.substring(url.indexOf('=') + 1, url.lastIndexOf('&'))
          }
