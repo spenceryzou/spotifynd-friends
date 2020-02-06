@@ -29,7 +29,7 @@ class Spotify extends Component {
     }
     
     getAccess = async(req, res) => {
-      const res = await fetch(`${req.protocol}://${req.get('host')}/access`)
+      res = await fetch(`${req.protocol}://${req.get('host')}/access`)
       const json = await res.json()
       this.setState({ access_token: json.at });
     }
