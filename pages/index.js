@@ -3,6 +3,7 @@ import Router from 'next/router'
 
 import Link from 'next/link';
 import fetch from 'isomorphic-unfetch';
+import {getAccessToken} from "../token.js"
 
 //import { spotifyWebApiURL } from '../constants/'
 
@@ -12,6 +13,7 @@ var client_id = '2923d79235804ea58633989710346f3d'; // Your client id
 var client_secret = 'd4813d196edf4940b58ba0aeedbf9ebc'; // Your secret
 var redirect_uri = 'https://spotifynd-friends.herokuapp.com/';
 var scope = 'user-read-private user-read-email';
+var code = '';
 
 class Spotify extends Component {
 
@@ -26,8 +28,10 @@ class Spotify extends Component {
       let url = window.location.href
       if(url.indexOf('_token')>-1){
                let code = url.split('code=')[1].split("&")[0].trim()
-               document.write(code)
+
            }
+      getAccessToken(code)
+
 
     }
     // componentDidMount = () => {
@@ -72,11 +76,10 @@ class Spotify extends Component {
         const { access_token } = this.state
         return (
 
-                <div className="row justify-content-center mt-5">
-                    <button onClick={event => this.makeSpotifyProfileCall(event)} className="btn btn-success">
-                        { access_token !== '' ? 'Click to enter Spotifynd' : 'Login' }
-                    </button>
-                </div>
+          <button onClick={event => this.makeSpotifyProfileCall(event)} className="btn btn-success">
+                 { access_token !== '' ? 'Proceed to spotifyNext' : 'Login' }
+             </button>
+
         );
     }
 }
