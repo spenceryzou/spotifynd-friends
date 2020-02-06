@@ -11,7 +11,17 @@ var scope = 'user-read-private user-read-email';
 
 class Spotify extends Component {
 
-
+  static async getInitialProps({req}) {
+    let fullUrl
+    if (req) {
+       // Server side rendering
+       fullUrl = req.protocol + '://' + req.get('host')
+     } else {
+       // Client side rendering
+       fullUrl = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port: '')
+     }
+     return { fullUrl: fullUrl }
+   }
 
     constructor(props) {
         super(props);
@@ -29,9 +39,8 @@ class Spotify extends Component {
          }
     }
     
-    getAccess = async({ req }) => {
-      const origin = req ? `${req.protocol}://${req.get('Host')}` : window.location.origin
-      const res = await fetch(`${origin}/access`)
+    getAccess = () => {
+      const res = await fetch(this.props.fullUrl + "/access")
       const json = await res.json()
       this.setState({ access_token: json.at });
     }
