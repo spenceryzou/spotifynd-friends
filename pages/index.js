@@ -30,7 +30,7 @@ class Spotify extends Component {
         }
     }
 
-    componentDidMount = () => {
+  componentDidMount = () => {
          let url = window.location.href;
          if(url.indexOf('code')>-1){    
             console.log('inside if')
