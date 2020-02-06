@@ -35,13 +35,13 @@ class Spotify extends Component {
              let data = {
               grant_type: 'authorization_code',
               code: code,
-              redirectUri: redirectUri
+              redirectUri: credentials.redirectUri
              }
              const req = async () => {
               const res = await fetch('https://accounts.spotify.com/api/token', {
                 method: 'POST',
                 headers: {
-                   Authorization: 'Authorization: Basic ' + (new Buffer(client_id + ':' + clientSecret).toString('base64'))
+                   Authorization: 'Authorization: Basic ' + (new Buffer(credentials.clientId + ':' + credentials.clientSecret).toString('base64'))
                 },
                 body: JSON.stringify(data)
                })
