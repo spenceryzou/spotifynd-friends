@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
-import fetch from 'isomorphic-unfetch'
 //import { spotifyWebApiURL } from '../constants/'
 const port = process.env.PORT || 5000;
 var querystring = require('querystring');
@@ -28,9 +27,9 @@ class Spotify extends Component {
          }
     }
     
-    getAccess = async(req, res) => {
-      res = await fetch(`${req.protocol}://${req.get('host')}/access`)
-      const json = await res.json()
+    getAccess = () => {
+      const res = fetch(`/access`)
+      const json = res.json()
       this.setState({ access_token: json.at });
     }
 
