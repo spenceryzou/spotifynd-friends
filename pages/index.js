@@ -23,16 +23,16 @@ class Spotify extends Component {
     componentDidMount = () => {
          let url = window.location.href;
          if(url.indexOf('code')>-1){    
-            this.getAccess()
-            this.setState({ access_token })        
+            this.getAccess()       
              //code = url.substring(url.indexOf('=') + 1, url.lastIndexOf('&'))
          }
     }
     
-    getAccess = async(e) => {
-      const res = await fetch('https://spotifynd-friends.herokuapp.com/code')
-      access_token = await res.send()
-      this.setState({ access_token: access_token })
+    getAccess = async({ req }) => {
+      const origin = req ? `${req.protocol}://${req.get('Host')}` : window.location.origin
+      const res = await fetch(`${origin}/access`)
+      const json = await res.json()
+      this.setState({ access_token: json.at });
     }
 
     generateRandomString = (length) => {

@@ -23,14 +23,15 @@ app.prepare()
    .then(() => {
        const server = express();
 
-       server.get('/code', (req, res) => {
+       server.get('/access', (req, res) => {
             var code = req.query.code || null;
             spotifyApi.authorizationCodeGrant(code).then(
             function(data) {
           // Set the access token on the API object to use it in later calls
                 spotifyApi.setAccessToken(data.body['access_token']);
                 spotifyApi.setRefreshToken(data.body['refresh_token']);
-                res.send({access_token : access_token});
+                res.json({ at: data.body['access_token'] })
+                //res.send({access_token : data.body['access_token']});
                 /*res.redirect('/#' +
                 querystring.stringify({
                 access_token: access_token,
