@@ -28,7 +28,7 @@ class Spotify extends Component {
     }
     
     getAccess = async(e) => {
-      const res = await fetch(this.props.baseUrl + "/access")
+      const res = await fetch("https://spotifynd-friends.herokuapp.com/access")
       const json = await res.json()
       this.setState({ access_token: json.at });
     }
@@ -76,10 +76,10 @@ class Spotify extends Component {
     }
 }
 
-Spotify.getInitialProps = async ctx => {
+/*Spotify.getInitialProps = async ctx => {
   const baseUrl = `${req.protocol}://${req.get('host')}`
   return { baseUrl }
-}
+}*/
 
 export default Spotify;
 
