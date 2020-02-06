@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
-import fetch from 'isomorphic-unfetch';
+import fetch from 'isomorphic-unfetch'
 //import { spotifyWebApiURL } from '../constants/'
 const port = process.env.PORT || 5000;
 var querystring = require('querystring');
@@ -11,17 +11,10 @@ var scope = 'user-read-private user-read-email';
 
 class Spotify extends Component {
 
-  /*static async getInitialProps({req}) {
-    let fullUrl
-    if (req) {
-       // Server side rendering
-       fullUrl = req.protocol + '://' + req.get('host')
-     } else {
-       // Client side rendering
-       fullUrl = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port: '')
-     }
-     return { fullUrl: fullUrl }
-   }*/
+  static async getInitialProps({req}) {
+    const baseUrl = `${req.protocol}://${req.get('host')}`
+     return ({ baseUrl })
+   }
 
     constructor(props) {
         super(props);
@@ -40,7 +33,7 @@ class Spotify extends Component {
     }
     
     getAccess = async(e) => {
-      const res = await fetch(this.props.fullUrl + "/access")
+      const res = await fetch(this.props.baseUrl + "/access")
       const json = await res.json()
       this.setState({ access_token: json.at });
     }
