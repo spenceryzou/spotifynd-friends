@@ -30,7 +30,7 @@ class Spotify extends Component {
         }
     }
 
-  /*componentDidMount = () => {
+  componentDidMount = () => {
          let url = window.location.href;
          if(url.indexOf('code')>-1){    
             console.log('inside if')
@@ -43,7 +43,7 @@ class Spotify extends Component {
       const res = await fetch(this.props.fullUrl + "/access")
       const json = await res.json()
       this.setState({ access_token: json.at });
-    }*/
+    }
 
     generateRandomString = (length) => {
       var text = '';
