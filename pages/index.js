@@ -4,6 +4,7 @@ import fetch from 'isomorphic-unfetch'
 //import { spotifyWebApiURL } from '../constants/'
 const port = process.env.PORT || 5000;
 var querystring = require('querystring');
+var url = require('url');
 var client_id ='2923d79235804ea58633989710346f3d';
 var redirect_uri = 'https://spotifynd-friends.herokuapp.com/';
 
@@ -27,8 +28,8 @@ class Spotify extends Component {
          }
     }
     
-    getAccess = async(e) => {
-      const res = await fetch("https://spotifynd-friends.herokuapp.com/access")
+    getAccess = async(req, res) => {
+      const res = await fetch(`${req.protocol}://${req.get('host')}/access`)
       const json = await res.json()
       this.setState({ access_token: json.at });
     }
