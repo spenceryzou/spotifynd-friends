@@ -11,11 +11,6 @@ var scope = 'user-read-private user-read-email';
 
 class Spotify extends Component {
 
-  static async getInitialProps({req}) {
-    const baseUrl = `${req.protocol}://${req.get('host')}`
-     return ({ baseUrl })
-   }
-
     constructor(props) {
         super(props);
         this.state = {
@@ -80,6 +75,12 @@ class Spotify extends Component {
         );
     }
 }
+
+Spotify.getInitialProps = async({req}) => {
+  const baseUrl = `${req.protocol}://${req.get('host')}`
+   return ({ baseUrl })
+}
+
 export default Spotify;
 
 /*var SpotifyWebApi = require('spotify-web-api-node');
