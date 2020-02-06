@@ -48,7 +48,7 @@ class Spotify extends Component {
                const json = await res.json()
                console.log(json)
              }
-             
+             req()
          }
      }
 
