@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
+import fetch from 'isomorphic-unfetch'
+
 //import { spotifyWebApiURL } from '../constants/'
 
 var querystring = require('querystring');
@@ -26,21 +28,25 @@ class Spotify extends Component {
     }
 
     
-     componentWillMount = () => {
+     componentDidMount = () => {
          if(url.indexOf('code')>-1){            
              //code = url.substring(url.indexOf('=') + 1, url.lastIndexOf('&'))
              let code = url.split('code=')[1].split("&")[0].trim()
-             this.spotifyApi.authorizationCodeGrant(code).then(
-              function(data) {
-                // Set the access token on the API object to use it in later calls
-                spotifyApi.setAccessToken(data.body['access_token']);
-                spotifyApi.setRefreshToken(data.body['refresh_token']);
-                this.setState({ access_token })
-              },
-              function(err) {
-                console.log('Something went wrong!', err);
-              }
-             )
+             let authStr = 'Authorization: Basic ' + (new Buffer(client_id + ':' + clientSecret).toString('base64'))
+             const res = await fetch('https://accounts.spotify.com/api/token', {
+               body: {
+                method: 'POST',
+                grant_type: 'authorization_code',
+                code: code,
+                redirectUri: redirectUri
+               },
+               headers: {
+                 Authorization: authStr
+               }
+             })
+
+             this.state.access_token = res.access_token
+             console.log(this.state.access_token)
          }
      }
 
