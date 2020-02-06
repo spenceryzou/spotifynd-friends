@@ -1,17 +1,11 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
+import fetch from 'isomorphic-unfetch';
 //import { spotifyWebApiURL } from '../constants/'
-
+const port = process.env.PORT || 5000;
 var querystring = require('querystring');
-var SpotifyWebApi = require('spotify-web-api-node');
 var client_id ='2923d79235804ea58633989710346f3d';
 var redirect_uri = 'https://spotifynd-friends.herokuapp.com/';
-var credentials = {
-  clientId : '2923d79235804ea58633989710346f3d',
-  clientSecret : 'd4813d196edf4940b58ba0aeedbf9ebc',
-  redirectUri : 'https://spotifynd-friends.herokuapp.com/'
-};
-var spotifyApi = new SpotifyWebApi(credentials);
 
 var scope = 'user-read-private user-read-email';
 
@@ -24,29 +18,18 @@ class Spotify extends Component {
         }
     }
 
-    static getInitialProps({pathname}) {
-      return {pathname}
-    }
-
-    componentWillMount = () => {
-         var url = this.props.pathname;
-         console.log(url);
-         if(url.indexOf('code')>-1){            
+    componentDidMount = () => {
+         var url = window.location.href;
+         if(url.indexOf('code')>-1){    
+            this.getAccess()
+            this.setState({ access_token })        
              //code = url.substring(url.indexOf('=') + 1, url.lastIndexOf('&'))
-             let code = url.split('code=')[1].split("&")[0].trim()
-             this.spotifyApi.authorizationCodeGrant(code).then(
-              function(data) {
-                // Set the access token on the API object to use it in later calls
-                spotifyApi.setAccessToken(data.body['access_token']);
-                spotifyApi.setRefreshToken(data.body['refresh_token']);
-                this.setState({ access_token })
-              },
-              function(err) {
-                console.log('Something went wrong!', err);
-              }
-             )
          }
-     }
+    }
+    
+    getAccess = () => {
+      fetch(`http://localhost:${port}/code`)
+    }
 
     generateRandomString = (length) => {
       var text = '';
@@ -90,7 +73,7 @@ class Spotify extends Component {
         );
     }
 }
-
+export default Spotify;
 
 /*var SpotifyWebApi = require('spotify-web-api-node');
 
@@ -123,4 +106,4 @@ spotifyApi.authorizationCodeGrant(code).then(
   }
 );*/
 
-export default Spotify;
+
