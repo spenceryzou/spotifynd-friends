@@ -32,19 +32,18 @@ class Spotify extends Component {
          if(url.indexOf('code')>-1){            
              //code = url.substring(url.indexOf('=') + 1, url.lastIndexOf('&'))
              let code = url.split('code=')[1].split("&")[0].trim()
-             let authStr = 'Authorization: Basic ' + (new Buffer(client_id + ':' + clientSecret).toString('base64'))
+             let data = {
+              grant_type: 'authorization_code',
+              code: code,
+              redirectUri: redirectUri
+             }
              const res = await fetch('https://accounts.spotify.com/api/token', {
-               body: {
-                method: 'POST',
-                grant_type: 'authorization_code',
-                code: code,
-                redirectUri: redirectUri
-               },
-               headers: {
-                 Authorization: authStr
-               }
+              method: 'POST',
+              headers: {
+                 Authorization: 'Authorization: Basic ' + (new Buffer(client_id + ':' + clientSecret).toString('base64'))
+              },
+              body: JSON.stringify(data)
              })
-
              this.state.access_token = res.access_token
              console.log(this.state.access_token)
          }
