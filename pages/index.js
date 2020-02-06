@@ -11,6 +11,8 @@ var scope = 'user-read-private user-read-email';
 
 class Spotify extends Component {
 
+
+
     constructor(props) {
         super(props);
         this.state = {
@@ -19,7 +21,7 @@ class Spotify extends Component {
     }
 
     componentDidMount = () => {
-         var url = window.location.href;
+         let url = window.location.href;
          if(url.indexOf('code')>-1){    
             this.getAccess()
             this.setState({ access_token })        
@@ -28,7 +30,7 @@ class Spotify extends Component {
     }
     
     getAccess = () => {
-      fetch(`http://localhost:${port}/code`)
+      fetch(`https://spotifynd-friends.herokuapp.com/code`)
     }
 
     generateRandomString = (length) => {
