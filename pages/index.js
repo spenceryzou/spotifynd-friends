@@ -20,13 +20,16 @@ class Spotify extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            access_token: '',
-            url: this.props.location
+            access_token: ''
         }
     }
 
-    
-     componentWillMount = () => {
+    static getInitialProps({pathname}) {
+      return {pathname}
+    }
+
+    componentWillMount = () => {
+         var url = this.props.pathname;
          if(url.indexOf('code')>-1){            
              //code = url.substring(url.indexOf('=') + 1, url.lastIndexOf('&'))
              let code = url.split('code=')[1].split("&")[0].trim()
