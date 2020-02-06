@@ -30,7 +30,7 @@ class Spotify extends Component {
     }
     
     getAccess = () => {
-      axios.get('/access')
+      axios.get('server/access')
       .then(function(res){
         console.log(res);
         temp.setState({access_token: res.at})
