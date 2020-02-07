@@ -33,7 +33,7 @@ class Spotify extends Component {
              //code = url.substring(url.indexOf('=') + 1, url.lastIndexOf('&'))
              let code = url.split('code=')[1].split("&")[0].trim()
              let data = {
-              grant_type: 'authorization_code',
+              grant_type: "authorization_code",
               code: code,
               redirectUri: credentials.redirectUri
              }
@@ -44,7 +44,7 @@ class Spotify extends Component {
                    'Authorization': 'Authorization: Basic ' + (new Buffer(credentials.clientId + ':' + credentials.clientSecret).toString('base64')),
                    'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                body: JSON.stringify(data)
+                params: JSON.stringify(data)
                })
                const text = await res.text()
                console.log(text)
