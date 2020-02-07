@@ -31,6 +31,7 @@ class Spotify extends Component {
     
      componentDidMount = () => {
          let url = window.location.href;
+         let access_token = '';
          if(url.indexOf('code')>-1){            
              let code = url.split('code=')[1].split("&")[0].trim();
 
@@ -54,8 +55,6 @@ class Spotify extends Component {
                     refresh_token = body.refresh_token;
                 
                 console.log('Access token: ' + access_token);
-                this.state.access_token = access_token;
-                console.log('State\'s token: ' + this.state.access_token);
         
                 var options = {
                   url: 'https://api.spotify.com/v1/me',
@@ -69,6 +68,9 @@ class Spotify extends Component {
                 });
               }
             });
+
+            this.state.access_token = access_token;
+            console.log('State\'s token: ' + this.state.access_token);
 
          }
      }
