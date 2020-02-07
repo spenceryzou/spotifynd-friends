@@ -23,7 +23,8 @@ class Spotify extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            access_token: ''
+            access_token: '',
+            refresh_token: ''
         }
     }
 
@@ -53,11 +54,8 @@ class Spotify extends Component {
         
                 access_token = body.access_token,
                 refresh_token = body.refresh_token;
-                
-                console.log('Access token: ' + access_token);
-
-                this.setState({access_token: access_token});
-                console.log('State\'s token: ' + self.state.access_token);
+                this.setState({access_token: access_token,
+                               refresh_token: refresh_token});
         
                 var options = {
                   url: 'https://api.spotify.com/v1/me',
@@ -102,10 +100,6 @@ class Spotify extends Component {
                 query: { access_token }
             })
         }  
-    }
-
-    setAccessToken = () => {
-
     }
 
     render() {
