@@ -70,7 +70,7 @@ class Spotify extends Component {
               }
             });
 
-            this.state.access_token = access_token;
+            this.setState({access_token: access_token});
             console.log('State\'s token: ' + this.state.access_token);
 
          }
