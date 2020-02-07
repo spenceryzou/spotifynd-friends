@@ -41,7 +41,8 @@ class Spotify extends Component {
               const res = await fetch('https://accounts.spotify.com/api/token', {
                 method: 'POST',
                 headers: {
-                   Authorization: 'Authorization: Basic ' + (new Buffer(credentials.clientId + ':' + credentials.clientSecret).toString('base64'))
+                   'Authorization': 'Authorization: Basic ' + (new Buffer(credentials.clientId + ':' + credentials.clientSecret).toString('base64')),
+                   'Content-Type': 'application/x-www-form-urlencoded'
                 },
                 body: JSON.stringify(data)
                })
