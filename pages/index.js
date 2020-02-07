@@ -5,8 +5,10 @@ import fetch from 'isomorphic-unfetch'
 //import { spotifyWebApiURL } from '../constants/'
 
 var querystring = require('querystring');
+var request = require('request')
 var SpotifyWebApi = require('spotify-web-api-node');
 var client_id ='2923d79235804ea58633989710346f3d';
+var client_secret = 'd4813d196edf4940b58ba0aeedbf9ebc';
 var redirect_uri = 'https://spotifynd-friends.herokuapp.com/';
 var credentials = {
   clientId : '2923d79235804ea58633989710346f3d',
@@ -28,10 +30,57 @@ class Spotify extends Component {
 
     
      componentDidMount = () => {
-         let url = window.location.href
+         let url = window.location.href;
          if(url.indexOf('code')>-1){            
-             //code = url.substring(url.indexOf('=') + 1, url.lastIndexOf('&'))
-             let code = url.split('code=')[1].split("&")[0].trim()
+             let code = url.split('code=')[1].split("&")[0].trim();
+
+             var authOptions = {
+              url: 'https://accounts.spotify.com/api/token',
+              form: {
+                code: code,
+                redirect_uri: redirect_uri,
+                grant_type: 'authorization_code'
+              },
+              headers: {
+                'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+              },
+              json: true
+            };
+
+            request.post(authOptions, function(error, response, body) {
+              if (!error && response.statusCode === 200) {
+        
+                var access_token = body.access_token,
+                    refresh_token = body.refresh_token;
+                
+                console.log('Access token: ' + access_token)
+        
+                var options = {
+                  url: 'https://api.spotify.com/v1/me',
+                  headers: { 'Authorization': 'Bearer ' + access_token },
+                  json: true
+                };
+        
+                // use the access token to access the Spotify Web API
+                request.get(options, function(error, response, body) {
+                  console.log(body);
+                });
+        
+                // we can also pass the token to the browser to make requests from there
+                res.redirect('/#' +
+                  querystring.stringify({
+                    access_token: access_token,
+                    refresh_token: refresh_token
+                  }));
+              } else {
+                res.redirect('/#' +
+                  querystring.stringify({
+                    error: 'invalid_token'
+                  }));
+              }
+            });
+
+             /*
              let bodyParams = {
               grant_type: "authorization_code",
               code: code,
@@ -44,12 +93,13 @@ class Spotify extends Component {
                    'Authorization': 'Authorization: Basic ' + (new Buffer(credentials.clientId + ':' + credentials.clientSecret).toString('base64')),
                    'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                data: JSON.stringify(bodyParams)
+                form: JSON.stringify(bodyParams)
                })
                const text = await res.text()
                console.log(text)
              }
              req()
+             */
          }
      }
 
