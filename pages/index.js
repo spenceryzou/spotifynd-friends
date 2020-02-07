@@ -32,6 +32,7 @@ class Spotify extends Component {
      componentDidMount = () => {
          let url = window.location.href;
          let access_token = '';
+         let refresh_token = '';
          if(url.indexOf('code')>-1){            
              let code = url.split('code=')[1].split("&")[0].trim();
 
@@ -51,8 +52,8 @@ class Spotify extends Component {
             request.post(authOptions, function(error, response, body) {
               if (!error && response.statusCode === 200) {
         
-                var access_token = body.access_token,
-                    refresh_token = body.refresh_token;
+                access_token = body.access_token,
+                refresh_token = body.refresh_token;
                 
                 console.log('Access token: ' + access_token);
         
