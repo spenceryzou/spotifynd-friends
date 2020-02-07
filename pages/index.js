@@ -53,7 +53,9 @@ class Spotify extends Component {
                 var access_token = body.access_token,
                     refresh_token = body.refresh_token;
                 
-                console.log('Access token: ' + access_token)
+                console.log('Access token: ' + access_token);
+                this.state.access_token = access_token;
+                console.log('State\'s token: ' + this.state.access_token);
         
                 var options = {
                   url: 'https://api.spotify.com/v1/me',
@@ -65,45 +67,9 @@ class Spotify extends Component {
                 request.get(options, function(error, response, body) {
                   console.log(body);
                 });
-                
-                // we can also pass the token to the browser to make requests from there
-                /*
-                res.redirect('/#' +
-                  querystring.stringify({
-                    access_token: access_token,
-                    refresh_token: refresh_token
-                  }));
-                */
-              } else {
-                /*
-                res.redirect('/#' +
-                  querystring.stringify({
-                    error: 'invalid_token'
-                  }));
-                */
               }
             });
 
-             /*
-             let bodyParams = {
-              grant_type: "authorization_code",
-              code: code,
-              redirectUri: credentials.redirectUri
-             }
-             const req = async () => {
-              const res = await fetch('https://accounts.spotify.com/api/token', {
-                method: 'POST',
-                headers: {
-                   'Authorization': 'Authorization: Basic ' + (new Buffer(credentials.clientId + ':' + credentials.clientSecret).toString('base64')),
-                   'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                form: JSON.stringify(bodyParams)
-               })
-               const text = await res.text()
-               console.log(text)
-             }
-             req()
-             */
          }
      }
 
