@@ -16,7 +16,6 @@ var credentials = {
   redirectUri : 'https://spotifynd-friends.herokuapp.com/'
 };
 var spotifyApi = new SpotifyWebApi(credentials);
-var self = this;
 var scope = 'user-read-private user-read-email';
 
 class Spotify extends Component {
@@ -49,7 +48,7 @@ class Spotify extends Component {
               json: true
             };
 
-            request.post(authOptions, function(error, response, body) {
+            request.post(authOptions, (error, response, body) => {
               if (!error && response.statusCode === 200) {
         
                 access_token = body.access_token,
@@ -57,7 +56,7 @@ class Spotify extends Component {
                 
                 console.log('Access token: ' + access_token);
 
-                self.setState({access_token: access_token});
+                this.setState({access_token: access_token});
                 console.log('State\'s token: ' + self.state.access_token);
         
                 var options = {
@@ -103,6 +102,10 @@ class Spotify extends Component {
                 query: { access_token }
             })
         }  
+    }
+
+    setAccessToken = () => {
+
     }
 
     render() {
