@@ -18,7 +18,6 @@ class Spotify extends Component {
     }
   }
 
-
   componentDidMount = () => {
     let url = window.location.href;
     let access_token = '';
