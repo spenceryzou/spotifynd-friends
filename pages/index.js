@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
+import User from '../pages/user'
 
 var querystring = require('querystring');
 var request = require('request')
 var client_id = '2923d79235804ea58633989710346f3d';
 var client_secret = 'd4813d196edf4940b58ba0aeedbf9ebc';
 var redirect_uri = 'https://spotifynd-friends.herokuapp.com/';
-var scope = 'user-read-private user-read-email';
+var scope = 'user-read-private user-read-email playlist-read-private';
 
 class Spotify extends Component {
 
@@ -23,6 +24,9 @@ class Spotify extends Component {
     let url = window.location.href;
     let access_token = '';
     let refresh_token = '';
+    if(url.indexOf('localhost') > -1){
+      redirect_uri = 'http://localhost:3000/index'
+    }
     if (url.indexOf('code') > -1) {
       let code = url.split('code=')[1].split("&")[0].trim();
 
@@ -96,6 +100,11 @@ class Spotify extends Component {
 
   render() {
     const { access_token } = this.state
+
+    // if(access_token !== ''){
+    //     <User access_token={ this.state.access_token} />
+    // }
+
     return (
 
       <div className="row justify-content-center mt-5">
