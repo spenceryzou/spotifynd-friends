@@ -27,10 +27,10 @@ class User extends Component {
             playlist.forEach((list, index) => {
                 allPlayLists.push(
                     <Results
-                        name={list.name}
-                        imageURL={list.images[0].url}
-                    >
-                    </Results>
+                    name={list.name}
+                    // imageURL={list.images[0].url}
+                >
+                </Results>
                 )
             })
             return allPlayLists
@@ -38,9 +38,14 @@ class User extends Component {
             return ''
         }
     }
+
+    
+    
+
+
     
     render(){        
-        const { user, playlist } = this.props
+        const { playlist, user } = this.props
         console.log('playlist', playlist)
         return(
             <div>
@@ -55,15 +60,16 @@ class User extends Component {
                 <div className="mt-4 justify-content-center">
                     <p className="text-center">username: {user.display_name}</p>
                     <p className="text-center">email: {user.email}</p>
-                    {/* <p className="text-center">follower count: {user.followers.total}</p> */}
+                    <p className="text-center">follower count: {user.followers.total}</p>
+                    
                 </div>
 
                 <div className="row mt-5 justify-content-center">
                     <button 
                         className="btn btn-success" 
-                       // onClick={event => this.routeToSearchArtists(event)}
+                        onClick={this.renderPlaylist()}
                     >
-                        Search Artists
+                        Show playlist
                     </button>
 
                 </div>
@@ -73,7 +79,8 @@ class User extends Component {
                 </div>
 
                 <div className="row mt-2">
-                    { event =>this.renderPlaylist() }
+                    { this.renderPlaylist()}
+                   
                     </div>
                 </div>
         ) 
