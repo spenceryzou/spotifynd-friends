@@ -93,7 +93,7 @@ class Spotify extends Component {
     } else {
       Router.push({
         pathname: '/user',
-        query: { access_token }
+        query: { access_token } //may be unnecessary
       })
     }
   }

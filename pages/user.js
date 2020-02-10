@@ -7,7 +7,6 @@ var client_id = '2923d79235804ea58633989710346f3d';
 var client_secret = 'd4813d196edf4940b58ba0aeedbf9ebc';
 var redirect_uri = 'https://spotifynd-friends.herokuapp.com/';
 var scope = 'user-read-private user-read-email playlist-read-private';
-var playlists = [];
 
 class User extends Component{
     constructor(props) {
@@ -18,12 +17,11 @@ class User extends Component{
           user: '',
           playlists: []
         }
+
     }
 
     componentDidMount = () => {
         let url = window.location.href;
-        let access_token = '';
-        let refresh_token = '';
         if(url.indexOf('localhost') > -1){
             redirect_uri = 'http://localhost:3000/index'
         }
@@ -92,9 +90,8 @@ class User extends Component{
                 // use the access token to access the Spotify Web API
                 request.get(playlistOptions, (error, response, body) => {
                     console.log(body);
-                    playlists = body.items
-                    // this.setState({playlists: playlists})
-                    console.log(playlists)
+                    this.setState({playlists: body.items})
+                    console.log('this.state.playlists' + this.state.playlists)
                 }); 
             });    
 
@@ -102,15 +99,68 @@ class User extends Component{
     }
 
     render(){
+        const playlists = this.state.playlists.map((i) => 
+            <li>{i.name}</li>
+        )
+
         return (
             <div>
                 <p>This is where user information will be displayed.</p>
                 <p>Access Token: {this.state.access_token}</p>
                 <p>User ID: {this.state.user}</p>
-                <p>Playlists: {this.state.playlists}</p>
+                {playlists}
             </div>
         )
     }
 };
+
+/* User.getInitialProps = async function(context){
+    console.log(context.rawHeaders)
+    let access_token = context.query.access_token;
+    let refresh_token = '';
+    let user = '';
+    let playlists = [];
+    //if(context.headers.host.indexOf('localhost') > -1){
+        redirect_uri = 'http://localhost:3000/index'
+    //}
+
+    var options = {
+        url: 'https://api.spotify.com/v1/me',
+        headers: { 'Authorization': 'Bearer ' + access_token },
+        json: true
+    };
+
+        // use the access token to access the Spotify Web API
+    await request.get(options, (error, response, body) => {
+        console.log('Access token:' + access_token);
+        console.log(body);
+        user = body.display_name;
+        var playlistOptions = {
+            url: 'https://api.spotify.com/v1/users/' + user + '/playlists',
+            headers: { 'Authorization': 'Bearer ' + access_token },
+            json: true
+        };
+
+        console.log('user right before playlist: ' + user)
+
+        // use the access token to access the Spotify Web API
+        request.get(playlistOptions, (error, response, body) => {
+            console.log(body);
+            playlists = body.items
+            console.log(playlists)
+        }); 
+
+    
+
+    });
+
+    console.log('user at end of init: ' + user)
+    
+    return {
+        user,
+        playlists,
+        access_token
+    }
+} */
 
 export default User
