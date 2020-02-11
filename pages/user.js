@@ -77,7 +77,7 @@ class User extends Component{
             request.get(options, (error, response, body) => {
                 console.log('Access token:' + access_token)
                 console.log(body);
-                this.setState({user: body.display_name})
+                this.setState({user: body.id})
                 console.log('user: ' + this.state.user)
                 var playlistOptions = {
                     url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
@@ -100,9 +100,12 @@ class User extends Component{
     }
 
     render(){
-        const playlists = this.state.playlists.map((i) => 
+        let playlists;
+        if(typeof(this.state.playlists) != 'undefined'){
+            playlists = this.state.playlists.map((i) => 
             <li>{i.name}</li>
-        )
+            )
+        }
 
         return (
             <div>
