@@ -1,7 +1,5 @@
 # Spotifynd Friends
-----
 ## Project Summary
-----
 ### Elevator Pitch  
 An app that analyzes Spotify playlists and measures their compatability. Users can then use this compatability to make friends and find people to go to concerts with.
 
@@ -13,7 +11,6 @@ Target Audience: Young adults who are Spotify users
 Main Functionality: User can compare their playlists with other users' playlists to see how similar their music tastes are.  
 
 ## Installation
-----
 ### Prerequisites
 Firefox or Chrome
 
@@ -32,7 +29,6 @@ request: simplifies http call process
 Go to https://spotifynd-friends.herokuapp.com/
 
 ## Functionality
-----
 1. Click the 'Log in' button on the home page
 2. When redirected, log in to your Spotify account
 3. After redirected back to our app, click the 'Click to enter Spotifynd Friends' button
@@ -40,11 +36,9 @@ Go to https://spotifynd-friends.herokuapp.com/
 5. The number of songs you have in common with the Top Hits playlist is now displayed
 
 ## Known Problems
-----
 None at the moment.
 
 ## Contributing
-----
 1. Fork it!  
 2. Create your feature branch: git checkout -b my-new-feature  
 3. Commit your changes: git commit -am 'Add some feature'  
@@ -52,6 +46,5 @@ None at the moment.
 5. Submit a pull request :D  
 
 ## License
-----
 MIT License
 
