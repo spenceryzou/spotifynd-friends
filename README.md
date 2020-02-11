@@ -1,7 +1,7 @@
 # Spotifynd Friends
 ## Project Summary
 ### Elevator Pitch  
-An app that analyzes Spotify playlists and measures their compatability. Users can then use this compatability to make friends and find people to go to concerts with.
+This webapp analyzes Spotify playlists and measures their compatability which can then be used to make friends and find people to go to concerts with.
 
 ### Additional Information  
 Description: [TODO]
