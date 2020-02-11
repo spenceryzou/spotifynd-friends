@@ -81,6 +81,7 @@ class User extends Component{
                 console.log('user: ' + this.state.user)
                 var playlistOptions = {
                     url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
+                    qs: {limit: '10'},
                     headers: { 'Authorization': 'Bearer ' + access_token },
                     json: true
                 };
