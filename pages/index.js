@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
-import fetch from 'isomorphic-unfetch'
+import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 //import { spotifyWebApiURL } from '../constants/'
 const port = process.env.PORT || 5000;
 var querystring = require('querystring');
@@ -9,6 +9,7 @@ var client_id ='2923d79235804ea58633989710346f3d';
 var redirect_uri = 'https://spotifynd-friends.herokuapp.com/';
 
 var scope = 'user-read-private user-read-email';
+var self = this;
 
 class Spotify extends Component {
 
@@ -28,7 +29,7 @@ class Spotify extends Component {
          }
     }
     
-    getAccess = async(req, res) => {
+    getAccess = async(e) => {
       res = await fetch(`${req.protocol}://${req.get('host')}/access`)
       const json = await res.json()
       this.setState({ access_token: json.at });
@@ -67,7 +68,6 @@ class Spotify extends Component {
     render() {
         const { access_token } = this.state
         return (
-                
                 <div className="row justify-content-center mt-5">
                     <button onClick={event => this.makeSpotifyProfileCall(event)} className="btn btn-success">
                         { access_token !== '' ? 'Click to enter Spotifynd' : 'Login' }
@@ -77,7 +77,7 @@ class Spotify extends Component {
     }
 }
 
-/*Spotify.getInitialProps = async ctx => {
+/*Spotify.getInitialProps = async({req}) => {
   const baseUrl = `${req.protocol}://${req.get('host')}`
   return { baseUrl }
 }*/
