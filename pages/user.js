@@ -10,9 +10,11 @@ class User extends Component{
   constructor(props) {
     super(props);
     this.state = {
-      access_token: this.props.url.query,
+      access_token: this.props.url.query.access_token,
       refresh_token: '',
       playlist: null,
+      playlistName: '',
+      playlistDescription: '',
     }
 
 }
@@ -22,6 +24,7 @@ class User extends Component{
   componentDidMount(){
 
     this.get100()
+    //console.log(this.state.access_token)
 
   }
 
@@ -29,20 +32,21 @@ class User extends Component{
 
     var options  = {
       url: 'https://api.spotify.com/v1/playlists/'+ top100,
-      headers: { 'Authorization': 'Bearer ' + access_token },
+      headers: { 'Authorization': 'Bearer ' + this.state.access_token },
       json:true
-    }
+    };
 
-    request.get(options, function (error, response, body){
+    request.get(options, (error, response, body) =>{
       console.log(error)
-      console.log("Access token:" + access_token)
-      console.log(body);
+      //console.log("Access token:" + access_token)
+      //console.log(body);
 
       this.setState({
-        playlist: body.playlist,
-
+        playlist: body,
+        playlistName: body.name,
+        playlistDescription: body.description
       })
-      console.log("This is the playlist object"+ this.state.playlist)
+      //console.log("This is the playlist object"+ this.state.playlist)
 
     });
   }
@@ -50,11 +54,11 @@ class User extends Component{
 
   render(){
     return (
+
         <div>
             <p>This is where user information will be displayed.The access token is {this.state.access_token}</p>
-            <p> playlist name : {this.state.playlist.name} </p>
-            <p> This is the description of the playlist: {this.state.playlist.description} </p>
-
+            <p>This is the playlist name {this.state.playlistName}</p>
+            <p>This is the description of said playlist {this.state.playlistDescription}</p>
         </div>
     )
   }
