@@ -23,6 +23,11 @@ class Spotify extends Component {
     let url = window.location.href;
     let access_token = '';
     let refresh_token = '';
+
+    if(url.indexOf('localhost') > -1){
+    redirect_uri = 'http://localhost:3000/index'
+    }
+
     if (url.indexOf('code') > -1) {
       let code = url.split('code=')[1].split("&")[0].trim();
 
