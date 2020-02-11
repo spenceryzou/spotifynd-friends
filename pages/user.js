@@ -109,7 +109,8 @@ class User extends Component{
                 <p>This is where user information will be displayed.</p>
                 <p>Access Token: {this.state.access_token}</p>
                 <p>User ID: {this.state.user}</p>
-                {playlists}
+                <p>Playlists:</p>
+                <ul>{playlists}</ul>
             </div>
         )
     }
