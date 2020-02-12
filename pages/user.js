@@ -17,7 +17,7 @@ class User extends Component{
           user: '',
           playlists: [],
           tracks: [],
-          id: []
+          singleId: ''
 
         }
 
@@ -43,7 +43,7 @@ class User extends Component{
             request.get(options, (error, response, body) => {
                 console.log('Access token:' + access_token)
                 console.log(body);
-                this.setState({user: body.display_name})
+                this.setState({user: body.id})
                 console.log('user: ' + this.state.user)
                 var playlistOptions = {
                     url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
@@ -58,23 +58,20 @@ class User extends Component{
                 request.get(playlistOptions, (error, response, body) => {
                     console.log(body);
                     this.setState({playlists: body.items})
-                   
-
+                    
+                    
                     console.log('this.state.playlists' + this.state.playlists)
                 }); 
 
-                const playlists = this.state.playlists.map((i) => 
-                <li>{i.id}</li>
-            )
-            
-            // var ide = playlists[0].toString()
-
+                
+                
             var playlistTracks = {
-                url: 'https://api.spotify.com/v1/playlists/' + '34dbi6yGa8UfkFryC4rmhx'  + '/tracks',
-                //qs: {limit: '10'},
+                url: 'https://api.spotify.com/v1/playlists/34dbi6yGa8UfkFryC4rmhx/tracks' ,
                 headers: { 'Authorization': 'Bearer ' + access_token },
                 json: true
             };
+
+           
 
             request.get(playlistTracks, (error, response, body) => {
                 console.log(body);
@@ -104,13 +101,20 @@ class User extends Component{
 
 
     render(){
-        const playlists = this.state.playlists.map((i) => 
-            <li>{i.id}</li>
-        )
+         const playlists = this.state.playlists.map((i) => 
+             <plaintext>{i.tracks.href}</plaintext>
+         )
 
+        
         const tracks = this.state.tracks.map((x) => 
-        <li>{x.track.artists[0].name}</li>
-    )
+        <li>{x.track.artists[0].id}</li> )
+
+        const JSON = require('circular-json');
+
+        const plists = JSON.stringify(playlists);
+
+        
+    
 
         return (
             <div>
@@ -121,10 +125,13 @@ class User extends Component{
                 <p>Access Token: {this.state.access_token}</p>
                 <p>User ID: {this.state.user}</p>
                 <p>Playlists:</p>
-
                 <ul>{playlists}</ul>
-                <p>Playlist Tracks Id's: </p>
+
+                <p>Playlist Artist Tracks Id's: </p>
                 <ul>{tracks}</ul>
+
+
+                <p>random test: {plists}</p>
                
                 
             </div>
@@ -132,47 +139,7 @@ class User extends Component{
     }
 };
 
-/* User.getInitialProps = async function(context){
-    console.log(context.rawHeaders)
-    let access_token = context.query.access_token;
-    let refresh_token = '';
-    let user = '';
-    let playlists = [];
-    //if(context.headers.host.indexOf('localhost') > -1){
-        redirect_uri = 'http://localhost:3000/index'
-    //}
-    var options = {
-        url: 'https://api.spotify.com/v1/me',
-        headers: { 'Authorization': 'Bearer ' + access_token },
-        json: true
-    };
-        // use the access token to access the Spotify Web API
-    await request.get(options, (error, response, body) => {
-        console.log('Access token:' + access_token);
-        console.log(body);
-        user = body.display_name;
-        var playlistOptions = {
-            url: 'https://api.spotify.com/v1/users/' + user + '/playlists',
-            headers: { 'Authorization': 'Bearer ' + access_token },
-            json: true
-        };
-        console.log('user right before playlist: ' + user)
-        // use the access token to access the Spotify Web API
-        request.get(playlistOptions, (error, response, body) => {
-            console.log(body);
-            playlists = body.items
-            console.log(playlists)
-        }); 
-    
-    });
-    console.log('user at end of init: ' + user)
-    
-    return {
-        user,
-        playlists,
-        access_token
-    }
-} */
+
 
 export default User
 
