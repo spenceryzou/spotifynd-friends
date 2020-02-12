@@ -1,4 +1,5 @@
-import { configure, render } from 'enzyme';
+import 'jsdom-global/register';
+import { configure, mount, render } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import { expect } from 'chai';
 import { spy } from 'sinon';
@@ -11,6 +12,12 @@ configure({ adapter: new Adapter() });
 describe('<Spotify />', () => {
     it('button displays text \'Login\' when user is not logged in', () => {
         const wrapper = render(<Spotify />);
-        expect(wrapper.text()).to.contain('TESTFAIL');
-    })
+        expect(wrapper.text()).to.contain('Login');
+    });
+
+    it('button displays text \'Click to enter Spotifynd\' when user is logged in', () => {
+        const wrapper = mount(<Spotify />);
+        wrapper.setState({access_token: 'MOCKTOKEN'});
+        expect(wrapper.render().text()).to.contain('Click to enter Spotifynd');
+    });
 });
