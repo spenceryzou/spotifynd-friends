@@ -102,10 +102,14 @@ class User extends Component{
     render(){
         let playlists;
         if(typeof(this.state.playlists) != 'undefined'){
-            playlists = this.state.playlists.map((i) => 
-            <li>{i.name}</li>
-            )
-        }
+            if(this.state.playlists.length != 0){
+                playlists = this.state.playlists.map((i) => 
+                <li>{i.name}</li>
+                )
+            }else{
+                playlists = <p>No playlists to display</p>
+            }
+        } 
 
         return (
             <div>
