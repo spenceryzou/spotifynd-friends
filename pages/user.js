@@ -16,7 +16,8 @@ class User extends Component{
           refresh_token: '',
           user: '',
           playlists: [],
-          tracks: []
+          tracks: [],
+          id: []
 
         }
 
@@ -57,12 +58,16 @@ class User extends Component{
                 request.get(playlistOptions, (error, response, body) => {
                     console.log(body);
                     this.setState({playlists: body.items})
+                   
+
                     console.log('this.state.playlists' + this.state.playlists)
                 }); 
 
-            //     const playlists = this.state.playlists.map((i) => 
-            //     <li>{i.id}</li>
-            // )
+                const playlists = this.state.playlists.map((i) => 
+                <li>{i.id}</li>
+            )
+            
+            // var ide = playlists[0].toString()
 
             var playlistTracks = {
                 url: 'https://api.spotify.com/v1/playlists/' + '34dbi6yGa8UfkFryC4rmhx'  + '/tracks',
@@ -100,11 +105,11 @@ class User extends Component{
 
     render(){
         const playlists = this.state.playlists.map((i) => 
-            <li>{i.href}</li>
+            <li>{i.id}</li>
         )
 
         const tracks = this.state.tracks.map((x) => 
-        <li>{x.track.name}</li>
+        <li>{x.track.artists[0].name}</li>
     )
 
         return (
@@ -118,7 +123,7 @@ class User extends Component{
                 <p>Playlists:</p>
 
                 <ul>{playlists}</ul>
-                <p>Data </p>
+                <p>Playlist Tracks Id's: </p>
                 <ul>{tracks}</ul>
                
                 
