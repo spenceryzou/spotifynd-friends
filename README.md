@@ -12,6 +12,8 @@ Main Functionality: User can compare their playlists with other users' playlists
 
 ## Installation
 ### Prerequisites
+node.js: v13.6.0
+
 Firefox or Chrome
 
 ### Dependencies  
@@ -25,7 +27,14 @@ react-dom: library, allows for manipulation of the DOM
 
 request: simplifies http call process
 
-### Installation Steps  
+### Installation Steps
+
+#### Run Locally
+1. clone our repo using 'git clone https://github.com/ucsb-cs48-w20/Spotify.git'
+2. run 'npm install' command to install necessary dependencies
+3. use 'npm run dev' command to run our app
+
+#### Browser
 Go to https://spotifynd-friends.herokuapp.com/
 
 ## Functionality
