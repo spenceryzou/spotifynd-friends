@@ -11,6 +11,6 @@ configure({ adapter: new Adapter() });
 describe('<Spotify />', () => {
     it('button displays text \'Login\' when user is not logged in', () => {
         const wrapper = render(<Spotify />);
-        expect(wrapper.text()).to.contain('Login');
+        expect(wrapper.text()).to.contain('TESTFAIL');
     })
 });
