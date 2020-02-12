@@ -30,9 +30,9 @@ request: simplifies http call process
 ### Installation Steps
 
 #### Run Locally
-1. clone our repo using 'git clone https://github.com/ucsb-cs48-w20/Spotify.git'
-2. run 'npm install' command to install necessary dependencies
-3. use 'npm run dev' command to run our app
+1. clone our repo using `git clone https://github.com/ucsb-cs48-w20/Spotify.git`
+2. run `npm install` command to install necessary dependencies
+3. use `npm run dev` command to run our app
 
 #### Browser
 Go to https://spotifynd-friends.herokuapp.com/
