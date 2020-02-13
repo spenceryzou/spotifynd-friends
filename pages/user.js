@@ -7,20 +7,29 @@ var client_id = '2923d79235804ea58633989710346f3d';
 var client_secret = 'd4813d196edf4940b58ba0aeedbf9ebc';
 var redirect_uri = 'https://spotifynd-friends.herokuapp.com/';
 var scope = 'user-read-private user-read-email playlist-read-private';
+var top100 = '37i9dQZF1DXcBWIGoYBM5M';
+var top100tracknames = [];
+
 
 class User extends Component{
     constructor(props) {
         super(props);
         this.state = {
-          access_token: '',
+          access_token: this.props.url.query.access_token,
           refresh_token: '',
           user: '',
-          playlists: []
+          playlists: [],
+          playlist: null,
+          playlistName: '',
+          playlistDescription: '',
+          playlistTracks: []
+
         }
     }
 
     componentDidMount = () => {
         this.getUserPlaylists();
+        this.get100();
     }
 
     getUserPlaylists = () => {
@@ -63,8 +72,8 @@ class User extends Component{
                         console.log(this.state.playlists[i].key)
                     }
                     console.log('this.state.playlists' + this.state.playlists)
-                }); 
-            });    
+                });
+            });
 
         }
     }
@@ -88,8 +97,83 @@ class User extends Component{
             //     console.log(this.state.playlists[i].key)
             // }
             console.log('this.state.playlists' + this.state.playlists)
-        }); 
+        });
     }
+    refresh = () => {
+      var authOptions = {
+        url: 'https://accounts.spotify.com/api/token',
+        headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
+        form: {
+          grant_type: 'refresh_token',
+          refresh_token: this.state.refresh_token,
+        },
+        json: true
+      };
+
+    request.post(authOptions, (error, response, body) => {
+      console.log(error);
+      if (!error && response.statusCode === 200) {
+
+        this.setState({
+          access_token: body.access_token
+          });
+        }
+      });
+      console.log("This is the new access_token"+ this.state.access_token);
+    }
+
+
+    get100 = () =>{
+      //if(this.state.access_token == undefined){
+      //  console.log("Is undefined");
+      //  this.refresh();
+      //}
+      let url = window.location.href;
+      if(url.indexOf('localhost') > -1){
+          redirect_uri = 'http://localhost:3000/index'
+      }
+      if (url.indexOf('token') > -1) {
+          let access_token = url.split('token=')[1];
+
+          this.setState({access_token})
+
+          var options  = {
+            url: 'https://api.spotify.com/v1/playlists/'+ top100,
+            headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+            json:true
+          };
+
+          request.get(options, (error, response, body) =>{
+            console.log(error);
+            console.log(body);
+
+            this.setState({
+              playlist: body,
+              playlistName: body.name,
+              playlistDescription: body.description,
+              playlistTracks: body.tracks.items
+            })
+
+          });
+        }
+      }
+
+
+
+
+
+
+    assigntop100tracknames = () => {
+      if(typeof(this.state.playlistTracks) != 'undefined'){
+           if(this.state.playlistTracks != 0){
+               top100tracknames = this.state.playlistTracks.map((i) =>
+               <li>{i.track.id}</li>
+               )
+           }else{
+               top100tracknames= <p>No playlists to display</p>
+           }
+       }
+    };
 
     render(){
         let playlists;
@@ -108,7 +192,8 @@ class User extends Component{
             }else{
                 playlists = <p>No playlists to display</p>
             }
-        } 
+        }
+        this.assigntop100tracknames();
 
         return (
             <div>
@@ -117,6 +202,8 @@ class User extends Component{
                 <p>User ID: {this.state.user}</p>
                 <p>Playlists:</p>
                 <ul>{playlists}</ul>
+                <p>topHIts ids:</p>
+                <ul>{top100tracknames}</ul>
             </div>
         )
     }
