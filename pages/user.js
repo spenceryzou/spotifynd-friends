@@ -8,7 +8,6 @@ var client_secret = 'd4813d196edf4940b58ba0aeedbf9ebc';
 var redirect_uri = 'https://spotifynd-friends.herokuapp.com/';
 var scope = 'user-read-private user-read-email playlist-read-private';
 var top100 = '37i9dQZF1DXcBWIGoYBM5M';
-var top100tracknames = [];
 
 
 class User extends Component{
@@ -22,8 +21,10 @@ class User extends Component{
           playlist: null,
           playlistName: '',
           playlistDescription: '',
-          playlistTracks: []
-
+          playlistTracks: [],
+          top100tracknames: [],
+          playlisttracknames: [],
+          count: 0
         }
     }
 
@@ -77,7 +78,30 @@ class User extends Component{
 
         }
     }
-
+    assignPlaylistTracksName = (items) => {
+        if(typeof(items) != 'undefined'){
+            if(items != 0){
+                playlisttracknames = items.map((i) =>
+                <li>{i.track.id}</li>
+                )
+            }else{
+                playlisttracknames = <p>No playlists to display</p>
+            }
+        }
+    }    
+    
+    comparePlaylists = () => {
+        let c = 0;
+        for(let i = 0; i < playlisttracknames.length; i++){
+            for(let j = 0; j < top100tracknames.length; j++){
+                if(playlisttracknames[i] == top100tracknames[j]){
+                    c++;
+                }
+            }
+        }
+        this.setState({count: c});
+    }
+    
     getPlaylistTracks = (i) => {
         console.log(this.state.playlists[i].tracks.href)
         var tracksOptions = {
@@ -97,8 +121,13 @@ class User extends Component{
             //     console.log(this.state.playlists[i].key)
             // }
             console.log('this.state.playlists' + this.state.playlists)
+            assignPlaylistTracksName(body.items);
+            comparePlaylists();
+            console.log(this.state.count);
         });
     }
+
+
     refresh = () => {
       var authOptions = {
         url: 'https://accounts.spotify.com/api/token',
@@ -121,8 +150,6 @@ class User extends Component{
       });
       console.log("This is the new access_token"+ this.state.access_token);
     } 
-    
-
 
     get100 = () =>{
       //if(this.state.access_token == undefined){
@@ -157,21 +184,18 @@ class User extends Component{
 
           });
         }
-      }
-
-
-
+    }
 
 
 
     assigntop100tracknames = () => {
       if(typeof(this.state.playlistTracks) != 'undefined'){
            if(this.state.playlistTracks != 0){
-               top100tracknames = this.state.playlistTracks.map((i) =>
+               this.state.top100tracknames = this.state.playlistTracks.map((i) =>
                <li>{i.track.id}</li>
                )
            }else{
-               top100tracknames= <p>No playlists to display</p>
+               this.state.top100tracknames= <p>No playlists to display</p>
            }
        }
     };
@@ -204,7 +228,7 @@ class User extends Component{
                 <p>Playlists:</p>
                 <ul>{playlists}</ul>
                 <p>topHIts ids:</p>
-                <ul>{top100tracknames}</ul>
+                <ul>{this.state.top100tracknames}</ul>
             </div>
         )
     }
