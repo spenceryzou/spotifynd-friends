@@ -71,6 +71,24 @@ class User extends Component{
 
     getPlaylistTracks = (i) => {
         console.log(this.state.playlists[i].tracks.href)
+        var tracksOptions = {
+            url: this.state.playlists[i].tracks.href,
+            headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+            json: true
+        };
+
+        console.log('user right before tracks request: ' + this.state.user)
+
+        // use the access token to access the Spotify Web API
+        request.get(tracksOptions, (error, response, body) => {
+            console.log(body);
+            // this.setState({playlists: body.items})
+            // for(var i = 0; i < this.state.playlists.length; i++){
+            //     this.state.playlists[i].key = i.id
+            //     console.log(this.state.playlists[i].key)
+            // }
+            console.log('this.state.playlists' + this.state.playlists)
+        }); 
     }
 
     render(){
