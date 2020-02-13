@@ -12,6 +12,7 @@ configure({ adapter: new Adapter() });
 describe('<Spotify />', () => {
     const comp = <Spotify />;
     it('button displays text \'Login\' when user is not logged in', () => {
+        mocha
         const wrapper = render(comp);
         expect(wrapper.text()).to.contain('Login');
     })
