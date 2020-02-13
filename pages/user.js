@@ -85,7 +85,7 @@ class User extends Component{
     if(typeof(this.state.playlistTracks) != 'undefined'){
          if(this.state.playlistTracks != 0){
              top100tracknames = this.state.playlistTracks.map((i) =>
-             <li>{i.track.name}</li>
+             <li>{i.track.id}</li>
              )
          }else{
              top100tracknames= <p>No playlists to display</p>
