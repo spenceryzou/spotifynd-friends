@@ -92,6 +92,10 @@ class User extends Component{
                 request.get(playlistOptions, (error, response, body) => {
                     console.log(body);
                     this.setState({playlists: body.items})
+                    for(var i = 0; i < this.state.playlists.length; i++){
+                        this.state.playlists[i].key = i.id
+                        console.log(this.state.playlists[i].key)
+                    }
                     console.log('this.state.playlists' + this.state.playlists)
                 }); 
             });    
@@ -99,12 +103,23 @@ class User extends Component{
         }
     }
 
+    createButton = (i) => {
+        console.log(this.state.playlists[i].tracks.href)
+    }
+
     render(){
         let playlists;
         if(typeof(this.state.playlists) != 'undefined'){
             if(this.state.playlists.length != 0){
-                playlists = this.state.playlists.map((i) => 
-                <li>{i.name}</li>
+                playlists = this.state.playlists.map((i, index) =>
+                <div>
+                    <li>
+                        {i.name}
+                        <button onClick={() => this.createButton(index)}>
+                            Select
+                        </button>
+                    </li>
+                </div>
                 )
             }else{
                 playlists = <p>No playlists to display</p>
