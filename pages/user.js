@@ -24,7 +24,7 @@ class User extends Component{
           playlistTracks: [],
           top100tracknames: [],
           playlisttracknames: [],
-          count: 0
+          count: -1
         }
     }
 
@@ -223,7 +223,9 @@ class User extends Component{
         this.assigntop100tracknames();
         var message = `Songs in common: ${this.state.count}`
         if (this.state.count == 0){
-            message = "You have no songs in common with \"Today\'s Top Hits\"."
+            message = "This playlist has no songs in common with \"Today\'s Top Hits\"."
+        } else if(this.state.count < 0){
+            message = ''
         }
         
 
