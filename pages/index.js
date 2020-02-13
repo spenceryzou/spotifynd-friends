@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
 import User from '../pages/user'
+import styles from '../pages/index.module.css'
 
 var querystring = require('querystring');
 var request = require('request')
@@ -106,12 +107,14 @@ class Spotify extends Component {
     // }
 
     return (
-
+        <div>
+            <h1 className={styles.center}> Welcome to Spotifynd Friends! </h1>
       <div className="row justify-content-center mt-5">
-        <button onClick={event => this.makeSpotifyProfileCall(event)} className="btn btn-success">
-          {access_token !== '' ? 'Click to enter Spotifynd' : 'Login'}
+            <button onClick={event => this.makeSpotifyProfileCall(event)} className={styles.button}>
+          {access_token !== '' ? 'Enter' : 'Login'}
         </button>
       </div>
+            </div>
     );
   }
 }
