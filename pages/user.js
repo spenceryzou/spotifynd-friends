@@ -17,53 +17,19 @@ class User extends Component{
           user: '',
           playlists: []
         }
-
     }
 
     componentDidMount = () => {
+        this.getUserPlaylists();
+    }
+
+    getUserPlaylists = () => {
         let url = window.location.href;
         if(url.indexOf('localhost') > -1){
             redirect_uri = 'http://localhost:3000/index'
         }
         if (url.indexOf('token') > -1) {
             let access_token = url.split('token=')[1];
-    
-            // var authOptions = {
-            //     url: 'https://accounts.spotify.com/api/token',
-            //     form: {
-            //     code: code,
-            //     redirect_uri: redirect_uri,
-            //     grant_type: 'authorization_code'
-            //     },
-            //     headers: {
-            //     'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
-            //     },
-            //     json: true
-            // };
-
-        //   request.post(authOptions, (error, response, body) => {
-        //     if (!error && response.statusCode === 200) {
-    
-        //       access_token = body.access_token,
-        //         refresh_token = body.refresh_token;
-        //       this.setState({
-        //         access_token: access_token,
-        //         refresh_token: refresh_token
-        //       });
-    
-        //       var options = {
-        //         url: 'https://api.spotify.com/v1/me',
-        //         headers: { 'Authorization': 'Bearer ' + access_token },
-        //         json: true
-        //       };
-    
-        //       // use the access token to access the Spotify Web API
-        //       request.get(options, function (error, response, body) {
-        //           console.log('Access token:' + access_token)
-        //         console.log(body);
-        //       });
-        //     }
-        //   });
 
             this.setState({access_token})
 
@@ -103,7 +69,7 @@ class User extends Component{
         }
     }
 
-    createButton = (i) => {
+    getPlaylistTracks = (i) => {
         console.log(this.state.playlists[i].tracks.href)
     }
 
@@ -115,7 +81,7 @@ class User extends Component{
                 <div>
                     <li>
                         {i.name}
-                        <button onClick={() => this.createButton(index)}>
+                        <button onClick={() => this.getPlaylistTracks(index)}>
                             Select
                         </button>
                     </li>
@@ -137,54 +103,5 @@ class User extends Component{
         )
     }
 };
-
-/* User.getInitialProps = async function(context){
-    console.log(context.rawHeaders)
-    let access_token = context.query.access_token;
-    let refresh_token = '';
-    let user = '';
-    let playlists = [];
-    //if(context.headers.host.indexOf('localhost') > -1){
-        redirect_uri = 'http://localhost:3000/index'
-    //}
-
-    var options = {
-        url: 'https://api.spotify.com/v1/me',
-        headers: { 'Authorization': 'Bearer ' + access_token },
-        json: true
-    };
-
-        // use the access token to access the Spotify Web API
-    await request.get(options, (error, response, body) => {
-        console.log('Access token:' + access_token);
-        console.log(body);
-        user = body.display_name;
-        var playlistOptions = {
-            url: 'https://api.spotify.com/v1/users/' + user + '/playlists',
-            headers: { 'Authorization': 'Bearer ' + access_token },
-            json: true
-        };
-
-        console.log('user right before playlist: ' + user)
-
-        // use the access token to access the Spotify Web API
-        request.get(playlistOptions, (error, response, body) => {
-            console.log(body);
-            playlists = body.items
-            console.log(playlists)
-        }); 
-
-    
-
-    });
-
-    console.log('user at end of init: ' + user)
-    
-    return {
-        user,
-        playlists,
-        access_token
-    }
-} */
 
 export default User
