@@ -81,9 +81,7 @@ class User extends Component{
 
 
   }
-
-
-  render(){
+  assigntop100tracknames = () => {
     if(typeof(this.state.playlistTracks) != 'undefined'){
          if(this.state.playlistTracks != 0){
              top100tracknames = this.state.playlistTracks.map((i) =>
@@ -93,7 +91,12 @@ class User extends Component{
              top100tracknames= <p>No playlists to display</p>
          }
      }
+  };
 
+
+  render(){
+
+    this.assigntop100tracknames();
 
     return (
 
