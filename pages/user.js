@@ -81,20 +81,20 @@ class User extends Component{
     assignPlaylistTracksName = (items) => {
         if(typeof(items) != 'undefined'){
             if(items != 0){
-                playlisttracknames = items.map((i) =>
+                this.state.playlisttracknames = items.map((i) =>
                 <li>{i.track.id}</li>
                 )
             }else{
-                playlisttracknames = <p>No playlists to display</p>
+                this.state.playlisttracknames = <p>No playlists to display</p>
             }
         }
     }    
     
     comparePlaylists = () => {
         let c = 0;
-        for(let i = 0; i < playlisttracknames.length; i++){
-            for(let j = 0; j < top100tracknames.length; j++){
-                if(playlisttracknames[i] == top100tracknames[j]){
+        for(let i = 0; i < this.state.playlisttracknames.length; i++){
+            for(let j = 0; j < this.state.top100tracknames.length; j++){
+                if(this.state.playlisttracknames[i].props.children == this.state.top100tracknames[j].props.children){
                     c++;
                 }
             }
@@ -121,10 +121,12 @@ class User extends Component{
             //     console.log(this.state.playlists[i].key)
             // }
             console.log('this.state.playlists' + this.state.playlists)
-            assignPlaylistTracksName(body.items);
-            comparePlaylists();
+            this.assignPlaylistTracksName(body.items);
+            this.comparePlaylists();       
             console.log(this.state.count);
-        });
+            console.log(this.state.playlisttracknames);
+        }); 
+
     }
 
 
@@ -227,8 +229,7 @@ class User extends Component{
                 <p>User ID: {this.state.user}</p>
                 <p>Playlists:</p>
                 <ul>{playlists}</ul>
-                <p>topHIts ids:</p>
-                <ul>{this.state.top100tracknames}</ul>
+                <p>Songs in common: {this.state.count}</p>
             </div>
         )
     }
