@@ -68,20 +68,20 @@ class User extends Component{
     };
 
     request.get(options, (error, response, body) =>{
-      console.log(error)
-
+      console.log(error);
+      console.log(body);
 
       this.setState({
         playlist: body,
         playlistName: body.name,
         playlistDescription: body.description,
-        //playlistTracks: body.items,// array of playlist track objects, each playlist track object has a track object
+        playlistTracks: body.items// array of playlist track objects, each playlist track object has a track object
 
       })
-      console.log("This is the playlist track  object"+ this.state.playlist);
+      console.log(this.state.playlistTracks);
     });
     console.log("This is the old access_token:"+this.state.access_token);
-    this.refresh();
+    //this.refresh();
 
 
   }
