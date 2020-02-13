@@ -18,7 +18,7 @@ class User extends Component{
       playlistTracks: null
     }
 
-    console.log("refresh_token:"+this.state.refresh_token);
+    console.log( this.props.url.query);
 
 }
 
@@ -39,27 +39,28 @@ class User extends Component{
       headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
       form: {
         grant_type: 'refresh_token',
-        refresh_token: this.refresh_token
+        refresh_token: this.state.refresh_token,
       },
       json: true
     };
 
-  request.post(authOptions, function(error, response, body) {
+  request.post(authOptions, (error, response, body) => {
     console.log(error);
     if (!error && response.statusCode === 200) {
-      var access_token = body.access_token;
+
       this.setState({
-        access_token: access_token
+        access_token: body.access_token
         });
       }
     });
+    console.log("This is the new access_token"+ this.state.access_token);
   }
 
   get100 = () =>{
-    if(this.state.access_token == undefined){
-      console.log("Is undefined");
-      this.refresh();
-    }
+    //if(this.state.access_token == undefined){
+    //  console.log("Is undefined");
+    //  this.refresh();
+    //}
     var options  = {
       url: 'https://api.spotify.com/v1/playlists/'+ top100,
       headers: { 'Authorization': 'Bearer ' + this.state.access_token },
@@ -78,8 +79,9 @@ class User extends Component{
 
       })
       console.log("This is the playlist track  object"+ this.state.playlist);
-
     });
+    console.log("This is the old access_token:"+this.state.access_token);
+    this.refresh();
 
 
   }
@@ -96,7 +98,9 @@ class User extends Component{
             <p>This is the array containing the tracks of the playlist {this.state.playlistTracks} </p>
             <p> top100 playlist name of tracks </p>
             <ul>{this.top100tracknames}</ul>
+
         </div>
+
 
 
     )
