@@ -4,7 +4,7 @@
 This webapp analyzes Spotify playlists and measures their compatability which can then be used to make friends and find people to go to concerts with.
 
 ### Additional Information  
-Description: Oftentimes, as young people, we find it difficult to share our music with our friends--people always seem more inclined to suggest than receive suggestions. As a result, it is hard to know who has the same music tastes as us and even harder to find people interested in going to the same concerts as us. With Spotifynd Friends, easily match with other users who like the same music! After connecting to your Spotify account, simply choose a playlist and our app will find other users who have the same tastes. Connect with  users to find friends, concert carpool buddies, and new music!
+Description: Oftentimes, as young people, we find it difficult to share our music with our friends--people always seem more inclined to suggest than receive suggestions. As a result, it is hard to know who has the same music tastes as us and even harder to find people interested in going to the same concerts as us. With Spotifynd Friends, you can easily match with other users who like the same music! After connecting to your Spotify account, simply choose a playlist and our app will find other users who have the same tastes. Connect with users to find friends, concert carpool buddies, and new music!
 
 Target Audience: Young adults who are Spotify users
 
