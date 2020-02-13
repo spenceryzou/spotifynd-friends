@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start -p $PORT",
     "heroku-postbuild": "npm run build",
-    "test": "mocha --require @babel/register"
+    "test": "mocha --require @babel/register ./test/mocha-webpack-compiler.js ./test/test.js "
   },
   "keywords": [],
   "author": "",
