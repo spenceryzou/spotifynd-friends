@@ -18,6 +18,6 @@ describe('<Spotify />', () => {
     it('button displays text \'Click to enter Spotifynd\' when user is logged in and access code is set', () => {
         const wrapper = mount(comp);
         wrapper.setState({access_token : "thisIsAFakeAccessToken"});
-        expect(wrapper.render().text()).to.contain('Click to enter Spotifynd');
+        expect(wrapper.render().text()).to.contain('Enter');
     })
 });
