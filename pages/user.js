@@ -120,7 +120,8 @@ class User extends Component{
         }
       });
       console.log("This is the new access_token"+ this.state.access_token);
-    }
+    } 
+    
 
 
     get100 = () =>{
