@@ -53,6 +53,7 @@ class Spotify extends Component {
             access_token: access_token,
             refresh_token: refresh_token
           });
+          console.log("this is the refresh_token from index:" + this.state.refresh_token);
 
           var options = {
             url: 'https://api.spotify.com/v1/me',
@@ -81,7 +82,8 @@ class Spotify extends Component {
 
   makeSpotifyProfileCall = (event) => {
     event.preventDefault()
-    const { access_token } = this.state
+    const { access_token } = this.state;
+
     if (access_token === '') {
       window.location = 'https://accounts.spotify.com/authorize?' +
         querystring.stringify({
@@ -92,15 +94,18 @@ class Spotify extends Component {
           state: this.generateRandomString(16)
         });
     } else {
+
       Router.push({
         pathname: '/user',
-        query: { access_token }
+        query: { access_token, refresh: this.state.refresh_token },
       })
+
     }
   }
 
   render() {
-    const { access_token } = this.state
+    const { access_token } = this.state;
+
     return (
 
       <div className="row justify-content-center mt-5">
