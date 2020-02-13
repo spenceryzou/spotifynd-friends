@@ -26,13 +26,10 @@ class User extends Component{
 
   componentDidMount(){
 
-    this.get100()
-
-
-  }
-  getTrackName= () => {
+    this.get100();
 
   }
+
   refresh = () => {
     var authOptions = {
       url: 'https://accounts.spotify.com/api/token',
@@ -75,21 +72,28 @@ class User extends Component{
         playlist: body,
         playlistName: body.name,
         playlistDescription: body.description,
-        playlistTracks: [...this.state.playlistTracks, ...[1,2,3]]
+        playlistTracks: body.tracks.items
       })
 
-
-      console.log(body.tracks.items);
-      //console.log(body.tracks.items[0].track.name)
     });
-    console.log("This is the old access_token:"+this.state.access_token);
-    //this.refresh();
+
+
 
 
   }
 
 
   render(){
+    if(typeof(this.state.playlistTracks) != 'undefined'){
+         if(this.state.playlistTracks != 0){
+             top100tracknames = this.state.playlistTracks.map((i) =>
+             <li>{i.track.name}</li>
+             )
+         }else{
+             top100tracknames= <p>No playlists to display</p>
+         }
+     }
+
 
     return (
 
@@ -98,7 +102,8 @@ class User extends Component{
             <p>This is the playlist name {this.state.playlistName}</p>
             <p>This is the description of said playlist {this.state.playlistDescription}</p>
             <p> top100 playlist name of tracks </p>
-            <ul>{this.state.playlistTracks}</ul>
+            <ul>{top100tracknames} </ul>
+
 
         </div>
 
