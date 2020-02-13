@@ -15,7 +15,7 @@ class User extends Component{
       playlist: null,
       playlistName: '',
       playlistDescription: '',
-      playlistTracks: null
+      playlistTracks: []
     }
 
     console.log( this.props.url.query);
@@ -75,10 +75,12 @@ class User extends Component{
         playlist: body,
         playlistName: body.name,
         playlistDescription: body.description,
-        playlistTracks: body.items// array of playlist track objects, each playlist track object has a track object
-
+        playlistTracks: [...this.state.playlistTracks, ...[1,2,3]]
       })
-      console.log(this.state.playlistTracks);
+
+
+      console.log(body.tracks.items);
+      //console.log(body.tracks.items[0].track.name)
     });
     console.log("This is the old access_token:"+this.state.access_token);
     //this.refresh();
@@ -95,9 +97,8 @@ class User extends Component{
             <p>This is where user information will be displayed.The access token is {this.state.access_token}</p>
             <p>This is the playlist name {this.state.playlistName}</p>
             <p>This is the description of said playlist {this.state.playlistDescription}</p>
-            <p>This is the array containing the tracks of the playlist {this.state.playlistTracks} </p>
             <p> top100 playlist name of tracks </p>
-            <ul>{this.top100tracknames}</ul>
+            <ul>{this.state.playlistTracks}</ul>
 
         </div>
 
