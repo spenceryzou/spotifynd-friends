@@ -16,31 +16,31 @@ var request = require('request')
 //taking in user input and setting to variables which will be inputted into database later on
 //when plalist is null, then user will need to change
 
-class Settings extends Component{
+class Settings extends Component {
   constructor(props) {
-      super(props);
-      this.state = {
-        access_token: this.props.url.query.access_token,
-        refresh_token: '',
-        playlists: [],
-        topPlaylist: null,
-        location: 'teststring',
-        image: ''
-      }
+    super(props);
+    this.state = {
+      access_token: this.props.url.query.access_token,
+      refresh_token: '',
+      playlists: [],
+      topPlaylist: null,
+      location: 'teststring',
+      image: ''
     }
+  }
   componentDidMount = () => {
     this.getUserPlaylists();
   }
 
   displayImage = () => {
-    playlistImage = (<img src={this.state.image}/>)
+    playlistImage = (<img src={this.state.image} />)
   }
 
   handlePlaylistChange = (event) => {
     let playlist = this.state.playlists.find(p => p.name === event.target.value)
     console.log("value: " + event.target.value)
     console.log("playlist: " + playlist.name)
-     //this.setState({topPlaylist: playlist})
+    //this.setState({topPlaylist: playlist})
     this.state.topPlaylist = playlist
     console.log(JSON.stringify(event.target.value))
     console.log("top: " + this.state.topPlaylist.name)
@@ -50,10 +50,10 @@ class Settings extends Component{
   }
   handleLocationChange = (event) => {
     this.state.location = event.target.value;
-    console.log("Location"+this.state.location)
+    console.log("Location" + this.state.location)
   }
 
-  setTopPlaylist = (data) =>{
+  setTopPlaylist = (data) => {
     console.log("in test")
     console.log("data" + data.name)
     // this.setState({topPlaylist: data})
@@ -72,101 +72,101 @@ class Settings extends Component{
 
     // use the access token to access the Spotify Web API
     request.get(options, (error, response, body) => {
-        console.log('Access token:' + access_token)
+      console.log('Access token:' + access_token)
+      console.log(body);
+      this.setState({ user: body.id })
+      console.log('user: ' + this.state.user)
+      var playlistOptions = {
+        url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
+        qs: { limit: '10' },
+        headers: { 'Authorization': 'Bearer ' + access_token },
+        json: true
+      };
+
+      console.log('user right before playlist: ' + this.state.user)
+
+      // use the access token to access the Spotify Web API
+      request.get(playlistOptions, (error, response, body) => {
         console.log(body);
-        this.setState({user: body.id})
-        console.log('user: ' + this.state.user)
-        var playlistOptions = {
-            url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
-            qs: {limit: '10'},
-            headers: { 'Authorization': 'Bearer ' + access_token },
-            json: true
-        };
-
-        console.log('user right before playlist: ' + this.state.user)
-
-        // use the access token to access the Spotify Web API
-        request.get(playlistOptions, (error, response, body) => {
-            console.log(body);
-            this.setState({playlists: body.items})
-            for(var i = 0; i < this.state.playlists.length; i++){
-                this.state.playlists[i].key = i.id
-                console.log(this.state.playlists[i].key)
-            }
-            console.log('this.state.playlists' + this.state.playlists)
-        });
+        this.setState({ playlists: body.items })
+        for (var i = 0; i < this.state.playlists.length; i++) {
+          this.state.playlists[i].key = i.id
+          console.log(this.state.playlists[i].key)
+        }
+        console.log('this.state.playlists' + this.state.playlists)
       });
+    });
   }
 
-  render(){
+  render() {
     let playlists = this.state.playlists;
 
-    let locations = ["Bay Area", "Orange Country", "Santa Barbara","Other"];
+    let locations = ["Bay Area", "Orange Country", "Santa Barbara", "Other"];
     let items2 = locations.map((i) =>
-    <option
-      value = {i}
-    >
-    {i}
-    </option>
+      <option
+        value={i}
+      >
+        {i}
+      </option>
 
     );
 
 
     let formItems = playlists.map((data) =>
-    <option
+      <option
         key={data.id}
         value={data.name}
-    >
+      >
         {data.name}
-    </option>
+      </option>
     );
 
     return (
       <div>
-      <Header />
-      <head>
-        <link
-        rel="stylesheet"
-        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-        crossorigin="anonymous"
+        <Header />
+        <head>
+          <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+            crossorigin="anonymous"
           />
-      </head>
+        </head>
 
-      <div className="row justify-content-center mt-5">
-        <h1>{this.state.user}</h1>
-      </div>
+        <div className="row justify-content-center mt-5">
+          <h1>{this.state.user}</h1>
+        </div>
 
-      <div className="row justify-content-center mt-4">
+        <div className="row justify-content-center mt-4">
 
-      <Form>
-        <Form.Group controlId="exampleForm.ControlSelect1">
-          <Form.Label>Location</Form.Label>
-          <Form.Control defaultValue={-1}
-          as="select"
-          onChange ={this.handleLocationChange}
-          >
-            <option disabled value={-1} key={-1}>Select a Location</option>
-            {items2}
-          </Form.Control>
-        </Form.Group>
+          <Form>
+            <Form.Group controlId="exampleForm.ControlSelect1">
+              <Form.Label>Location</Form.Label>
+              <Form.Control defaultValue={-1}
+                as="select"
+                onChange={this.handleLocationChange}
+              >
+                <option disabled value={-1} key={-1}>Select a Location</option>
+                {items2}
+              </Form.Control>
+            </Form.Group>
 
-        <Form.Group controlId="exampleForm.ControlSelect1">
-          <Form.Label>Select Playlist</Form.Label>
-          <Form.Control defaultValue={-1}
-          as="select"
-          onChange ={this.handlePlaylistChange}
-          placeholder="select a playlist">
-            <option disabled value={-1} key={-1}>Select a Playlist</option>
-            {formItems}
-          </Form.Control>
-        </Form.Group>
-      </Form>
-      </div>
+            <Form.Group controlId="exampleForm.ControlSelect1">
+              <Form.Label>Select Playlist</Form.Label>
+              <Form.Control defaultValue={-1}
+                as="select"
+                onChange={this.handlePlaylistChange}
+                placeholder="select a playlist">
+                <option disabled value={-1} key={-1}>Select a Playlist</option>
+                {formItems}
+              </Form.Control>
+            </Form.Group>
+          </Form>
+        </div>
 
-      <div className="row justify-content-center mt-5">
-        <img src={this.state.image} />
-      </div>
+        <div className="row justify-content-center mt-5">
+          <img src={this.state.image} />
+        </div>
       </div>
 
     )

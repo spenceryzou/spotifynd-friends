@@ -3,7 +3,7 @@ import Router from 'next/router'
 import User from '../pages/user'
 import styles from '../pages/index.module.css'
 
-
+var firebase = require('firebase/app');
 var querystring = require('querystring');
 var request = require('request')
 var client_id = '2923d79235804ea58633989710346f3d';
@@ -19,6 +19,18 @@ class Spotify extends Component {
       access_token: '',
       refresh_token: ''
     }
+    let firebaseConfig = {
+      apiKey: "AIzaSyCBmjWVAetSGAQ2E7uE0oh5_lG--ogkWbc",
+      authDomain: "spotifynd-friends.firebaseapp.com",
+      databaseURL: "https://spotifynd-friends.firebaseio.com",
+      projectId: "spotifynd-friends",
+      storageBucket: "spotifynd-friends.appspot.com",
+      messagingSenderId: "775203379545",
+      appId: "1:775203379545:web:2e74554d15a4b1c3675448",
+      measurementId: "G-QL50LT5KSH"
+    };
+    firebase.initializeApp(firebaseConfig);
+    console.log(firebase);
   }
 
 
