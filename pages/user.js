@@ -3,6 +3,11 @@ import Router from 'next/router'
 import { css } from "@emotion/core"
 import ScaleLoader from "react-spinners/ScaleLoader"
 
+var auth =require('firebase/auth');
+var database = require('firebase/database');
+
+
+var firebase = require('firebase/app');
 var querystring = require('querystring');
 var request = require('request')
 var axios = require("axios");
@@ -51,12 +56,49 @@ class User extends Component{
           status: '',
           loading: false
         }
+        let firebaseConfig = {
+            apiKey: "AIzaSyALCCNzdyD4Apeqk3N-yl8tS4XY4VAes2o",
+            authDomain: "spotifynder-5789e.firebaseapp.com",
+            databaseURL: "https://spotifynder-5789e.firebaseio.com",
+            projectId: "spotifynder-5789e",
+            storageBucket: "spotifynder-5789e.appspot.com",
+            messagingSenderId: "638228066900",
+            appId: "1:638228066900:web:bdefeb93c221a1280d33c1",
+            measurementId: "G-D2B3QV491R"
+          };
+          if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig)
+        }
+        console.log(firebase)
+
+        
     }
+
+     
+  writeUserData = (spotifyid) => {
+    var database = firebase.database();
+    firebase.database().ref('users/' + spotifyid).set({
+      spotify_id: spotifyid
+      
+
+    }, function(error) {
+        if (error) {
+          // The write failed...
+        } else {
+          // Data saved successfully!
+        }
+    }
+    
+    ); 
+
+    
+  }
 
     componentDidMount = () => {
         this.getUserPlaylists();
         this.get100();
     }
+
 
     getUserPlaylists = () => {
         let url = window.location.href;
@@ -79,6 +121,7 @@ class User extends Component{
                 console.log('Access token:' + access_token)
                 console.log(body);
                 this.setState({user: body.id})
+                this.writeUserData(body.id)
                 console.log('user: ' + this.state.user)
                 var playlistOptions = {
                     url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
