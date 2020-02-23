@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { FormGroup, ControlLabel, FormControl } from "react-bootstrap";
 import Image from 'react-bootstrap/Image'
+import Header from '../components/Header'
 
 
 var querystring = require('querystring');
@@ -24,12 +25,17 @@ class Settings extends Component{
         playlists: [],
         topPlaylist: null,
         location: 'teststring',
-        image:''
+        image: ''
       }
     }
   componentDidMount = () => {
     this.getUserPlaylists();
   }
+
+  displayImage = () => {
+    playlistImage = (<img src={this.state.image}/>)
+  }
+
   handlePlaylistChange = (event) => {
     let playlist = this.state.playlists.find(p => p.name === event.target.value)
     console.log("value: " + event.target.value)
@@ -38,8 +44,9 @@ class Settings extends Component{
     this.state.topPlaylist = playlist
     console.log(JSON.stringify(event.target.value))
     console.log("top: " + this.state.topPlaylist.name)
-    this.state.image = playlist.images[0].url
+    this.state.image = playlist.images[1].url
     console.log(this.state.image)
+    this.forceUpdate();
   }
   handleLocationChange = (event) => {
     this.state.location = event.target.value;
@@ -116,6 +123,7 @@ class Settings extends Component{
 
     return (
       <div>
+      <Header />
       <head>
         <link
         rel="stylesheet"
@@ -124,6 +132,10 @@ class Settings extends Component{
         crossorigin="anonymous"
           />
       </head>
+
+      <div className="row justify-content-center mt-5">
+        <h1>{this.state.user}</h1>
+      </div>
 
       <div className="row justify-content-center mt-4">
 
@@ -148,13 +160,12 @@ class Settings extends Component{
           </Form.Control>
         </Form.Group>
       </Form>
-
-      <img url= {this.state.image} />
       </div>
 
-
+      <div className="row justify-content-center mt-5">
+        <img src={this.state.image} />
       </div>
-
+      </div>
 
     )
   }
