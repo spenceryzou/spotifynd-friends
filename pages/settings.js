@@ -16,51 +16,103 @@ class Settings extends Component{
       this.state = {
         access_token: this.props.url.query.access_token,
         refresh_token: '',
-
+        playlists: [],
+        topPlaylist: null,
+        location: 'teststring'
       }
     }
-    componentDidMount = () => {
+  componentDidMount = () => {
+    this.getUserPlaylists();
+  }
 
-    }
+  testMethod = (data) =>{
+    console.log("in test")
+    console.log("data" + data.name)
+    // this.setState({topPlaylist: data})
+    // this.setState({location: data.id})
+    this.state.topPlaylist = data
+    console.log(this.state.topPlaylist)
+  }
 
-    render(){
+  getUserPlaylists = () => {
+    let access_token = this.state.access_token
+    var options = {
+      url: 'https://api.spotify.com/v1/me',
+      headers: { 'Authorization': 'Bearer ' + access_token },
+      json: true
+    };
 
-      return (
-        <div>
-        <head>
-          <link
-          rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-          crossorigin="anonymous"
-            />
-        </head>
-        <div className="row justify-content-center mt-5">
+    // use the access token to access the Spotify Web API
+    request.get(options, (error, response, body) => {
+        console.log('Access token:' + access_token)
+        console.log(body);
+        this.setState({user: body.id})
+        console.log('user: ' + this.state.user)
+        var playlistOptions = {
+            url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
+            qs: {limit: '10'},
+            headers: { 'Authorization': 'Bearer ' + access_token },
+            json: true
+        };
 
-        <DropdownButton id="dropdown-basic-button" title="Dropdown button">
-          <Dropdown.Item eventKey="1">Action</Dropdown.Item>
-          <Dropdown.Item eventKey="2">Another action</Dropdown.Item>
-          <Dropdown.Item eventKey="3" active>
-            Active Item
-          </Dropdown.Item>
-          <Dropdown.Divider />
-          <Dropdown.Item eventKey="4">Other</Dropdown.Item>
-        </DropdownButton>
+        console.log('user right before playlist: ' + this.state.user)
 
-        </div>
+        // use the access token to access the Spotify Web API
+        request.get(playlistOptions, (error, response, body) => {
+            console.log(body);
+            this.setState({playlists: body.items})
+            for(var i = 0; i < this.state.playlists.length; i++){
+                this.state.playlists[i].key = i.id
+                console.log(this.state.playlists[i].key)
+            }
+            console.log('this.state.playlists' + this.state.playlists)
+        });
+      });
+  }
+
+  render(){
+    let playlists = this.state.playlists;
+    let items = playlists.map((data) =>
+    <Dropdown.Item 
+        key={data.id}
+        value={data.id}
+        onClick={() => this.testMethod(data)}
+    >
+        {data.name}
+    </Dropdown.Item>
+    );
+
+    return (
+      <div>
+      <head>
+        <link
+        rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous"
+          />
+      </head>
+      <div className="row justify-content-center mt-5">
+
+      <DropdownButton id="dropdown-basic-button" title="Dropdown button">
+        {/* <Dropdown.Item eventKey="1" onClick={() => this.testMethod()}>Action</Dropdown.Item>
+        <Dropdown.Item eventKey="2">Another action</Dropdown.Item>
+        <Dropdown.Item eventKey="3" active>
+          Active Item
+        </Dropdown.Item>
+        <Dropdown.Divider />
+        <Dropdown.Item eventKey="4">Other</Dropdown.Item> */}
+        {items}
+      </DropdownButton>
+
+      </div>
 
 
-        </div>
+      </div>
 
 
-      )
-
-
-
-
-
-
-    }
+    )
+  }
 
 
 
