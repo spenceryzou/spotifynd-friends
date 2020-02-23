@@ -28,14 +28,18 @@ class Settings extends Component{
   componentDidMount = () => {
     this.getUserPlaylists();
   }
-  handleChange = (event) => {
+  handlePlaylistChange = (event) => {
     let playlist = this.state.playlists.find(p => p.name === event.target.value)
     console.log("value: " + event.target.value)
     console.log("playlist: " + playlist.name)
-    // this.setState({topPlaylist: playlist})
+     //this.setState({topPlaylist: playlist})
     this.state.topPlaylist = playlist
     console.log(JSON.stringify(event.target.value))
     console.log("top: " + this.state.topPlaylist.name)
+  }
+  handleLocationChange = (event) => {
+    this.state.location = event.target.value;
+    console.log("Location"+this.state.location)
   }
 
   setTopPlaylist = (data) =>{
@@ -85,25 +89,17 @@ class Settings extends Component{
 
   render(){
     let playlists = this.state.playlists;
-    let items = playlists.map((data) =>
-    <Dropdown.Item
-        key={data.id}
-        value={data.id}
-        onClick={() => this.setTopPlaylist(data)}
-    >
-        {data.name}
-    </Dropdown.Item>
-    );
+
     let locations = ["Bay Area", "Orange Country", "Santa Barbara","Other"];
     let items2 = locations.map((i) =>
-    <Dropdown.Item
-      onClick={() => this.setState({location:i})}
+    <option
+      value = {i}
     >
     {i}
-    </Dropdown.Item>
+    </option>
 
     );
-    console.log(this.state.location);
+
 
     let formItems = playlists.map((data) =>
     <option
@@ -124,42 +120,33 @@ class Settings extends Component{
         crossorigin="anonymous"
           />
       </head>
-      <div className="row justify-content-center mt-5">
 
-      <DropdownButton id="dropdown-basic-button" title="Dropdown button">
-        {/* <Dropdown.Item eventKey="1" onClick={() => this.testMethod()}>Action</Dropdown.Item>
-        <Dropdown.Item eventKey="2">Another action</Dropdown.Item>
-        <Dropdown.Item eventKey="3" active>
-          Active Item
-        </Dropdown.Item>
-        <Dropdown.Divider />
-        <Dropdown.Item eventKey="4">Other</Dropdown.Item> */}
-        {items}
-      </DropdownButton>
-
-      </div>
       <div className="row justify-content-center mt-4">
-      <DropdownButton id ="dropdown-basic-button" title = "Location">
 
-      {items2}
-      </DropdownButton>
-
-      </div>
       <Form>
         <Form.Group controlId="exampleForm.ControlSelect1">
-          <Form.Label>Example select</Form.Label>
+          <Form.Label>Location</Form.Label>
           <Form.Control
           as="select"
-          onChange ={this.handleChange}
+          onChange ={this.handleLocationChange}
+          >
+            {items2}
+          </Form.Control>
+        </Form.Group>
+
+        <Form.Group controlId="exampleForm.ControlSelect1">
+          <Form.Label>Select Playlist</Form.Label>
+          <Form.Control
+          as="select"
+          onChange ={this.handlePlaylistChange}
           >
             {formItems}
           </Form.Control>
         </Form.Group>
-
-        <Button variant="primary" type="submit">
-          Submit
-        </Button>
       </Form>
+      
+      </div>
+
 
       </div>
 
