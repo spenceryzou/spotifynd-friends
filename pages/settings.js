@@ -5,6 +5,7 @@ import DropdownButton from 'react-bootstrap/DropdownButton'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { FormGroup, ControlLabel, FormControl } from "react-bootstrap";
+import Image from 'react-bootstrap/Image'
 
 
 var querystring = require('querystring');
@@ -22,7 +23,8 @@ class Settings extends Component{
         refresh_token: '',
         playlists: [],
         topPlaylist: null,
-        location: 'teststring'
+        location: 'teststring',
+        image:''
       }
     }
   componentDidMount = () => {
@@ -36,6 +38,8 @@ class Settings extends Component{
     this.state.topPlaylist = playlist
     console.log(JSON.stringify(event.target.value))
     console.log("top: " + this.state.topPlaylist.name)
+    this.state.image = playlist.images[0].url
+    console.log(this.state.image)
   }
   handleLocationChange = (event) => {
     this.state.location = event.target.value;
@@ -144,7 +148,8 @@ class Settings extends Component{
           </Form.Control>
         </Form.Group>
       </Form>
-      
+
+      <img url= {this.state.image} />
       </div>
 
 
