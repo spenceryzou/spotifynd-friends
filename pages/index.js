@@ -3,6 +3,7 @@ import Router from 'next/router'
 import User from '../pages/user'
 import styles from '../pages/index.module.css'
 
+
 var querystring = require('querystring');
 var request = require('request')
 var client_id = '2923d79235804ea58633989710346f3d';
