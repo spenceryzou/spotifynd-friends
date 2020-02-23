@@ -25,7 +25,7 @@ class Settings extends Component{
     this.getUserPlaylists();
   }
 
-  testMethod = (data) =>{
+  setTopPlaylist = (data) =>{
     console.log("in test")
     console.log("data" + data.name)
     // this.setState({topPlaylist: data})
@@ -73,14 +73,24 @@ class Settings extends Component{
   render(){
     let playlists = this.state.playlists;
     let items = playlists.map((data) =>
-    <Dropdown.Item 
+    <Dropdown.Item
         key={data.id}
         value={data.id}
-        onClick={() => this.testMethod(data)}
+        onClick={() => this.setTopPlaylist(data)}
     >
         {data.name}
     </Dropdown.Item>
     );
+    let locations = ["Bay Area", "Orange Country", "Santa Barbara","Other"];
+    let items2 = locations.map((i) =>
+    <Dropdown.Item
+      onClick={() => this.setState({location:i})}
+    >
+    {i}
+    </Dropdown.Item>
+
+    );
+    console.log(this.state.location);
 
     return (
       <div>
@@ -106,7 +116,12 @@ class Settings extends Component{
       </DropdownButton>
 
       </div>
+      <div className="row justify-content-center mt-4">
+      <DropdownButton id ="dropdown-basic-button" title = "Location">
 
+      {items2}
+      </DropdownButton>
+      </div>
 
       </div>
 
