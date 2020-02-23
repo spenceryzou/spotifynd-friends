@@ -4,6 +4,8 @@ import Dropdown from 'react-bootstrap/Dropdown'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import { FormGroup, ControlLabel, FormControl } from "react-bootstrap";
+
 
 var querystring = require('querystring');
 
@@ -25,6 +27,15 @@ class Settings extends Component{
     }
   componentDidMount = () => {
     this.getUserPlaylists();
+  }
+  handleChange = (event) => {
+    let playlist = this.state.playlists.find(p => p.name === event.target.value)
+    console.log("value: " + event.target.value)
+    console.log("playlist: " + playlist.name)
+    // this.setState({topPlaylist: playlist})
+    this.state.topPlaylist = playlist
+    console.log(JSON.stringify(event.target.value))
+    console.log("top: " + this.state.topPlaylist.name)
   }
 
   setTopPlaylist = (data) =>{
@@ -97,8 +108,7 @@ class Settings extends Component{
     let formItems = playlists.map((data) =>
     <option
         key={data.id}
-        value={data.id}
-        onClick={() => this.setTopPlaylist(data)}
+        value={data.name}
     >
         {data.name}
     </option>
@@ -133,12 +143,15 @@ class Settings extends Component{
 
       {items2}
       </DropdownButton>
-      
+
       </div>
       <Form>
         <Form.Group controlId="exampleForm.ControlSelect1">
           <Form.Label>Example select</Form.Label>
-          <Form.Control as="select">
+          <Form.Control
+          as="select"
+          onChange ={this.handleChange}
+          >
             {formItems}
           </Form.Control>
         </Form.Group>
