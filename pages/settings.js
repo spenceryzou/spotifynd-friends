@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import Dropdown from 'react-bootstrap/Dropdown'
 import DropdownButton from 'react-bootstrap/DropdownButton'
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
 
 var querystring = require('querystring');
 
@@ -92,6 +94,16 @@ class Settings extends Component{
     );
     console.log(this.state.location);
 
+    let formItems = playlists.map((data) =>
+    <option
+        key={data.id}
+        value={data.id}
+        onClick={() => this.setTopPlaylist(data)}
+    >
+        {data.name}
+    </option>
+    );
+
     return (
       <div>
       <head>
@@ -121,7 +133,20 @@ class Settings extends Component{
 
       {items2}
       </DropdownButton>
+      
       </div>
+      <Form>
+        <Form.Group controlId="exampleForm.ControlSelect1">
+          <Form.Label>Example select</Form.Label>
+          <Form.Control as="select">
+            {formItems}
+          </Form.Control>
+        </Form.Group>
+
+        <Button variant="primary" type="submit">
+          Submit
+        </Button>
+      </Form>
 
       </div>
 
