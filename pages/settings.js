@@ -44,7 +44,7 @@ class Settings extends Component{
     this.state.topPlaylist = playlist
     console.log(JSON.stringify(event.target.value))
     console.log("top: " + this.state.topPlaylist.name)
-    this.state.image = playlist.images[1].url
+    this.state.image = playlist.images[0].url
     console.log(this.state.image)
     this.forceUpdate();
   }
@@ -142,20 +142,22 @@ class Settings extends Component{
       <Form>
         <Form.Group controlId="exampleForm.ControlSelect1">
           <Form.Label>Location</Form.Label>
-          <Form.Control
+          <Form.Control value={-1}
           as="select"
           onChange ={this.handleLocationChange}
           >
+            <option disabled value={-1} key={-1}>Select a Location</option>
             {items2}
           </Form.Control>
         </Form.Group>
 
         <Form.Group controlId="exampleForm.ControlSelect1">
           <Form.Label>Select Playlist</Form.Label>
-          <Form.Control
+          <Form.Control value={-1}
           as="select"
           onChange ={this.handlePlaylistChange}
-          >
+          placeholder="select a playlist">
+            <option disabled value={-1} key={-1}>Select a Playlist</option>
             {formItems}
           </Form.Control>
         </Form.Group>
