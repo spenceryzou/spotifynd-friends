@@ -142,7 +142,7 @@ class Settings extends Component{
       <Form>
         <Form.Group controlId="exampleForm.ControlSelect1">
           <Form.Label>Location</Form.Label>
-          <Form.Control value={-1}
+          <Form.Control defaultValue={-1}
           as="select"
           onChange ={this.handleLocationChange}
           >
@@ -153,7 +153,7 @@ class Settings extends Component{
 
         <Form.Group controlId="exampleForm.ControlSelect1">
           <Form.Label>Select Playlist</Form.Label>
-          <Form.Control value={-1}
+          <Form.Control defaultValue={-1}
           as="select"
           onChange ={this.handlePlaylistChange}
           placeholder="select a playlist">
