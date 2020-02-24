@@ -9,6 +9,12 @@ import Image from 'react-bootstrap/Image'
 import Header from '../components/Header'
 
 
+var auth = require('firebase/auth');
+var database = require('firebase/database');
+var firebase = require('firebase/app');
+//var admin = require("firebase-admin");
+
+
 var querystring = require('querystring');
 
 var request = require('request')
@@ -27,12 +33,106 @@ class Settings extends Component {
       location: 'teststring',
       image: ''
     }
-  }
-  componentDidMount = () => {
-    this.getUserPlaylists();
+
+    let firebaseConfig = {
+      apiKey: "AIzaSyALCCNzdyD4Apeqk3N-yl8tS4XY4VAes2o",
+      authDomain: "spotifynder-5789e.firebaseapp.com",
+      databaseURL: "https://spotifynder-5789e.firebaseio.com",
+      projectId: "spotifynder-5789e",
+      storageBucket: "spotifynder-5789e.appspot.com",
+      messagingSenderId: "638228066900",
+      appId: "1:638228066900:web:bdefeb93c221a1280d33c1",
+      measurementId: "G-D2B3QV491R"
+    };
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig)
+    }
+    console.log(firebase)
   }
 
+
+
+  componentDidMount = () => {
+
+    //var userRef = firebase.database().ref("users/" + this.state.user + '/spotify_id')
+
+    this.getUserPlaylists();
+
+    // var aDatabase = firebase.database();
+    // var mDatabase = aDatabase.ref();
+
+    // var myRef =  mDatabase.child('gubybean').child('location');
+    // console.log(myRef)
+
+    // userRef.on("value", snapshot => {
+    //   const userid = snapshot.val();
+    //   console.log(userid);
+    //   this.setState(() => ({ location: userid }));
+    // });
+
+
+
+
+
+    //console.log(userid)
+    //  this.state.location = locationVal
+
+
+
+
+  }
+
+
+  writeUserLocation = (userid, userlocation) => {
+    var database = firebase.database();
+
+
+    firebase.database().ref('users/' + this.state.user).set({
+      spotify_id: this.state.user,
+      location: userlocation,
+      topPlaylist: ''
+
+
+    }, function (error) {
+      if (error) {
+        // The write failed...
+      } else {
+        // Data saved successfully!
+      }
+    }
+
+    );
+
+
+  }
+
+
+
+
+
+  writeUserTopPlaylist = (userid, top_playlist) => {
+    var database = firebase.database();
+    firebase.database().ref('users/' + userid).set({
+      spotify_id: this.state.user,
+      location: this.state.location,
+      topPlaylist: top_playlist
+
+
+    }, function (error) {
+      if (error) {
+        // The write failed...
+      } else {
+        // Data saved successfully!
+      }
+    }
+
+    );
+  }
+
+
+
   displayImage = () => {
+
     playlistImage = (<img src={this.state.image} />)
   }
 
@@ -40,7 +140,6 @@ class Settings extends Component {
     let playlist = this.state.playlists.find(p => p.name === event.target.value)
     console.log("value: " + event.target.value)
     console.log("playlist: " + playlist.name)
-    //this.setState({topPlaylist: playlist})
     this.state.topPlaylist = playlist
     console.log(JSON.stringify(event.target.value))
     console.log("top: " + this.state.topPlaylist.name)
@@ -48,6 +147,7 @@ class Settings extends Component {
     console.log(this.state.image)
     this.forceUpdate();
   }
+
   handleLocationChange = (event) => {
     this.state.location = event.target.value;
     console.log("Location" + this.state.location)
@@ -76,6 +176,39 @@ class Settings extends Component {
       console.log(body);
       this.setState({ user: body.id })
       console.log('user: ' + this.state.user)
+
+      var dbRef = firebase.database().ref('users')
+      console.log(this.state.user)
+
+      var user_id = this.state.user
+
+      dbRef.child(user_id).once("value", snapshot => {
+        if (snapshot.exists()) {
+          const userLocation = snapshot.val().location;
+          const userTopPlaylist = snapshot.val().playlist;
+          console.log("exists!", userLocation);
+          if (userLocation != null) {
+            this.state.location = userLocation
+            console.log(this.state.location)
+          }
+          if (userTopPlaylist != null) {
+            this.state.topPlaylist = userTopPlaylist
+          }
+
+
+        }
+      });
+
+      // var locationVal
+
+      // firebase.database().ref('/users/' + this.state.user).once('value').then(function(snapshot)  {
+      //    locationVal = ( snapshot.val().location) 
+      //    console.log(locationVal)
+      //  }
+      //  );
+      //  console.log(locationVal)
+      //  this.state.location = locationVal
+
       var playlistOptions = {
         url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
         qs: { limit: '10' },
