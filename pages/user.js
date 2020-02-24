@@ -484,6 +484,14 @@ class User extends Component{
        }
     };
 
+    goToSettings = () => {
+        let access_token = this.state.access_token;
+        Router.push({
+            pathname: '/settings',
+            query: { access_token } 
+        })
+    }
+
     render(){
         let playlists;
         if(typeof(this.state.playlists) != 'undefined'){
@@ -517,6 +525,9 @@ class User extends Component{
 
         return (
             <div>
+                <button onClick={() => this.goToSettings()}>
+                    Settings
+                </button>
                 <p>This is where user information will be displayed.</p>
                 <p>Access Token: {this.state.access_token}</p>
                 <p>User ID: {this.state.user}</p>
