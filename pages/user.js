@@ -426,14 +426,15 @@ class User extends Component{
                 differenceScore += 50;
                 if(this.state.artistID[i] == this.state.top100artistID[j])
                     differenceScore -= 10
-                if(!Array.isArray(this.state.genres[i]) || !this.state.genres[i].length){
+                if(!(this.state.genres[i].length === 0)){
                     for(let k = 0; k < this.state.genres[i].length; k++){
                         let found = false;
-                        if(!Array.isArray(this.state.top100genres[i]) || !this.state.top100genres[i].length){
-                            for(let l = 0; l < this.state.top100genres[i].length; l++){
-                                if(this.state.genres[i][k] == this.state.top100genres[i][l]){
+                        if(!(this.state.top100genres[j].length === 0)){
+                            for(let l = 0; l < this.state.top100genres[j].length; l++){
+                                if(this.state.genres[i][k] == this.state.top100genres[j][l]){
                                     differenceScore -= 40;
                                     found = true;
+                                    console.log("same genre")
                                     break;
                                 }
                             }
