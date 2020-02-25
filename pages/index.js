@@ -3,7 +3,7 @@ import Router from 'next/router'
 import User from '../pages/user'
 import styles from '../pages/index.module.css'
 
-
+//var firebase = require('firebase/app');
 var querystring = require('querystring');
 var request = require('request')
 var client_id = '2923d79235804ea58633989710346f3d';
@@ -19,8 +19,12 @@ class Spotify extends Component {
       access_token: '',
       refresh_token: ''
     }
+
   }
 
+
+ 
+  
 
   componentDidMount = () => {
     let url = window.location.href;
@@ -91,6 +95,7 @@ class Spotify extends Component {
           scope: scope,
           redirect_uri: redirect_uri,
           state: this.generateRandomString(16)
+          
         });
     } else {
       Router.push({
