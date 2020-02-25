@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
+import { css } from "@emotion/core"
+import ScaleLoader from "react-spinners/ScaleLoader"
 
 var querystring = require('querystring');
 var request = require('request')
@@ -10,6 +12,11 @@ var redirect_uri = 'https://spotifynd-friends.herokuapp.com/';
 var scope = 'user-read-private user-read-email playlist-read-private';
 var top100 = '37i9dQZF1DXcBWIGoYBM5M';
 
+const override = css`
+  display: block;
+  margin: 0 auto;
+  border-color: red;
+`;
 
 class User extends Component{
     constructor(props) {
@@ -40,7 +47,9 @@ class User extends Component{
           max: -1,
           mostCompatibleIndex: -1,
           attribute: '',
-          attributeScore: -1
+          attributeScore: -1,
+          status: '',
+          loading: false
         }
     }
 
@@ -156,7 +165,9 @@ class User extends Component{
             top100artist: [],
             max: -1,
             mostCompatibleIndex: -1,
-            compatibility: 'generating'})
+            compatibility: 'generating',
+            status: '',
+            loading: true})
         //create arrays with selected playlist attributes
         for(let i = 0; i < this.state.playlisttracknames.length; i++){
             var id = this.state.playlisttracknames[i].props.children;
@@ -185,7 +196,8 @@ class User extends Component{
                     if(body.data.artists != 0){
                         this.setState({ artistID: [...this.state.artistID, body.data.artists[0].id],
                                         artist: [...this.state.artist, body.data.artists[0].name],
-                                        name: [...this.state.name, body.data.name]}) 
+                                        name: [...this.state.name, body.data.name],
+                                        status: "Analyzing Playlist 1: " + body.data.name}) 
                         console.log(this.state.artistID);
                         /*request.get(artistOptions, (error, response, body) => {
                             this.state.genres = body.name;
@@ -253,7 +265,8 @@ class User extends Component{
                         if(body.data.artists != 0){
                             this.setState({ top100artistID: [...this.state.top100artistID, body.data.artists[0].id],
                                             top100artist: [...this.state.top100artist, body.data.artists[0].name],
-                                            top100name: [...this.state.top100name, body.data.name]}) 
+                                            top100name: [...this.state.top100name, body.data.name],
+                                            status: "Analyzing Playlist 2: " + body.data.name}) 
                             console.log(this.state.top100artistID);
                             /*request.get(artistOptions, (error, response, body) => {
                                 this.state.genres = body.name;
@@ -298,6 +311,97 @@ class User extends Component{
                     c++;
                 }*/
         }
+        // var totalDifferenceScore = 0;
+        // var danceabilityScore = 0, energyScore=0, speachinessScore=0, acousticnessScore=0, instrumentalnessScore=0, livenessScore=0, valenceScore = 0;
+        // for(let i = 0; i < this.state.playlisttracknames.length; i++){
+        //     console.log('calculating')
+        //     var songDifferenceScore = 0;
+        //     for(let j = 0; j < this.state.top100tracknames.length; j++){
+        //         var differenceScore = 0;
+        //         danceabilityScore += Math.abs(this.state.trackFeatures[i].danceability - this.state.top100trackFeatures[j].danceability)*10
+        //         energyScore += Math.abs(this.state.trackFeatures[i].energy - this.state.top100trackFeatures[j].energy)*10
+        //         //speachinessScore += Math.abs(this.state.trackFeatures[i].speachiness - this.state.top100trackFeatures[j].speachiness)*10
+        //         acousticnessScore += Math.abs(this.state.trackFeatures[i].acousticness - this.state.top100trackFeatures[j].acousticness)*10
+        //         instrumentalnessScore += Math.abs(this.state.trackFeatures[i].instrumentalness - this.state.top100trackFeatures[j].instrumentalness)*10
+        //         livenessScore += Math.abs(this.state.trackFeatures[i].liveness - this.state.top100trackFeatures[j].liveness)*10
+        //         valenceScore += Math.abs(this.state.trackFeatures[i].valence - this.state.top100trackFeatures[j].valence)*10
+        //         differenceScore += Math.abs(this.state.trackFeatures[i].danceability - this.state.top100trackFeatures[j].danceability)*10
+        //         differenceScore += Math.abs(this.state.trackFeatures[i].energy - this.state.top100trackFeatures[j].energy)*10
+        //         //differenceScore += Math.abs(this.state.trackFeatures[i].speachiness - this.state.top100trackFeatures[j].speachiness)*10
+        //         differenceScore += Math.abs(this.state.trackFeatures[i].acousticness - this.state.top100trackFeatures[j].acousticness)*10
+        //         differenceScore += Math.abs(this.state.trackFeatures[i].instrumentalness - this.state.top100trackFeatures[j].instrumentalness)*10
+        //         differenceScore += Math.abs(this.state.trackFeatures[i].liveness - this.state.top100trackFeatures[j].liveness)*10
+        //         differenceScore += Math.abs(this.state.trackFeatures[i].valence - this.state.top100trackFeatures[j].valence)*10
+        //         if(this.state.artistID[i] == this.state.top100artistID[j])
+        //             differenceScore += 10
+        //         for(let k = 0; k < this.state.genres[i].length; k++){
+        //             let found = false;
+        //             for(let l = 0; l < this.state.top100genres[i].length; l++){
+        //                 if(this.state.genres[i][k] == this.state.top100genres[i][l]){
+        //                     differenceScore += 30
+        //                     found = true;
+        //                     break;
+        //                 }
+        //             }
+        //             if(found == true)
+        //                 break;
+        //         }
+        //         songDifferenceScore += differenceScore;
+        //         //console.log(songDifferenceScore) 
+        //     }
+        //     songDifferenceScore /= this.state.top100trackFeatures.length;              
+        //     if(songDifferenceScore > this.state.max){
+        //         this.state.max = songDifferenceScore
+        //         this.state.mostCompatibleIndex = i
+        //     }
+        //     totalDifferenceScore += songDifferenceScore;
+        // }
+        // if(Math.min(danceabilityScore,energyScore,acousticnessScore,instrumentalnessScore,livenessScore,valenceScore)==danceabilityScore){
+        //     danceabilityScore = 100 - (danceabilityScore*100)/(this.state.playlisttracknames.length*this.state.top100tracknames.length)
+        //     //console.log(`These playlists are `+ danceabilityScore + `% compatible by danceability.`)
+        //     this.state.attribute = "danceability"
+        //     this.state.attributeScore = Math.trunc(danceabilityScore)
+        // }else if(Math.min(danceabilityScore,energyScore,acousticnessScore,instrumentalnessScore,livenessScore,valenceScore)==energyScore){
+        //     energyScore = 100 - (energyScore*100)/(this.state.playlisttracknames.length*this.state.top100tracknames.length)
+        //     this.state.attribute = "energy"
+        //     this.state.attributeScore = Math.trunc(energyScore)
+        //     //console.log(`These playlists are `+ energyScore + `% compatible by energy.`)
+        // }//else if(Math.min(danceabilityScore,energyScore,speachinessScore,acousticnessScore,instrumentalnessScore,livenessScore,valenceScore)==speachinessScore){
+        //    // speachinessScore = 100 - (speachinessScore*100)/(this.state.playlisttracknames.length*this.state.top100tracknames.length)
+        //    // console.log(`These playlists are `+ speachinessScore + `% compatible by danceability.`)
+        // else if(Math.min(danceabilityScore,energyScore,acousticnessScore,instrumentalnessScore,livenessScore,valenceScore)==acousticnessScore){
+        //     acousticnessScore = 100 - (acousticnessScore*100)/(this.state.playlisttracknames.length*this.state.top100tracknames.length)
+        //     //console.log(`These playlists are `+ acousticnessScore + `% compatible by danceability.`)
+        //     this.state.attribute = "acousticness"
+        //     this.state.attributeScore = Math.trunc(acousticnessScore)
+        // }else if(Math.min(danceabilityScore,energyScore,acousticnessScore,instrumentalnessScore,livenessScore,valenceScore)==instrumentalnessScore){
+        //     instrumentalnessScore = 100 - (instrumentalnessScore*100)/(this.state.playlisttracknames.length*this.state.top100tracknames.length)
+        //     //console.log(`These playlists are `+ instrumentalnessScore + `% compatible by danceability.`)
+        //     this.state.attribute = "instrumentalness"
+        //     this.state.attributeScore = Math.trunc(instrumentalnessScore)
+        // }else if(Math.min(danceabilityScore,energyScore,acousticnessScore,instrumentalnessScore,livenessScore,valenceScore)==livenessScore){
+        //     livenessScore = 100 - (livenessScore*100)/(this.state.playlisttracknames.length*this.state.top100tracknames.length)
+        //     this.state.attribute = "liveness"
+        //     this.state.attributeScore = Math.trunc(livenessScore)
+        //     //console.log(`These playlists are `+ livenessScore + `% compatible by danceability.`)
+        // }else if(Math.min(danceabilityScore,energyScore,acousticnessScore,instrumentalnessScore,livenessScore,valenceScore)==valenceScore){
+        //     valenceScore = 100 - (valenceScore*100)/(this.state.playlisttracknames.length*this.state.top100tracknames.length)
+        //     this.state.attribute = "valence"
+        //     this.state.attributeScore = Math.trunc(valenceScore)
+        //     //console.log(`These playlists are `+ valenceScore + `% compatible by danceability.`)
+        // }
+        // console.log('done')
+        // this.state.max = Math.trunc(this.state.max)
+        // this.setState({compatibility: Math.trunc(100 - totalDifferenceScore/(this.state.playlisttracknames.length))})
+        // console.log(this.state.compatibility)
+        this.setState({status: "Calculating score"})
+        let compatibility = await this.calculateScore();
+        this.setState({compatibility: compatibility,
+                        loading: false});
+    }
+
+    calculateScore = () => {        
+        return new Promise(resolve => {
         var totalDifferenceScore = 0;
         var danceabilityScore = 0, energyScore=0, speachinessScore=0, acousticnessScore=0, instrumentalnessScore=0, livenessScore=0, valenceScore = 0;
         for(let i = 0; i < this.state.playlisttracknames.length; i++){
@@ -309,7 +413,7 @@ class User extends Component{
                 energyScore += Math.abs(this.state.trackFeatures[i].energy - this.state.top100trackFeatures[j].energy)*10
                 //speachinessScore += Math.abs(this.state.trackFeatures[i].speachiness - this.state.top100trackFeatures[j].speachiness)*10
                 acousticnessScore += Math.abs(this.state.trackFeatures[i].acousticness - this.state.top100trackFeatures[j].acousticness)*10
-                instrumentalnessScore += Math.abs(this.state.trackFeatures[i].instrumentalness - this.state.top100trackFeatures[j].instrumentalness)*10
+                //instrumentalnessScore += Math.abs(this.state.trackFeatures[i].instrumentalness - this.state.top100trackFeatures[j].instrumentalness)*10
                 livenessScore += Math.abs(this.state.trackFeatures[i].liveness - this.state.top100trackFeatures[j].liveness)*10
                 valenceScore += Math.abs(this.state.trackFeatures[i].valence - this.state.top100trackFeatures[j].valence)*10
                 differenceScore += Math.abs(this.state.trackFeatures[i].danceability - this.state.top100trackFeatures[j].danceability)*10
@@ -319,68 +423,78 @@ class User extends Component{
                 differenceScore += Math.abs(this.state.trackFeatures[i].instrumentalness - this.state.top100trackFeatures[j].instrumentalness)*10
                 differenceScore += Math.abs(this.state.trackFeatures[i].liveness - this.state.top100trackFeatures[j].liveness)*10
                 differenceScore += Math.abs(this.state.trackFeatures[i].valence - this.state.top100trackFeatures[j].valence)*10
+                differenceScore += 50;
                 if(this.state.artistID[i] == this.state.top100artistID[j])
-                    differenceScore += 10
-                for(let k = 0; k < this.state.genres[i].length; k++){
-                    let found = false;
-                    for(let l = 0; l < this.state.top100genres[i].length; l++){
-                        if(this.state.genres[i][k] == this.state.top100genres[i][l]){
-                            differenceScore += 30
-                            found = true;
-                            break;
+                    differenceScore -= 10
+                if(!Array.isArray(this.state.genres[i]) || !this.state.genres[i].length){
+                    for(let k = 0; k < this.state.genres[i].length; k++){
+                        let found = false;
+                        if(!Array.isArray(this.state.top100genres[i]) || !this.state.top100genres[i].length){
+                            for(let l = 0; l < this.state.top100genres[i].length; l++){
+                                if(this.state.genres[i][k] == this.state.top100genres[i][l]){
+                                    differenceScore -= 40;
+                                    found = true;
+                                    break;
+                                }
+                            }
                         }
+                        if(found == true)
+                            break;
                     }
-                    if(found == true)
-                        break;
                 }
                 songDifferenceScore += differenceScore;
                 //console.log(songDifferenceScore) 
             }
             songDifferenceScore /= this.state.top100trackFeatures.length;              
             if(songDifferenceScore > this.state.max){
+                console.log("current max: "+this.state.max)
+                console.log("songDifferenceScore: "+songDifferenceScore)
                 this.state.max = songDifferenceScore
                 this.state.mostCompatibleIndex = i
             }
             totalDifferenceScore += songDifferenceScore;
         }
-        if(Math.min(danceabilityScore,energyScore,acousticnessScore,instrumentalnessScore,livenessScore,valenceScore)==danceabilityScore){
-            danceabilityScore = 100 - (danceabilityScore*100)/(this.state.playlisttracknames.length*this.state.top100tracknames.length)
+        console.log("most compatible: " + Math.min(danceabilityScore,energyScore,acousticnessScore,livenessScore,valenceScore))
+        if(Math.min(danceabilityScore,energyScore,acousticnessScore,livenessScore,valenceScore)==Math.min(danceabilityScore)){
+            danceabilityScore = 100 - (danceabilityScore*10)/(this.state.playlisttracknames.length*this.state.top100tracknames.length)
             //console.log(`These playlists are `+ danceabilityScore + `% compatible by danceability.`)
             this.state.attribute = "danceability"
             this.state.attributeScore = Math.trunc(danceabilityScore)
-        }else if(Math.min(danceabilityScore,energyScore,acousticnessScore,instrumentalnessScore,livenessScore,valenceScore)==energyScore){
-            energyScore = 100 - (energyScore*100)/(this.state.playlisttracknames.length*this.state.top100tracknames.length)
+        }else if(Math.min(danceabilityScore,energyScore,acousticnessScore,livenessScore,valenceScore)==Math.min(energyScore)){
+            energyScore = 100 - (energyScore*10)/(this.state.playlisttracknames.length*this.state.top100tracknames.length)
             this.state.attribute = "energy"
             this.state.attributeScore = Math.trunc(energyScore)
             //console.log(`These playlists are `+ energyScore + `% compatible by energy.`)
         }//else if(Math.min(danceabilityScore,energyScore,speachinessScore,acousticnessScore,instrumentalnessScore,livenessScore,valenceScore)==speachinessScore){
            // speachinessScore = 100 - (speachinessScore*100)/(this.state.playlisttracknames.length*this.state.top100tracknames.length)
            // console.log(`These playlists are `+ speachinessScore + `% compatible by danceability.`)
-        else if(Math.min(danceabilityScore,energyScore,acousticnessScore,instrumentalnessScore,livenessScore,valenceScore)==acousticnessScore){
-            acousticnessScore = 100 - (acousticnessScore*100)/(this.state.playlisttracknames.length*this.state.top100tracknames.length)
+        else if(Math.min(danceabilityScore,energyScore,acousticnessScore,livenessScore,valenceScore)==Math.min(acousticnessScore)){
+            acousticnessScore = 100 - (acousticnessScore*10)/(this.state.playlisttracknames.length*this.state.top100tracknames.length)
             //console.log(`These playlists are `+ acousticnessScore + `% compatible by danceability.`)
             this.state.attribute = "acousticness"
             this.state.attributeScore = Math.trunc(acousticnessScore)
-        }else if(Math.min(danceabilityScore,energyScore,acousticnessScore,instrumentalnessScore,livenessScore,valenceScore)==instrumentalnessScore){
-            instrumentalnessScore = 100 - (instrumentalnessScore*100)/(this.state.playlisttracknames.length*this.state.top100tracknames.length)
+        //}else if(Math.min(danceabilityScore,energyScore,acousticnessScore,instrumentalnessScore,livenessScore,valenceScore)==instrumentalnessScore){
+           // instrumentalnessScore = 100 - (instrumentalnessScore*100)/(this.state.playlisttracknames.length*this.state.top100tracknames.length)
             //console.log(`These playlists are `+ instrumentalnessScore + `% compatible by danceability.`)
-            this.state.attribute = "instrumentalness"
-            this.state.attributeScore = Math.trunc(instrumentalnessScore)
-        }else if(Math.min(danceabilityScore,energyScore,acousticnessScore,instrumentalnessScore,livenessScore,valenceScore)==livenessScore){
-            livenessScore = 100 - (livenessScore*100)/(this.state.playlisttracknames.length*this.state.top100tracknames.length)
+            //this.state.attribute = "instrumentalness"
+            //this.state.attributeScore = Math.trunc(instrumentalnessScore)
+        }else if(Math.min(danceabilityScore,energyScore,acousticnessScore,livenessScore,valenceScore)==Math.min(livenessScore)){
+            livenessScore = 100 - (livenessScore*10)/(this.state.playlisttracknames.length*this.state.top100tracknames.length)
             this.state.attribute = "liveness"
             this.state.attributeScore = Math.trunc(livenessScore)
             //console.log(`These playlists are `+ livenessScore + `% compatible by danceability.`)
-        }else if(Math.min(danceabilityScore,energyScore,acousticnessScore,instrumentalnessScore,livenessScore,valenceScore)==valenceScore){
-            valenceScore = 100 - (valenceScore*100)/(this.state.playlisttracknames.length*this.state.top100tracknames.length)
+        }else if(Math.min(danceabilityScore,energyScore,acousticnessScore,livenessScore,valenceScore)==Math.min(valenceScore)){
+            valenceScore = 100 - (valenceScore*10)/(this.state.playlisttracknames.length*this.state.top100tracknames.length)
             this.state.attribute = "valence"
             this.state.attributeScore = Math.trunc(valenceScore)
             //console.log(`These playlists are `+ valenceScore + `% compatible by danceability.`)
         }
         console.log('done')
         this.state.max = Math.trunc(this.state.max)
-        this.setState({compatibility: Math.trunc(100 - totalDifferenceScore/(this.state.playlisttracknames.length))})
+        //this.setState({compatibility: Math.trunc(100 - totalDifferenceScore/(this.state.playlisttracknames.length))})
         console.log(this.state.compatibility)
+        resolve(Math.trunc(100 - totalDifferenceScore/(this.state.playlisttracknames.length)));
+        })
     }
     
     getPlaylistTracks = (i) => {
@@ -512,13 +626,16 @@ class User extends Component{
         }
         this.assigntop100tracknames();
         var message = ''
+        var status =  ''
         if(this.state.compatibility < 0){
             message = ''
         }else if((this.state.compatibility) == 'generating'){
-            message = `Generating compatibility!`
+            message = `Generating compatibility. Status:` 
+            status = `${this.state.status}`
         }else if(this.state.compatibility > 0){
+            status = ''
             message = `These playlists are ${this.state.compatibility}% compatible!`
-            message += `\nThese playlists are most compatible in terms of ${this.state.attribute} by ${this.state.attributeScore}%.`
+            message += `\nThese playlists are ${this.state.attributeScore}% similar in terms of ${this.state.attribute}.`
             message += "\n" + this.state.name[this.state.mostCompatibleIndex] + " by " + this.state.artist[this.state.mostCompatibleIndex] + ` is the most compatible song by ${this.state.max}%.` 
         }
         
@@ -532,8 +649,21 @@ class User extends Component{
                 <p>Access Token: {this.state.access_token}</p>
                 <p>User ID: {this.state.user}</p>
                 <p>Playlists:</p>
-                <ul>{playlists}</ul>
+                <ul>{playlists}</ul>                
+                <div className="sweet-loading">
+                    <ScaleLoader
+                        css={override}
+                        size={5}
+                        height={30}
+                        width={10}
+                        radius={5}
+                        //size={"150px"} this also works
+                        color={"#36D7B7"}
+                        loading={this.state.loading}
+                    />
+                </div> 
                 <p>{message}</p>
+                <p>{status}</p>
             </div>
         )
     }
