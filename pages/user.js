@@ -26,6 +26,20 @@ const override = css`
 class User extends Component {
     constructor(props) {
         super(props);
+        const firebaseConfig = {
+            apiKey: "AIzaSyCBmjWVAetSGAQ2E7uE0oh5_lG--ogkWbc",
+            authDomain: "spotifynd-friends.firebaseapp.com",
+            databaseURL: "https://spotifynd-friends.firebaseio.com",
+            projectId: "spotifynd-friends",
+            storageBucket: "spotifynd-friends.appspot.com",
+            messagingSenderId: "775203379545",
+            appId: "1:775203379545:web:2e74554d15a4b1c3675448",
+            measurementId: "G-QL50LT5KSH"
+        };
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig)
+        }
+        
         this.state = {
             access_token: this.props.url.query.access_token,
             refresh_token: '',
@@ -56,29 +70,10 @@ class User extends Component {
             status: '',
             loading: false
         }
-        const firebaseConfig = {
-            apiKey: "AIzaSyCBmjWVAetSGAQ2E7uE0oh5_lG--ogkWbc",
-            authDomain: "spotifynd-friends.firebaseapp.com",
-            databaseURL: "https://spotifynd-friends.firebaseio.com",
-            projectId: "spotifynd-friends",
-            storageBucket: "spotifynd-friends.appspot.com",
-            messagingSenderId: "775203379545",
-            appId: "1:775203379545:web:2e74554d15a4b1c3675448",
-            measurementId: "G-QL50LT5KSH"
-        };
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig)
-        }
-        console.log(firebase)
-
-
     }
 
 
     writeUserData = (spotifyid) => {
-        var database = firebase.database();
-
-
         var dbRef = firebase.database().ref('users')
         console.log(this.state.user)
 
@@ -94,23 +89,18 @@ class User extends Component {
         });
 
         if (userSpotifyId == null && userTopPlaylist == null && userLocation == null) {
-
             firebase.database().ref('users/' + spotifyid).set({
-                spotify_id: spotifyid,
-                location: '',
-                topPlaylist: ''
-
-
-            }, function (error) {
-                if (error) {
-                    // The write failed...
-                } else {
-                    // Data saved successfully!
+                    spotify_id: spotifyid,
+                    location: '',
+                    topPlaylist: ''
+                }, function (error) {
+                    if (error) {
+                        // The write failed...
+                    } else {
+                        // Data saved successfully!
+                    }
                 }
-            }
-
             );
-
         }
     }
 
@@ -118,7 +108,6 @@ class User extends Component {
         this.getUserPlaylists();
         this.get100();
     }
-
 
     getUserPlaylists = () => {
         let url = window.location.href;

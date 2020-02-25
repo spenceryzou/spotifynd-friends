@@ -49,8 +49,6 @@ class Settings extends Component {
     console.log(firebase)
   }
 
-
-
   componentDidMount = () => {
 
     //var userRef = firebase.database().ref("users/" + this.state.user + '/spotify_id')
@@ -69,69 +67,38 @@ class Settings extends Component {
     //   this.setState(() => ({ location: userid }));
     // });
 
-
-
-
-
     //console.log(userid)
     //  this.state.location = locationVal
-
-
-
-
   }
-
 
   writeUserLocation = (userid, userlocation) => {
-    var database = firebase.database();
-
-
-    firebase.database().ref('users/' + this.state.user).set({
-      spotify_id: this.state.user,
-      location: userlocation,
-      topPlaylist: ''
-
-
-    }, function (error) {
-      if (error) {
-        // The write failed...
-      } else {
-        // Data saved successfully!
+    firebase.database().ref('users/' + this.state.user).update({
+        'location': userlocation
+      }, function (error) {
+        if (error) {
+          // The write failed...
+        } else {
+          console.log("Updated location: " + userlocation);
+        }
       }
-    }
-
     );
-
-
   }
-
-
-
-
 
   writeUserTopPlaylist = (userid, top_playlist) => {
     var database = firebase.database();
-    firebase.database().ref('users/' + userid).set({
-      spotify_id: this.state.user,
-      location: this.state.location,
-      topPlaylist: top_playlist
-
-
-    }, function (error) {
-      if (error) {
-        // The write failed...
-      } else {
-        console.log("Data saved");
+    firebase.database().ref('users/' + userid).update({
+        'topPlaylist': top_playlist
+      }, function (error) {
+        if (error) {
+          // The write failed...
+        } else {
+          console.log("Updated top playlist: " + top_playlist);
+        }
       }
-    }
-
     );
   }
 
-
-
   displayImage = () => {
-
     playlistImage = (<img src={this.state.image} />)
   }
 

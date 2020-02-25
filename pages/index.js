@@ -3,7 +3,7 @@ import Router from 'next/router'
 import User from '../pages/user'
 import styles from '../pages/index.module.css'
 
-//var firebase = require('firebase/app');
+var firebase = require('firebase/app');
 var querystring = require('querystring');
 var request = require('request')
 var client_id = '2923d79235804ea58633989710346f3d';
@@ -19,18 +19,26 @@ class Spotify extends Component {
       access_token: '',
       refresh_token: ''
     }
-
+    const firebaseConfig = {
+      apiKey: "AIzaSyCBmjWVAetSGAQ2E7uE0oh5_lG--ogkWbc",
+      authDomain: "spotifynd-friends.firebaseapp.com",
+      databaseURL: "https://spotifynd-friends.firebaseio.com",
+      projectId: "spotifynd-friends",
+      storageBucket: "spotifynd-friends.appspot.com",
+      messagingSenderId: "775203379545",
+      appId: "1:775203379545:web:2e74554d15a4b1c3675448",
+      measurementId: "G-QL50LT5KSH"
+    };
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig)
+    }
   }
-
-
- 
-  
 
   componentDidMount = () => {
     let url = window.location.href;
     let access_token = '';
     let refresh_token = '';
-    if(url.indexOf('localhost') > -1){
+    if (url.indexOf('localhost') > -1) {
       redirect_uri = 'http://localhost:3000/index'
     }
     if (url.indexOf('code') > -1) {
@@ -53,12 +61,11 @@ class Spotify extends Component {
         if (!error && response.statusCode === 200) {
 
           access_token = body.access_token,
-            refresh_token = body.refresh_token;
+          refresh_token = body.refresh_token;
           this.setState({
             access_token: access_token,
             refresh_token: refresh_token
           });
-
           var options = {
             url: 'https://api.spotify.com/v1/me',
             headers: { 'Authorization': 'Bearer ' + access_token },
@@ -66,12 +73,27 @@ class Spotify extends Component {
           };
 
           // use the access token to access the Spotify Web API
-          request.get(options, function (error, response, body) {
+          request.get(options, (error, response, body) => {
+            this.writeAccessToken(body.id, access_token);
             console.log(body);
           });
         }
       });
     }
+  }
+
+  writeAccessToken = (userid, access_token) => {
+    let userRef = firebase.database().ref('users/' + userid);
+    userRef.update({
+        'access_token': access_token
+      }, function (error) {
+        if (error) {
+          // The write failed...
+        } else {
+          console.log("Updated access token: " + access_token);
+        }
+      }
+    );
   }
 
   generateRandomString = (length) => {
@@ -95,7 +117,7 @@ class Spotify extends Component {
           scope: scope,
           redirect_uri: redirect_uri,
           state: this.generateRandomString(16)
-          
+
         });
     } else {
       Router.push({
@@ -113,14 +135,14 @@ class Spotify extends Component {
     // }
 
     return (
-        <div>
-            <h1 className={styles.center}> Welcome to Spotifynd Friends! </h1>
-      <div className="row justify-content-center mt-5">
-            <button onClick={event => this.makeSpotifyProfileCall(event)} className={styles.button}>
-          {access_token !== '' ? 'Enter' : 'Login'}
-        </button>
+      <div>
+        <h1 className={styles.center}> Welcome to Spotifynd Friends! </h1>
+        <div className="row justify-content-center mt-5">
+          <button onClick={event => this.makeSpotifyProfileCall(event)} className={styles.button}>
+            {access_token !== '' ? 'Enter' : 'Login'}
+          </button>
+        </div>
       </div>
-            </div>
     );
   }
 }
