@@ -33,16 +33,15 @@ class Settings extends Component {
       location: 'teststring',
       image: ''
     }
-
-    let firebaseConfig = {
-      apiKey: "AIzaSyALCCNzdyD4Apeqk3N-yl8tS4XY4VAes2o",
-      authDomain: "spotifynder-5789e.firebaseapp.com",
-      databaseURL: "https://spotifynder-5789e.firebaseio.com",
-      projectId: "spotifynder-5789e",
-      storageBucket: "spotifynder-5789e.appspot.com",
-      messagingSenderId: "638228066900",
-      appId: "1:638228066900:web:bdefeb93c221a1280d33c1",
-      measurementId: "G-D2B3QV491R"
+    const firebaseConfig = {
+      apiKey: "AIzaSyCBmjWVAetSGAQ2E7uE0oh5_lG--ogkWbc",
+      authDomain: "spotifynd-friends.firebaseapp.com",
+      databaseURL: "https://spotifynd-friends.firebaseio.com",
+      projectId: "spotifynd-friends",
+      storageBucket: "spotifynd-friends.appspot.com",
+      messagingSenderId: "775203379545",
+      appId: "1:775203379545:web:2e74554d15a4b1c3675448",
+      measurementId: "G-QL50LT5KSH"
     };
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig)
@@ -122,7 +121,7 @@ class Settings extends Component {
       if (error) {
         // The write failed...
       } else {
-        // Data saved successfully!
+        console.log("Data saved");
       }
     }
 
@@ -141,6 +140,7 @@ class Settings extends Component {
     console.log("value: " + event.target.value)
     console.log("playlist: " + playlist.name)
     this.state.topPlaylist = playlist
+    this.writeUserTopPlaylist(this.state.user, this.state.topPlaylist.id)
     console.log(JSON.stringify(event.target.value))
     console.log("top: " + this.state.topPlaylist.name)
     this.state.image = playlist.images[0].url
@@ -150,6 +150,7 @@ class Settings extends Component {
 
   handleLocationChange = (event) => {
     this.state.location = event.target.value;
+    this.writeUserLocation(this.state.user, this.state.location)
     console.log("Location" + this.state.location)
   }
 
@@ -194,8 +195,6 @@ class Settings extends Component {
           if (userTopPlaylist != null) {
             this.state.topPlaylist = userTopPlaylist
           }
-
-
         }
       });
 
@@ -304,8 +303,5 @@ class Settings extends Component {
 
     )
   }
-
-
-
 }
 export default Settings;
