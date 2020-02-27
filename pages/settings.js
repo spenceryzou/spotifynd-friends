@@ -4,7 +4,7 @@ import Dropdown from 'react-bootstrap/Dropdown'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
-import { FormGroup, ControlLabel, FormControl, Card } from "react-bootstrap";
+import { FormGroup, ControlLabel, FormControl, Card ,Container, Row, Col} from "react-bootstrap";
 import Image from 'react-bootstrap/Image'
 import Header from '../components/Header'
 
@@ -292,52 +292,62 @@ class Settings extends Component {
             crossorigin="anonymous"
           />
         </head>
-
         <div className="row justify-content-center mt-5">
-        <Card className="bg-dark text-white">
-            <Card.Img src="https://thumbor.forbes.com/thumbor/960x0/https%3A%2F%2Fspecials-images.forbesimg.com%2Fimageserve%2F750037840%2F960x0.jpg%3Ffit%3Dscale" alt="Card image"  />
-            <Card.ImgOverlay>
-              <Card.Title>Welcome, {this.state.user}</Card.Title>
-              <Card.Text>
-                Your current chosen top playlist is : {displayInfo}
-              </Card.Text>
-              <Card.Text>Your current location is : {this.state.location}</Card.Text>
-            </Card.ImgOverlay>
-            </Card>
+        <Container>
+          <Row>
+            <Col>
+            <Card className="bg-dark text-white">
+                <Card.Img src="https://thumbor.forbes.com/thumbor/960x0/https%3A%2F%2Fspecials-images.forbesimg.com%2Fimageserve%2F750037840%2F960x0.jpg%3Ffit%3Dscale" alt="Card image" fluid  />
+                <Card.ImgOverlay>
+                  <Card.Title>Welcome, {this.state.user}</Card.Title>
+                  <Card.Text>
+                    Your current chosen top playlist is : {displayInfo}
+                  </Card.Text>
+                  <Card.Text>Your current location is : {this.state.location}</Card.Text>
+                </Card.ImgOverlay>
+                </Card>
+            </Col>
+            <Col>
+
+                      <Form>
+                        <Form.Group controlId="exampleForm.ControlSelect1">
+                          <Form.Label>Set a new Location</Form.Label>
+                          <Form.Control defaultValue={-1}
+                            as="select"
+                            onChange={this.handleLocationChange}
+                          >
+                            <option disabled value={-1} key={-1}>Select a Location</option>
+                            {items2}
+                          </Form.Control>
+                        </Form.Group>
+
+                        <Form.Group controlId="exampleForm.ControlSelect2">
+                          <Form.Label>Select a new Playlist</Form.Label>
+                          <Form.Control defaultValue={-1}
+                            as="select"
+                            onChange={this.handlePlaylistChange}
+                            placeholder="select a playlist">
+                            <option disabled value={-1} key={-1}>Select a Playlist</option>
+                            {formItems}
+                          </Form.Control>
+                        </Form.Group>
+                      </Form>
+            </Col>
+          </Row>
+          <Row className="row justify-content-center mt-5">
+            <img src={this.state.image} />
+          </Row>
+
+        </Container>
+
+
 
 
         </div>
 
 
-        <div className="row justify-content-center mt-4">
+        <div >
 
-          <Form>
-            <Form.Group controlId="exampleForm.ControlSelect1">
-              <Form.Label>Set a new Location</Form.Label>
-              <Form.Control defaultValue={-1}
-                as="select"
-                onChange={this.handleLocationChange}
-              >
-                <option disabled value={-1} key={-1}>Select a Location</option>
-                {items2}
-              </Form.Control>
-            </Form.Group>
-
-            <Form.Group controlId="exampleForm.ControlSelect2">
-              <Form.Label>Select a new Playlist</Form.Label>
-              <Form.Control defaultValue={-1}
-                as="select"
-                onChange={this.handlePlaylistChange}
-                placeholder="select a playlist">
-                <option disabled value={-1} key={-1}>Select a Playlist</option>
-                {formItems}
-              </Form.Control>
-            </Form.Group>
-          </Form>
-        </div>
-
-        <div className="row justify-content-center mt-5">
-          <img src={this.state.image} />
         </div>
       </div>
 
