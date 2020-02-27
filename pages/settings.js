@@ -88,23 +88,15 @@ class Settings extends Component {
 
 
   writeUserLocation = (userid, userlocation) => {
-    var database = firebase.database();
-
-
-    firebase.database().ref('users/' + this.state.user).set({
-      spotify_id: this.state.user,
-      location: userlocation,
-      topPlaylist: ''
-
-
-    }, function (error) {
-      if (error) {
-        // The write failed...
-      } else {
-        // Data saved successfully!
+    firebase.database().ref('users/' + this.state.user).update({
+        'location': userlocation
+      }, function (error) {
+        if (error) {
+          // The write failed...
+        } else {
+          console.log("Updated location: " + userlocation);
+        }
       }
-    }
-
     );
 
 
@@ -116,20 +108,15 @@ class Settings extends Component {
 
   writeUserTopPlaylist = (userid, top_playlist) => {
     var database = firebase.database();
-    firebase.database().ref('users/' + userid).set({
-      spotify_id: this.state.user,
-      location: this.state.location,
-      topPlaylist: top_playlist
-
-
-    }, function (error) {
-      if (error) {
-        // The write failed...
-      } else {
-        console.log("Data saved");
+    firebase.database().ref('users/' + userid).update({
+        'topPlaylist': top_playlist
+      }, function (error) {
+        if (error) {
+          // The write failed...
+        } else {
+          console.log("Updated top playlist: " + top_playlist);
+        }
       }
-    }
-
     );
   }
 
