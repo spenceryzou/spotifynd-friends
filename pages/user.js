@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import { css } from "@emotion/core"
 import ScaleLoader from "react-spinners/ScaleLoader"
+import Header from '../components/Header'
 
 var auth = require('firebase/auth');
 var database = require('firebase/database');
@@ -27,7 +28,7 @@ class User extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            access_token: this.props.url.query.access_token,
+            access_token: this.props.query.access_token,
             refresh_token: '',
             user: '',
             playlists: [],
@@ -74,6 +75,10 @@ class User extends Component {
 
     }
 
+    static getInitialProps({query}){
+        console.log("query " + JSON.stringify({query}))
+        return {query}
+    }
 
     writeUserData = (spotifyid) => {
         var database = firebase.database();
@@ -125,56 +130,51 @@ class User extends Component {
         if (url.indexOf('localhost') > -1) {
             redirect_uri = 'http://localhost:3000/index'
         }
-        if (url.indexOf('token') > -1) {
-            let access_token = url.split('token=')[1];
 
-            this.setState({ access_token })
+        let access_token = this.state.access_token
+        var options = {
+            url: 'https://api.spotify.com/v1/me',
+            headers: { 'Authorization': 'Bearer ' + access_token },
+            json: true
+        };
 
-            var options = {
-                url: 'https://api.spotify.com/v1/me',
+        // use the access token to access the Spotify Web API
+        request.get(options, (error, response, body) => {
+            console.log('Access token:' + access_token)
+            console.log(body);
+            this.setState({ user: body.id })
+
+            var aDatabase = firebase.database();
+            var mDatabase = aDatabase.ref();
+
+            var myRef = mDatabase.child(this.state.user).child('spotify_id');
+
+            if (myRef == null) {
+                this.writeUserData(this.state.user)
+
+            }
+
+            console.log('user: ' + this.state.user)
+            var playlistOptions = {
+                url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
+                qs: { limit: '10' },
                 headers: { 'Authorization': 'Bearer ' + access_token },
                 json: true
             };
 
+            console.log('user right before playlist: ' + this.state.user)
+
             // use the access token to access the Spotify Web API
-            request.get(options, (error, response, body) => {
-                console.log('Access token:' + access_token)
+            request.get(playlistOptions, (error, response, body) => {
                 console.log(body);
-                this.setState({ user: body.id })
-
-                var aDatabase = firebase.database();
-                var mDatabase = aDatabase.ref();
-
-                var myRef = mDatabase.child(this.state.user).child('spotify_id');
-
-                if (myRef == null) {
-                    this.writeUserData(this.state.user)
-
+                this.setState({ playlists: body.items })
+                for (var i = 0; i < this.state.playlists.length; i++) {
+                    this.state.playlists[i].key = i.id
+                    console.log(this.state.playlists[i].key)
                 }
-
-                console.log('user: ' + this.state.user)
-                var playlistOptions = {
-                    url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
-                    qs: { limit: '10' },
-                    headers: { 'Authorization': 'Bearer ' + access_token },
-                    json: true
-                };
-
-                console.log('user right before playlist: ' + this.state.user)
-
-                // use the access token to access the Spotify Web API
-                request.get(playlistOptions, (error, response, body) => {
-                    console.log(body);
-                    this.setState({ playlists: body.items })
-                    for (var i = 0; i < this.state.playlists.length; i++) {
-                        this.state.playlists[i].key = i.id
-                        console.log(this.state.playlists[i].key)
-                    }
-                    console.log('this.state.playlists' + this.state.playlists)
-                });
+                console.log('this.state.playlists' + this.state.playlists)
             });
-
-        }
+        });
     }
     assignPlaylistTracksName = (items) => {
         if (typeof (items) != 'undefined') {
@@ -684,7 +684,8 @@ class User extends Component {
         Router.push({
             pathname: '/settings',
             query: { access_token }
-        })
+        }, '/settings'
+        )
     }
 
     render() {
@@ -723,6 +724,7 @@ class User extends Component {
 
         return (
             <div>
+                <Header props={this.state.access_token} />
                 <button onClick={() => this.goToSettings()}>
                     Settings
                 </button>

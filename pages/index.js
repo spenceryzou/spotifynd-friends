@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import User from '../pages/user'
 import styles from '../pages/index.module.css'
+import Header from '../components/Header'
 
 //var firebase = require('firebase/app');
 var querystring = require('querystring');
@@ -101,7 +102,8 @@ class Spotify extends Component {
       Router.push({
         pathname: '/user',
         query: { access_token } //may be unnecessary
-      })
+      }, '/user'
+      )
     }
   }
 
@@ -114,6 +116,7 @@ class Spotify extends Component {
 
     return (
         <div>
+          <Header props={this.state.access_token} />
             <h1 className={styles.center}> Welcome to Spotifynd Friends! </h1>
       <div className="row justify-content-center mt-5">
             <button onClick={event => this.makeSpotifyProfileCall(event)} className={styles.button}>

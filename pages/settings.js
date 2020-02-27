@@ -26,7 +26,7 @@ class Settings extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      access_token: this.props.url.query.access_token,
+      access_token: this.props.query.access_token,
       refresh_token: '',
       playlists: [],
       topPlaylist: null,
@@ -49,7 +49,10 @@ class Settings extends Component {
     console.log(firebase)
   }
 
-
+  static getInitialProps({query}){
+    console.log("query " + JSON.stringify({query}))
+    return {query}
+  }
 
   componentDidMount = () => {
 
@@ -255,7 +258,7 @@ class Settings extends Component {
 
     return (
       <div>
-        <Header />
+        <Header props={this.state.access_token} />
         <head>
           <link
             rel="stylesheet"
