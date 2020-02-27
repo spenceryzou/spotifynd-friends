@@ -207,7 +207,8 @@ class Settings extends Component {
             request.get(options, (error, response, body) => {
               console.log(body)
               this.setState( {
-                display: body
+                display: body,
+                image: body.images[0].url,
               })
               //console.log(this.state.display)
             });
@@ -308,34 +309,39 @@ class Settings extends Component {
                 </Card>
             </Col>
             <Col>
-
-                      <Form>
-                        <Form.Group controlId="exampleForm.ControlSelect1">
-                          <Form.Label>Set a new Location</Form.Label>
-                          <Form.Control defaultValue={-1}
-                            as="select"
-                            onChange={this.handleLocationChange}
-                          >
-                            <option disabled value={-1} key={-1}>Select a Location</option>
-                            {items2}
-                          </Form.Control>
-                        </Form.Group>
-
-                        <Form.Group controlId="exampleForm.ControlSelect2">
-                          <Form.Label>Select a new Playlist</Form.Label>
-                          <Form.Control defaultValue={-1}
-                            as="select"
-                            onChange={this.handlePlaylistChange}
-                            placeholder="select a playlist">
-                            <option disabled value={-1} key={-1}>Select a Playlist</option>
-                            {formItems}
-                          </Form.Control>
-                        </Form.Group>
-                      </Form>
+              <img src={this.state.image} class="img-thumbnail" height="360" width="360" />
             </Col>
+
+
+
           </Row>
-          <Row className="row justify-content-center mt-5">
-            <img src={this.state.image} />
+          <Row >
+
+          <Col>
+              <Form>
+                <Form.Group controlId="exampleForm.ControlSelect1">
+                  <Form.Label>Set a new Location</Form.Label>
+                  <Form.Control defaultValue={-1}
+                    as="select"
+                    onChange={this.handleLocationChange}
+                  >
+                    <option disabled value={-1} key={-1}>Select a Location</option>
+                    {items2}
+                  </Form.Control>
+                </Form.Group>
+
+                <Form.Group controlId="exampleForm.ControlSelect2">
+                  <Form.Label>Select a new Playlist</Form.Label>
+                  <Form.Control defaultValue={-1}
+                    as="select"
+                    onChange={this.handlePlaylistChange}
+                    placeholder="select a playlist">
+                    <option disabled value={-1} key={-1}>Select a Playlist</option>
+                    {formItems}
+                  </Form.Control>
+                </Form.Group>
+              </Form>
+              </Col>
           </Row>
 
         </Container>
