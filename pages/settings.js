@@ -247,7 +247,11 @@ class Settings extends Component {
     );
 
 
-    let formItems = playlists.map((data) =>
+    let formItems = playlists.filter(function(obj){
+      if(obj.public){
+        return obj
+      }
+    }).map((data) =>
       <option
         key={data.id}
         value={data.name}
