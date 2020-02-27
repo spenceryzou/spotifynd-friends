@@ -189,14 +189,28 @@ class Settings extends Component {
       dbRef.child(user_id).once("value", snapshot => {
         if (snapshot.exists()) {
           const userLocation = snapshot.val().location;
-          const userTopPlaylist = snapshot.val().playlist;
+          const userTopPlaylist = snapshot.val().topPlaylist;
           console.log("exists!", userLocation);
           if (userLocation != null) {
             this.state.location = userLocation
             console.log(this.state.location)
           }
           if (userTopPlaylist != null) {
-            this.state.topPlaylist = userTopPlaylist
+            var options = {
+              url: 'https://api.spotify.com/v1/playlists/'+userTopPlaylist,
+              headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+              json: true
+            };
+
+            // use the access token to access the Spotify Web API
+            request.get(options, (error, response, body) => {
+              console.log(body)
+              this.setState( {
+                topPlaylist: body
+              })
+              console.log(this.state.topPlaylist)
+            });
+
           }
         }
       });
@@ -204,7 +218,7 @@ class Settings extends Component {
       // var locationVal
 
       // firebase.database().ref('/users/' + this.state.user).once('value').then(function(snapshot)  {
-      //    locationVal = ( snapshot.val().location) 
+      //    locationVal = ( snapshot.val().location)
       //    console.log(locationVal)
       //  }
       //  );
@@ -274,6 +288,7 @@ class Settings extends Component {
 
         <div className="row justify-content-center mt-5">
           <h1>{this.state.user}</h1>
+
         </div>
 
         <div className="row justify-content-center mt-4">
