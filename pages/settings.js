@@ -4,9 +4,10 @@ import Dropdown from 'react-bootstrap/Dropdown'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
-import { FormGroup, ControlLabel, FormControl } from "react-bootstrap";
+import { FormGroup, ControlLabel, FormControl, Card ,Container, Row, Col} from "react-bootstrap";
 import Image from 'react-bootstrap/Image'
 import Header from '../components/Header'
+
 
 
 var auth = require('firebase/auth');
@@ -30,8 +31,9 @@ class Settings extends Component {
       refresh_token: '',
       playlists: [],
       topPlaylist: null,
-      location: 'teststring',
-      image: ''
+      location: 'no location set, please set on the right',
+      image: '',
+      display:  null
     }
     const firebaseConfig = {
       apiKey: "AIzaSyCBmjWVAetSGAQ2E7uE0oh5_lG--ogkWbc",
@@ -59,7 +61,7 @@ class Settings extends Component {
     //var userRef = firebase.database().ref("users/" + this.state.user + '/spotify_id')
 
     this.getUserPlaylists();
-
+    //this.displayInfo();
     // var aDatabase = firebase.database();
     // var mDatabase = aDatabase.ref();
 
@@ -86,23 +88,15 @@ class Settings extends Component {
 
 
   writeUserLocation = (userid, userlocation) => {
-    var database = firebase.database();
-
-
-    firebase.database().ref('users/' + this.state.user).set({
-      spotify_id: this.state.user,
-      location: userlocation,
-      topPlaylist: ''
-
-
-    }, function (error) {
-      if (error) {
-        // The write failed...
-      } else {
-        // Data saved successfully!
+    firebase.database().ref('users/' + this.state.user).update({
+        'location': userlocation
+      }, function (error) {
+        if (error) {
+          // The write failed...
+        } else {
+          console.log("Updated location: " + userlocation);
+        }
       }
-    }
-
     );
 
 
@@ -114,20 +108,15 @@ class Settings extends Component {
 
   writeUserTopPlaylist = (userid, top_playlist) => {
     var database = firebase.database();
-    firebase.database().ref('users/' + userid).set({
-      spotify_id: this.state.user,
-      location: this.state.location,
-      topPlaylist: top_playlist
-
-
-    }, function (error) {
-      if (error) {
-        // The write failed...
-      } else {
-        console.log("Data saved");
+    firebase.database().ref('users/' + userid).update({
+        'topPlaylist': top_playlist
+      }, function (error) {
+        if (error) {
+          // The write failed...
+        } else {
+          console.log("Updated top playlist: " + top_playlist);
+        }
       }
-    }
-
     );
   }
 
@@ -146,15 +135,27 @@ class Settings extends Component {
     this.writeUserTopPlaylist(this.state.user, this.state.topPlaylist.id)
     console.log(JSON.stringify(event.target.value))
     console.log("top: " + this.state.topPlaylist.name)
-    this.state.image = playlist.images[0].url
+    //this.state.image = playlist.images[0].url
+    //this.state.display = playlist
+    this.setState({
+      image: playlist.images[0].url,
+      display: playlist
+    })
     console.log(this.state.image)
-    this.forceUpdate();
+    //this.forceUpdate();
   }
 
   handleLocationChange = (event) => {
-    this.state.location = event.target.value;
-    this.writeUserLocation(this.state.user, this.state.location)
+    //this.state.location = event.target.value;
+    console.log(event.target.value)
+    this.setState({
+      location: event.target.value
+    })
+    this.writeUserLocation(this.state.user, event.target.value)
+
     console.log("Location" + this.state.location)
+    //this.forceUpdate();
+
   }
 
   setTopPlaylist = (data) => {
@@ -189,14 +190,29 @@ class Settings extends Component {
       dbRef.child(user_id).once("value", snapshot => {
         if (snapshot.exists()) {
           const userLocation = snapshot.val().location;
-          const userTopPlaylist = snapshot.val().playlist;
+          const userTopPlaylist = snapshot.val().topPlaylist;
           console.log("exists!", userLocation);
           if (userLocation != null) {
             this.state.location = userLocation
             console.log(this.state.location)
           }
           if (userTopPlaylist != null) {
-            this.state.topPlaylist = userTopPlaylist
+            var options = {
+              url: 'https://api.spotify.com/v1/playlists/'+userTopPlaylist,
+              headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+              json: true
+            };
+
+            // use the access token to access the Spotify Web API
+            request.get(options, (error, response, body) => {
+              console.log(body)
+              this.setState( {
+                display: body,
+                image: body.images[0].url,
+              })
+              //console.log(this.state.display)
+            });
+
           }
         }
       });
@@ -204,7 +220,7 @@ class Settings extends Component {
       // var locationVal
 
       // firebase.database().ref('/users/' + this.state.user).once('value').then(function(snapshot)  {
-      //    locationVal = ( snapshot.val().location) 
+      //    locationVal = ( snapshot.val().location)
       //    console.log(locationVal)
       //  }
       //  );
@@ -233,10 +249,11 @@ class Settings extends Component {
     });
   }
 
+
   render() {
     let playlists = this.state.playlists;
 
-    let locations = ["Bay Area", "Orange Country", "Santa Barbara", "Other"];
+    let locations = ["Bay Area", "Orange County", "Santa Barbara", "Other"];
     let items2 = locations.map((i) =>
       <option
         value={i}
@@ -259,6 +276,11 @@ class Settings extends Component {
         {data.name}
       </option>
     );
+    let displayInfo = "no playlist set, please set on the right"
+    if (this.state.display){
+      console.log("This worked")
+      displayInfo = this.state.display.name
+    }
 
     return (
       <div>
@@ -271,40 +293,67 @@ class Settings extends Component {
             crossorigin="anonymous"
           />
         </head>
-
         <div className="row justify-content-center mt-5">
-          <h1>{this.state.user}</h1>
+        <Container>
+          <Row>
+            <Col>
+            <Card className="bg-dark text-white">
+                <Card.Img src="https://thumbor.forbes.com/thumbor/960x0/https%3A%2F%2Fspecials-images.forbesimg.com%2Fimageserve%2F750037840%2F960x0.jpg%3Ffit%3Dscale" alt="Card image" fluid  />
+                <Card.ImgOverlay>
+                  <Card.Title>Welcome, {this.state.user}</Card.Title>
+                  <Card.Text>
+                    Your current chosen top playlist is : {displayInfo}
+                  </Card.Text>
+                  <Card.Text>Your current location is : {this.state.location}</Card.Text>
+                </Card.ImgOverlay>
+                </Card>
+            </Col>
+            <Col>
+              <img src={this.state.image} class="img-thumbnail" height="360" width="360" />
+            </Col>
+
+
+
+          </Row>
+          <Row >
+
+          <Col>
+              <Form>
+                <Form.Group controlId="exampleForm.ControlSelect1">
+                  <Form.Label>Set a new Location</Form.Label>
+                  <Form.Control defaultValue={-1}
+                    as="select"
+                    onChange={this.handleLocationChange}
+                  >
+                    <option disabled value={-1} key={-1}>Select a Location</option>
+                    {items2}
+                  </Form.Control>
+                </Form.Group>
+
+                <Form.Group controlId="exampleForm.ControlSelect2">
+                  <Form.Label>Select a new Playlist</Form.Label>
+                  <Form.Control defaultValue={-1}
+                    as="select"
+                    onChange={this.handlePlaylistChange}
+                    placeholder="select a playlist">
+                    <option disabled value={-1} key={-1}>Select a Playlist</option>
+                    {formItems}
+                  </Form.Control>
+                </Form.Group>
+              </Form>
+              </Col>
+          </Row>
+
+        </Container>
+
+
+
+
         </div>
 
-        <div className="row justify-content-center mt-4">
 
-          <Form>
-            <Form.Group controlId="exampleForm.ControlSelect1">
-              <Form.Label>Location</Form.Label>
-              <Form.Control defaultValue={-1}
-                as="select"
-                onChange={this.handleLocationChange}
-              >
-                <option disabled value={-1} key={-1}>Select a Location</option>
-                {items2}
-              </Form.Control>
-            </Form.Group>
+        <div >
 
-            <Form.Group controlId="exampleForm.ControlSelect1">
-              <Form.Label>Select Playlist</Form.Label>
-              <Form.Control defaultValue={-1}
-                as="select"
-                onChange={this.handlePlaylistChange}
-                placeholder="select a playlist">
-                <option disabled value={-1} key={-1}>Select a Playlist</option>
-                {formItems}
-              </Form.Control>
-            </Form.Group>
-          </Form>
-        </div>
-
-        <div className="row justify-content-center mt-5">
-          <img src={this.state.image} />
         </div>
       </div>
 
