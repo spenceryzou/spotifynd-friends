@@ -147,10 +147,11 @@ class Settings extends Component {
 
   handleLocationChange = (event) => {
     //this.state.location = event.target.value;
+    console.log(event.target.value)
     this.setState({
       location: event.target.value
     })
-    this.writeUserLocation(this.state.user, this.state.location)
+    this.writeUserLocation(this.state.user, event.target.value)
 
     console.log("Location" + this.state.location)
     //this.forceUpdate();
