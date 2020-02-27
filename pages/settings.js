@@ -4,9 +4,10 @@ import Dropdown from 'react-bootstrap/Dropdown'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
-import { FormGroup, ControlLabel, FormControl } from "react-bootstrap";
+import { FormGroup, ControlLabel, FormControl, Card } from "react-bootstrap";
 import Image from 'react-bootstrap/Image'
 import Header from '../components/Header'
+
 
 
 var auth = require('firebase/auth');
@@ -30,8 +31,9 @@ class Settings extends Component {
       refresh_token: '',
       playlists: [],
       topPlaylist: null,
-      location: 'teststring',
-      image: ''
+      location: 'no location set, please set below',
+      image: '',
+      display:  null
     }
     const firebaseConfig = {
       apiKey: "AIzaSyCBmjWVAetSGAQ2E7uE0oh5_lG--ogkWbc",
@@ -59,7 +61,7 @@ class Settings extends Component {
     //var userRef = firebase.database().ref("users/" + this.state.user + '/spotify_id')
 
     this.getUserPlaylists();
-
+    //this.displayInfo();
     // var aDatabase = firebase.database();
     // var mDatabase = aDatabase.ref();
 
@@ -146,15 +148,26 @@ class Settings extends Component {
     this.writeUserTopPlaylist(this.state.user, this.state.topPlaylist.id)
     console.log(JSON.stringify(event.target.value))
     console.log("top: " + this.state.topPlaylist.name)
-    this.state.image = playlist.images[0].url
+    //this.state.image = playlist.images[0].url
+    //this.state.display = playlist
+    this.setState({
+      image: playlist.images[0].url,
+      display: playlist
+    })
     console.log(this.state.image)
-    this.forceUpdate();
+    //this.forceUpdate();
   }
 
   handleLocationChange = (event) => {
-    this.state.location = event.target.value;
+    //this.state.location = event.target.value;
+    this.setState({
+      location: event.target.value
+    })
     this.writeUserLocation(this.state.user, this.state.location)
+
     console.log("Location" + this.state.location)
+    //this.forceUpdate();
+
   }
 
   setTopPlaylist = (data) => {
@@ -206,9 +219,9 @@ class Settings extends Component {
             request.get(options, (error, response, body) => {
               console.log(body)
               this.setState( {
-                topPlaylist: body
+                display: body
               })
-              console.log(this.state.topPlaylist)
+              //console.log(this.state.display)
             });
 
           }
@@ -247,10 +260,11 @@ class Settings extends Component {
     });
   }
 
+
   render() {
     let playlists = this.state.playlists;
 
-    let locations = ["Bay Area", "Orange Country", "Santa Barbara", "Other"];
+    let locations = ["Bay Area", "Orange County", "Santa Barbara", "Other"];
     let items2 = locations.map((i) =>
       <option
         value={i}
@@ -273,6 +287,11 @@ class Settings extends Component {
         {data.name}
       </option>
     );
+    let displayInfo = "no playlist set, please set below"
+    if (this.state.display){
+      console.log("This worked")
+      displayInfo = this.state.display.name
+    }
 
     return (
       <div>
@@ -287,15 +306,26 @@ class Settings extends Component {
         </head>
 
         <div className="row justify-content-center mt-5">
-          <h1>{this.state.user}</h1>
+        <Card className="bg-dark text-white">
+            <Card.Img src="https://thumbor.forbes.com/thumbor/960x0/https%3A%2F%2Fspecials-images.forbesimg.com%2Fimageserve%2F750037840%2F960x0.jpg%3Ffit%3Dscale" alt="Card image"  />
+            <Card.ImgOverlay>
+              <Card.Title>Welcome, {this.state.user}</Card.Title>
+              <Card.Text>
+                Your current chosen top playlist is : {displayInfo}
+              </Card.Text>
+              <Card.Text>Your current location is : {this.state.location}</Card.Text>
+            </Card.ImgOverlay>
+            </Card>
+
 
         </div>
+
 
         <div className="row justify-content-center mt-4">
 
           <Form>
             <Form.Group controlId="exampleForm.ControlSelect1">
-              <Form.Label>Location</Form.Label>
+              <Form.Label>Set a new Location</Form.Label>
               <Form.Control defaultValue={-1}
                 as="select"
                 onChange={this.handleLocationChange}
@@ -305,8 +335,8 @@ class Settings extends Component {
               </Form.Control>
             </Form.Group>
 
-            <Form.Group controlId="exampleForm.ControlSelect1">
-              <Form.Label>Select Playlist</Form.Label>
+            <Form.Group controlId="exampleForm.ControlSelect2">
+              <Form.Label>Select a new Playlist</Form.Label>
               <Form.Control defaultValue={-1}
                 as="select"
                 onChange={this.handlePlaylistChange}
