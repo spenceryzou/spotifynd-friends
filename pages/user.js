@@ -2,7 +2,13 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import { css } from "@emotion/core"
 import ScaleLoader from "react-spinners/ScaleLoader"
+import Header from '../components/Header'
 
+var auth = require('firebase/auth');
+var database = require('firebase/database');
+
+
+var firebase = require('firebase/app');
 var querystring = require('querystring');
 var request = require('request')
 var axios = require("axios");
@@ -18,38 +24,98 @@ const override = css`
   border-color: red;
 `;
 
-class User extends Component{
+class User extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          access_token: this.props.url.query.access_token,
-          refresh_token: '',
-          user: '',
-          playlists: [],
-          playlist: null,
-          playlistName: '',
-          playlistDescription: '',
-          playlistTracks: [],
-          top100tracknames: [],
-          playlisttracknames: [],
-          count: -1,
-          trackFeatures: [],
-          genres: [],
-          artistID: [],
-          name: [],
-          artist: [],
-          top100trackFeatures: [],
-          top100genres: [],
-          top100artistID: [],
-          top100name: [],
-          top100artist: [],
-          compatibility: -1,
-          max: -1,
-          mostCompatibleIndex: -1,
-          attribute: '',
-          attributeScore: -1,
-          status: '',
-          loading: false
+            access_token: this.props.query.access_token,
+            refresh_token: '',
+            user: '',
+            playlists: [],
+            playlist: null,
+            playlistName: '',
+            playlistDescription: '',
+            playlistTracks: [],
+            top100tracknames: [],
+            playlisttracknames: [],
+            count: -1,
+            trackFeatures: [],
+            genres: [],
+            artistID: [],
+            name: [],
+            artist: [],
+            top100trackFeatures: [],
+            top100genres: [],
+            top100artistID: [],
+            top100name: [],
+            top100artist: [],
+            compatibility: -1,
+            max: -1,
+            mostCompatibleIndex: -1,
+            attribute: '',
+            attributeScore: -1,
+            status: '',
+            loading: false
+        }
+        const firebaseConfig = {
+            apiKey: "AIzaSyCBmjWVAetSGAQ2E7uE0oh5_lG--ogkWbc",
+            authDomain: "spotifynd-friends.firebaseapp.com",
+            databaseURL: "https://spotifynd-friends.firebaseio.com",
+            projectId: "spotifynd-friends",
+            storageBucket: "spotifynd-friends.appspot.com",
+            messagingSenderId: "775203379545",
+            appId: "1:775203379545:web:2e74554d15a4b1c3675448",
+            measurementId: "G-QL50LT5KSH"
+        };
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig)
+        }
+        console.log(firebase)
+
+
+    }
+
+    static getInitialProps({query}){
+        console.log("query " + JSON.stringify({query}))
+        return {query}
+    }
+
+    writeUserData = (spotifyid) => {
+        var database = firebase.database();
+
+
+        var dbRef = firebase.database().ref('users')
+        console.log(this.state.user)
+
+        var user_id = this.state.user
+
+        dbRef.child(user_id).once("value", snapshot => {
+            if (snapshot.exists()) {
+                const userLocation = snapshot.val().location;
+                const userTopPlaylist = snapshot.val().topPlaylist;
+                const userSpotifyId = snapshot.val().spotify_id;
+                console.log("exists!", userData);
+            }
+        });
+
+        if (userSpotifyId == null && userTopPlaylist == null && userLocation == null) {
+
+            firebase.database().ref('users/' + spotifyid).set({
+                spotify_id: spotifyid,
+                location: '',
+                topPlaylist: ''
+
+
+            }, function (error) {
+                if (error) {
+                    // The write failed...
+                } else {
+                    // Data saved successfully!
+                }
+            }
+
+            );
+
         }
     }
 
@@ -58,69 +124,76 @@ class User extends Component{
         this.get100();
     }
 
+
     getUserPlaylists = () => {
         let url = window.location.href;
-        if(url.indexOf('localhost') > -1){
+        if (url.indexOf('localhost') > -1) {
             redirect_uri = 'http://localhost:3000/index'
         }
-        if (url.indexOf('token') > -1) {
-            let access_token = url.split('token=')[1];
 
-            this.setState({access_token})
+        let access_token = this.state.access_token
+        var options = {
+            url: 'https://api.spotify.com/v1/me',
+            headers: { 'Authorization': 'Bearer ' + access_token },
+            json: true
+        };
 
-            var options = {
-                url: 'https://api.spotify.com/v1/me',
+        // use the access token to access the Spotify Web API
+        request.get(options, (error, response, body) => {
+            console.log('Access token:' + access_token)
+            console.log(body);
+            this.setState({ user: body.id })
+
+            var aDatabase = firebase.database();
+            var mDatabase = aDatabase.ref();
+
+            var myRef = mDatabase.child(this.state.user).child('spotify_id');
+
+            if (myRef == null) {
+                this.writeUserData(this.state.user)
+
+            }
+
+            console.log('user: ' + this.state.user)
+            var playlistOptions = {
+                url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
+                qs: { limit: '10' },
                 headers: { 'Authorization': 'Bearer ' + access_token },
                 json: true
             };
 
+            console.log('user right before playlist: ' + this.state.user)
+
             // use the access token to access the Spotify Web API
-            request.get(options, (error, response, body) => {
-                console.log('Access token:' + access_token)
+            request.get(playlistOptions, (error, response, body) => {
                 console.log(body);
-                this.setState({user: body.id})
-                console.log('user: ' + this.state.user)
-                var playlistOptions = {
-                    url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
-                    qs: {limit: '10'},
-                    headers: { 'Authorization': 'Bearer ' + access_token },
-                    json: true
-                };
-
-                console.log('user right before playlist: ' + this.state.user)
-
-                // use the access token to access the Spotify Web API
-                request.get(playlistOptions, (error, response, body) => {
-                    console.log(body);
-                    this.setState({playlists: body.items})
-                    for(var i = 0; i < this.state.playlists.length; i++){
-                        this.state.playlists[i].key = i.id
-                        console.log(this.state.playlists[i].key)
-                    }
-                    console.log('this.state.playlists' + this.state.playlists)
-                });
+                this.setState({ playlists: body.items })
+                for (var i = 0; i < this.state.playlists.length; i++) {
+                    this.state.playlists[i].key = i.id
+                    console.log(this.state.playlists[i].key)
+                }
+                console.log('this.state.playlists' + this.state.playlists)
             });
-
-        }
+        });
     }
     assignPlaylistTracksName = (items) => {
-        if(typeof(items) != 'undefined'){
-            if(items != 0){
+        if (typeof (items) != 'undefined') {
+            if (items != 0) {
                 this.state.playlisttracknames = items.map((i) =>
-                <li>{i.track.id}</li>
+                    <li>{i.track.id}</li>
                 )
-            }else{
+            } else {
                 this.state.playlisttracknames = <p>No playlists to display</p>
             }
         }
     }
     assignTrackFeatures = (items) => {
-        if(typeof(items) != 'undefined'){
-            if(items != 0){
+        if (typeof (items) != 'undefined') {
+            if (items != 0) {
                 this.state.trackFeatures = items.map((i) =>
-                <li>{i.track.id}</li>
+                    <li>{i.track.id}</li>
                 )
-            }else{
+            } else {
                 this.state.playlisttracknames = <p>No playlists to display</p>
             }
         }
@@ -150,10 +223,11 @@ class User extends Component{
       
         return user;
       }*/
-    
+
     comparePlaylists = async () => {
         //clear arrays
-        this.setState({trackFeatures: [],
+        this.setState({
+            trackFeatures: [],
             genres: [],
             artistID: [],
             name: [],
@@ -167,9 +241,10 @@ class User extends Component{
             mostCompatibleIndex: -1,
             compatibility: 'generating',
             status: '',
-            loading: true})
+            loading: true
+        })
         //create arrays with selected playlist attributes
-        for(let i = 0; i < this.state.playlisttracknames.length; i++){
+        for (let i = 0; i < this.state.playlisttracknames.length; i++) {
             var id = this.state.playlisttracknames[i].props.children;
             var trackOptions = {
                 method: 'GET',
@@ -184,20 +259,22 @@ class User extends Component{
                 json: true
             };
             await axios(audioFeaturesOptions)
-            .then((body) => {
-                this.setState({ trackFeatures: [...this.state.trackFeatures, body.data]})          
-                console.log(this.state.trackFeatures);
-            });
+                .then((body) => {
+                    this.setState({ trackFeatures: [...this.state.trackFeatures, body.data] })
+                    console.log(this.state.trackFeatures);
+                });
             /*request.get(audioFeaturesOptions, (error, response, body) => {
                 this.state.trackFeatures = body;*/
 
-                await axios(trackOptions)      
+            await axios(trackOptions)
                 .then((body) => {
-                    if(body.data.artists != 0){
-                        this.setState({ artistID: [...this.state.artistID, body.data.artists[0].id],
-                                        artist: [...this.state.artist, body.data.artists[0].name],
-                                        name: [...this.state.name, body.data.name],
-                                        status: "Analyzing Playlist 1: " + body.data.name}) 
+                    if (body.data.artists != 0) {
+                        this.setState({
+                            artistID: [...this.state.artistID, body.data.artists[0].id],
+                            artist: [...this.state.artist, body.data.artists[0].name],
+                            name: [...this.state.name, body.data.name],
+                            status: "Analyzing Playlist 1: " + body.data.name
+                        })
                         console.log(this.state.artistID);
                         console.log(this.state.artist)
                         console.log(this.state.name)
@@ -209,109 +286,111 @@ class User extends Component{
                             console.log(this.state.genres)
                         });*/
                     }
-                });                        
-                var artistOptions = {
-                    method: 'GET',
-                    url: `https://api.spotify.com/v1/artists/${this.state.artistID[i]}`,
-                    headers: { 'Authorization': 'Bearer ' + this.state.access_token },
-                    json: true
-                };
-                await axios(artistOptions)
-                    .then((body) => {
-                        this.setState({ genres: [...this.state.genres, body.data.genres]}) 
+                });
+            var artistOptions = {
+                method: 'GET',
+                url: `https://api.spotify.com/v1/artists/${this.state.artistID[i]}`,
+                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                json: true
+            };
+            await axios(artistOptions)
+                .then((body) => {
+                    this.setState({ genres: [...this.state.genres, body.data.genres] })
+                    /*this.state.genres = body.genres.map((i) =>
+                    <li>{i}</li>)*/
+                    console.log(this.state.genres)
+                });
+            /*request.get(trackOptions, (error, response, body) => {
+                if(body.artists != 0){
+                    var artistID = body.artists[0].id;
+                    console.log(artistID);
+                    var artistOptions = {
+                        url: `https://api.spotify.com/v1/artists/${artistID}`,
+                        headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                        json: true
+                    };
+                    request.get(artistOptions, (error, response, body) => {
+                        this.state.genres = body.name;
                         /*this.state.genres = body.genres.map((i) =>
-                        <li>{i}</li>)*/
+                        <li>{i}</li>)*
+                        console.log('genres')
                         console.log(this.state.genres)
-                    });
-                /*request.get(trackOptions, (error, response, body) => {
-                    if(body.artists != 0){
-                        var artistID = body.artists[0].id;
-                        console.log(artistID);
-                        var artistOptions = {
-                            url: `https://api.spotify.com/v1/artists/${artistID}`,
-                            headers: { 'Authorization': 'Bearer ' + this.state.access_token },
-                            json: true
-                        };
-                        request.get(artistOptions, (error, response, body) => {
+                    });*/
+            //}
+        }
+        //create arrays for top100playlist attributes
+        for (let j = 0; j < this.state.top100tracknames.length; j++) {
+            var id = this.state.top100tracknames[j].props.children;
+            var trackOptions = {
+                method: 'GET',
+                url: `https://api.spotify.com/v1/tracks/${id}`,
+                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                json: true
+            };
+            var audioFeaturesOptions = {
+                method: 'GET',
+                url: `https://api.spotify.com/v1/audio-features/${id}`,
+                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                json: true
+            };
+            await axios(audioFeaturesOptions)
+                .then((body) => {
+                    this.setState({ top100trackFeatures: [...this.state.top100trackFeatures, body.data] })
+                });
+            //*request.get(audioFeaturesOptions, (error, response, body) => {
+            console.log(this.state.top100trackFeatures);
+            await axios(trackOptions)
+                .then((body) => {
+                    if (body.data.artists != 0) {
+                        this.setState({
+                            top100artistID: [...this.state.top100artistID, body.data.artists[0].id],
+                            top100artist: [...this.state.top100artist, body.data.artists[0].name],
+                            top100name: [...this.state.top100name, body.data.name],
+                            status: "Analyzing Playlist 2: " + body.data.name
+                        })
+                        console.log(this.state.top100artistID);
+                        /*request.get(artistOptions, (error, response, body) => {
                             this.state.genres = body.name;
                             /*this.state.genres = body.genres.map((i) =>
                             <li>{i}</li>)*
                             console.log('genres')
                             console.log(this.state.genres)
                         });*/
-                    //}
-            }
-            //create arrays for top100playlist attributes
-            for(let j = 0; j < this.state.top100tracknames.length; j++){
-                var id = this.state.top100tracknames[j].props.children;
-                var trackOptions = {
-                    method: 'GET',
-                    url: `https://api.spotify.com/v1/tracks/${id}`,
-                    headers: { 'Authorization': 'Bearer ' + this.state.access_token },
-                    json: true
-                };
-                var audioFeaturesOptions = {
-                    method: 'GET',
-                    url: `https://api.spotify.com/v1/audio-features/${id}`,
-                    headers: { 'Authorization': 'Bearer ' + this.state.access_token },
-                    json: true
-                };
-                await axios(audioFeaturesOptions)
-                .then((body) => {
-                    this.setState({ top100trackFeatures: [...this.state.top100trackFeatures, body.data]}) 
+                    }
                 });
-                //*request.get(audioFeaturesOptions, (error, response, body) => {
-                console.log(this.state.top100trackFeatures);
-                    await axios(trackOptions)      
-                    .then((body) => {
-                        if(body.data.artists != 0){
-                            this.setState({ top100artistID: [...this.state.top100artistID, body.data.artists[0].id],
-                                            top100artist: [...this.state.top100artist, body.data.artists[0].name],
-                                            top100name: [...this.state.top100name, body.data.name],
-                                            status: "Analyzing Playlist 2: " + body.data.name}) 
-                            console.log(this.state.top100artistID);
-                            /*request.get(artistOptions, (error, response, body) => {
-                                this.state.genres = body.name;
-                                /*this.state.genres = body.genres.map((i) =>
-                                <li>{i}</li>)*
-                                console.log('genres')
-                                console.log(this.state.genres)
-                            });*/
-                        }
-                    });                        
+            var artistOptions = {
+                method: 'GET',
+                url: `https://api.spotify.com/v1/artists/${this.state.top100artistID[j]}`,
+                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                json: true
+            };
+            await axios(artistOptions)
+                .then((body) => {
+                    this.setState({ top100genres: [...this.state.top100genres, body.data.genres] })
+                    /*this.state.genres = body.genres.map((i) =>
+                    <li>{i}</li>)*/
+                    console.log(this.state.top100genres)
+                });
+            /*request.get(trackOptions, (error, response, body) => {
+                if(body.artists != 0){
+                    var artistID = body.artists[0].id;
+                    console.log(artistID);
                     var artistOptions = {
-                        method: 'GET',
-                        url: `https://api.spotify.com/v1/artists/${this.state.top100artistID[j]}`,
+                        url: `https://api.spotify.com/v1/artists/${artistID}`,
                         headers: { 'Authorization': 'Bearer ' + this.state.access_token },
                         json: true
                     };
-                    await axios(artistOptions)
-                        .then((body) => {
-                            this.setState({ top100genres: [...this.state.top100genres, body.data.genres]}) 
-                            /*this.state.genres = body.genres.map((i) =>
-                            <li>{i}</li>)*/
-                            console.log(this.state.top100genres)
-                        });
-                    /*request.get(trackOptions, (error, response, body) => {
-                        if(body.artists != 0){
-                            var artistID = body.artists[0].id;
-                            console.log(artistID);
-                            var artistOptions = {
-                                url: `https://api.spotify.com/v1/artists/${artistID}`,
-                                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
-                                json: true
-                            };
-                            request.get(artistOptions, (error, response, body) => {
-                                this.state.genres = body.name;
-                                /*this.state.genres = body.genres.map((i) =>
-                                <li>{i}</li>)*
-                                console.log('genres')
-                                console.log(this.state.genres)
-                            });*/
-                        //}
-                /*if(this.state.playlisttracknames[i].props.children == this.state.top100tracknames[j].props.children){
-                    c++;
-                }*/
+                    request.get(artistOptions, (error, response, body) => {
+                        this.state.genres = body.name;
+                        /*this.state.genres = body.genres.map((i) =>
+                        <li>{i}</li>)*
+                        console.log('genres')
+                        console.log(this.state.genres)
+                    });*/
+            //}
+            /*if(this.state.playlisttracknames[i].props.children == this.state.top100tracknames[j].props.children){
+                c++;
+            }*/
         }
         // var totalDifferenceScore = 0;
         // var danceabilityScore = 0, energyScore=0, speachinessScore=0, acousticnessScore=0, instrumentalnessScore=0, livenessScore=0, valenceScore = 0;
@@ -396,13 +475,15 @@ class User extends Component{
         // this.state.max = Math.trunc(this.state.max)
         // this.setState({compatibility: Math.trunc(100 - totalDifferenceScore/(this.state.playlisttracknames.length))})
         // console.log(this.state.compatibility)
-        this.setState({status: "Calculating score"})
+        this.setState({ status: "Calculating score" })
         let compatibility = await this.calculateScore();
-        this.setState({compatibility: compatibility,
-                        loading: false});
+        this.setState({
+            compatibility: compatibility,
+            loading: false
+        });
     }
 
-    calculateScore = () => {        
+    calculateScore = () => {
         return new Promise(resolve => {
         var totalDifferenceScore = 0;
         var playlist1Total = 0;
@@ -443,10 +524,19 @@ class User extends Component{
                                     break;
                                 }
                             }
+                            if (found == true)
+                                break;
                         }
-                        if(found == true)
-                            break;
                     }
+                    songDifferenceScore += differenceScore;
+                    //console.log(songDifferenceScore) 
+                }
+                songDifferenceScore /= this.state.top100trackFeatures.length;
+                if (songDifferenceScore > this.state.max) {
+                    console.log("current max: " + this.state.max)
+                    console.log("songDifferenceScore: " + songDifferenceScore)
+                    this.state.max = songDifferenceScore
+                    this.state.mostCompatibleIndex = i
                 }
                 if(differenceScore < imin){
                     imin = differenceScore;
@@ -576,10 +666,9 @@ class User extends Component{
         //this.state.max = Math.trunc(this.state.max)
         //this.setState({compatibility: Math.trunc(100 - totalDifferenceScore/(this.state.playlisttracknames.length))})
         //console.log(this.state.compatibility)
- 
         })
     }
-    
+
     getPlaylistTracks = (i) => {
         console.log(this.state.playlists[i])
         var tracksOptions = {
@@ -604,95 +693,96 @@ class User extends Component{
             /*console.log(body.items);    
             console.log(this.state.count);
             console.log(this.state.playlisttracknames);*/
-        }); 
+        });
 
     }
 
 
     refresh = () => {
-      var authOptions = {
-        url: 'https://accounts.spotify.com/api/token',
-        headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
-        form: {
-          grant_type: 'refresh_token',
-          refresh_token: this.state.refresh_token,
-        },
-        json: true
-      };
+        var authOptions = {
+            url: 'https://accounts.spotify.com/api/token',
+            headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
+            form: {
+                grant_type: 'refresh_token',
+                refresh_token: this.state.refresh_token,
+            },
+            json: true
+        };
 
-    request.post(authOptions, (error, response, body) => {
-      console.log(error);
-      if (!error && response.statusCode === 200) {
-
-        this.setState({
-          access_token: body.access_token
-          });
-        }
-      });
-      console.log("This is the new access_token"+ this.state.access_token);
-    } 
-
-    get100 = () =>{
-      //if(this.state.access_token == undefined){
-      //  console.log("Is undefined");
-      //  this.refresh();
-      //}
-      let url = window.location.href;
-      if(url.indexOf('localhost') > -1){
-          redirect_uri = 'http://localhost:3000/index'
-      }
-      if (url.indexOf('token') > -1) {
-          let access_token = url.split('token=')[1];
-
-          this.setState({access_token})
-
-          var options  = {
-            url: 'https://api.spotify.com/v1/playlists/'+ top100,
-            headers: { 'Authorization': 'Bearer ' + this.state.access_token },
-            json:true
-          };
-
-          request.get(options, (error, response, body) =>{
+        request.post(authOptions, (error, response, body) => {
             console.log(error);
-            console.log(body);
+            if (!error && response.statusCode === 200) {
 
-            this.setState({
-              playlist: body,
-              playlistName: body.name,
-              playlistDescription: body.description,
-              playlistTracks: body.tracks.items
-            })
+                this.setState({
+                    access_token: body.access_token
+                });
+            }
+        });
+        console.log("This is the new access_token" + this.state.access_token);
+    }
 
-          });
+    get100 = () => {
+        //if(this.state.access_token == undefined){
+        //  console.log("Is undefined");
+        //  this.refresh();
+        //}
+        let url = window.location.href;
+        if (url.indexOf('localhost') > -1) {
+            redirect_uri = 'http://localhost:3000/index'
+        }
+        if (url.indexOf('token') > -1) {
+            let access_token = url.split('token=')[1];
+
+            this.setState({ access_token })
+
+            var options = {
+                url: 'https://api.spotify.com/v1/playlists/' + top100,
+                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                json: true
+            };
+
+            request.get(options, (error, response, body) => {
+                console.log(error);
+                console.log(body);
+
+                this.setState({
+                    playlist: body,
+                    playlistName: body.name,
+                    playlistDescription: body.description,
+                    playlistTracks: body.tracks.items
+                })
+
+            });
         }
     }
 
 
 
     assigntop100tracknames = () => {
-      if(typeof(this.state.playlistTracks) != 'undefined'){
-           if(this.state.playlistTracks != 0){
-               this.state.top100tracknames = this.state.playlistTracks.map((i) =>
-               <li>{i.track.id}</li>
-               )
-           }else{
-               this.state.top100tracknames= <p>No playlists to display</p>
-           }
-       }
+        if (typeof (this.state.playlistTracks) != 'undefined') {
+            if (this.state.playlistTracks != 0) {
+                this.state.top100tracknames = this.state.playlistTracks.map((i) =>
+                    <li>{i.track.id}</li>
+                )
+            } else {
+                this.state.top100tracknames = <p>No playlists to display</p>
+            }
+        }
     };
 
     goToSettings = () => {
         let access_token = this.state.access_token;
         Router.push({
             pathname: '/settings',
-            query: { access_token } 
-        })
+            query: { access_token }
+        }, '/settings'
+        )
     }
 
-    render(){
+    render() {
         let playlists;
-        if(typeof(this.state.playlists) != 'undefined'){
-            if(this.state.playlists.length != 0){
+        if (typeof (this.state.playlists) != 'undefined') {
+            if (this.state.playlists.length != 0) {
                 playlists = this.state.playlists.map((i, index) =>
                 <div>
                     <li>
@@ -700,31 +790,32 @@ class User extends Component{
                         <button className = "button" onClick={() => this.getPlaylistTracks(index)}>
                             Select
                         </button>
-                    </li>
-                </div>
+                        </li>
+                    </div>
                 )
-            }else{
+            } else {
                 playlists = <p>No playlists to display</p>
             }
         }
         this.assigntop100tracknames();
         var message = ''
-        var status =  ''
-        if(this.state.compatibility < 0){
+        var status = ''
+        if (this.state.compatibility < 0) {
             message = ''
-        }else if((this.state.compatibility) == 'generating'){
-            message = `Generating compatibility. Status:` 
+        } else if ((this.state.compatibility) == 'generating') {
+            message = `Generating compatibility. Status:`
             status = `${this.state.status}`
-        }else if(this.state.compatibility > 0){
+        } else if (this.state.compatibility > 0) {
             status = ''
             message = `These playlists are ${this.state.compatibility}% compatible!`
             message += `\nThese playlists are ${this.state.attributeScore}% similar in terms of ${this.state.attribute}.`
-            message += "\n" + this.state.name[this.state.mostCompatibleIndex] + " by " + this.state.artist[this.state.mostCompatibleIndex] + ` is the most compatible song by ${this.state.max}%.` 
+            message += "\n" + this.state.name[this.state.mostCompatibleIndex] + " by " + this.state.artist[this.state.mostCompatibleIndex] + ` is the most compatible song by ${this.state.max}%.`
         }
-        
+
 
         return (
             <div>
+                <Header props={this.state.access_token} />
                 <button onClick={() => this.goToSettings()}>
                     Settings
                 </button>
@@ -732,7 +823,7 @@ class User extends Component{
                 <p>Access Token: {this.state.access_token}</p>
                 <p>User ID: {this.state.user}</p>
                 <p>Playlists:</p>
-                <ul>{playlists}</ul>                
+                <ul>{playlists}</ul>
                 <div className="sweet-loading">
                     <ScaleLoader
                         css={override}
@@ -744,7 +835,7 @@ class User extends Component{
                         color={"#36D7B7"}
                         loading={this.state.loading}
                     />
-                </div> 
+                </div>
                 <p>{message}</p>
                 <p>{status}</p>
             </div>

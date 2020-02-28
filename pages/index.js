@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import User from '../pages/user'
 import styles from '../pages/index.module.css'
+import Header from '../components/Header'
 
-
+//var firebase = require('firebase/app');
 var querystring = require('querystring');
 var request = require('request')
 var client_id = '2923d79235804ea58633989710346f3d';
@@ -19,8 +20,12 @@ class Spotify extends Component {
       access_token: '',
       refresh_token: ''
     }
+
   }
 
+
+ 
+  
 
   componentDidMount = () => {
     let url = window.location.href;
@@ -91,12 +96,14 @@ class Spotify extends Component {
           scope: scope,
           redirect_uri: redirect_uri,
           state: this.generateRandomString(16)
+          
         });
     } else {
       Router.push({
         pathname: '/user',
         query: { access_token } //may be unnecessary
-      })
+      }, '/user'
+      )
     }
   }
 
@@ -109,6 +116,7 @@ class Spotify extends Component {
 
     return (
         <div>
+          <Header props={this.state.access_token} />
             <h1 className={styles.center}> Welcome to Spotifynd Friends! </h1>
       <div className="row justify-content-center mt-5">
             <button onClick={event => this.makeSpotifyProfileCall(event)} className={styles.button}>
