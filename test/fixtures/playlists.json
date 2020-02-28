@@ -1,0 +1,154 @@
+{
+    "playlist1": {
+      "success": {
+        "res": {
+          "statusCode": 200,
+          "headers": {
+            "content-type": "application/json"
+          }
+        },
+        "body": {
+          "status": "success",
+          "trackFeatures": [{
+            "danceability": 0.896,
+            "energy": 0.586,
+            "key": 10,
+            "loudness": -6.687,
+            "mode": 0,
+            "speechiness": 0.0559,
+            "acousticness": 0.104,
+            "instrumentalness": 0,
+            "liveness": 0.79,
+            "valence": 0.642,
+            "tempo": 116.971,
+            "type": "audio_features",
+            "id": "0nbXyq5TXYPCO7pr3N8S4I",
+            "uri": "spotify:track:0nbXyq5TXYPCO7pr3N8S4I",
+            "track_href": "https://api.spotify.com/v1/tracks/0nbXyq5TXYPCO7pr3N8S4I",
+            "analysis_url": "https://api.spotify.com/v1/audio-analysis/0nbXyq5TXYPCO7pr3N8S4I",
+            "duration_ms": 196653,
+            "time_signature": 4
+         },
+         {
+            "danceability": 0.771,
+            "energy": 0.671,
+            "key": 2,
+            "loudness": -5.617,
+            "mode": 1,
+            "speechiness": 0.0553,
+            "acousticness": 0.00929,
+            "instrumentalness": 0,
+            "liveness": 0.0637,
+            "valence": 0.714,
+            "tempo": 85.026,
+            "type": "audio_features",
+            "id": "6RRNNciQGZEXnqk8SQ9yv5",
+            "uri": "spotify:track:6RRNNciQGZEXnqk8SQ9yv5",
+            "track_href": "https://api.spotify.com/v1/tracks/6RRNNciQGZEXnqk8SQ9yv5",
+            "analysis_url": "https://api.spotify.com/v1/audio-analysis/6RRNNciQGZEXnqk8SQ9yv5",
+            "duration_ms": 171360,
+            "time_signature": 4
+         },
+         {
+            "danceability": 0.343,
+            "energy": 0.00528,
+            "key": 1,
+            "loudness": -30.074,
+            "mode": 0,
+            "speechiness": 0.0524,
+            "acousticness": 0.993,
+            "instrumentalness": 0.867,
+            "liveness": 0.0888,
+            "valence": 0.226,
+            "tempo": 140.213,
+            "type": "audio_features",
+            "id": "14LnbVqMEasGX48zJsPrvG",
+            "uri": "spotify:track:14LnbVqMEasGX48zJsPrvG",
+            "track_href": "https://api.spotify.com/v1/tracks/14LnbVqMEasGX48zJsPrvG",
+            "analysis_url": "https://api.spotify.com/v1/audio-analysis/14LnbVqMEasGX48zJsPrvG",
+            "duration_ms": 257507,
+            "time_signature": 4}],
+        "artistID": ["757aE44tKEUQEqRuT6GnEB", "06HL4z0CvFAxyc27GXpf02", "7y97mc3bZRFXzT2szRM4L4"],
+        "artist": ["Roddy Ricch", "Taylor Swift", "Frédéric Chopin"],
+        "name": ["The Box", "You Need To Calm Down", "Nocturne in C-Sharp Minor, B. 49"],
+        "genres": [["melodic rap", "rap"],["dance pop", "pop", "post-teen pop"],["classical", "early romantic era", "polish classical"]]
+        }
+      }
+    },
+    "playlist2": {
+        "success": {
+          "res": {
+            "statusCode": 200,
+            "headers": {
+              "content-type": "application/json"
+            }
+          },
+          "body": {
+            "status": "success",
+            "trackFeatures": [{
+              "danceability": 0.896,
+              "energy": 0.586,
+              "key": 10,
+              "loudness": -6.687,
+              "mode": 0,
+              "speechiness": 0.0559,
+              "acousticness": 0.104,
+              "instrumentalness": 0,
+              "liveness": 0.79,
+              "valence": 0.642,
+              "tempo": 116.971,
+              "type": "audio_features",
+              "id": "0nbXyq5TXYPCO7pr3N8S4I",
+              "uri": "spotify:track:0nbXyq5TXYPCO7pr3N8S4I",
+              "track_href": "https://api.spotify.com/v1/tracks/0nbXyq5TXYPCO7pr3N8S4I",
+              "analysis_url": "https://api.spotify.com/v1/audio-analysis/0nbXyq5TXYPCO7pr3N8S4I",
+              "duration_ms": 196653,
+              "time_signature": 4
+           },
+           {
+                "danceability": 0.794,
+                "energy": 0.793,
+                "key": 11,
+                "loudness": -4.521,
+                "mode": 0,
+                "speechiness": 0.0842,
+                "acousticness": 0.0125,
+                "instrumentalness": 0,
+                "liveness": 0.0952,
+                "valence": 0.677,
+                "tempo": 123.941,
+                "type": "audio_features",
+                "id": "6WrI0LAC5M1Rw2MnX2ZvEg",
+                "uri": "spotify:track:6WrI0LAC5M1Rw2MnX2ZvEg",
+                "track_href": "https://api.spotify.com/v1/tracks/6WrI0LAC5M1Rw2MnX2ZvEg",
+                "analysis_url": "https://api.spotify.com/v1/audio-analysis/6WrI0LAC5M1Rw2MnX2ZvEg",
+                "duration_ms": 183290,
+                "time_signature": 4
+           },
+           {
+                "danceability": 0.664,
+                "energy": 0.666,
+                "key": 8,
+                "loudness": -2.203,
+                "mode": 1,
+                "speechiness": 0.0446,
+                "acousticness": 0.193,
+                "instrumentalness": 0,
+                "liveness": 0.0854,
+                "valence": 0.405,
+                "tempo": 139.987,
+                "type": "audio_features",
+                "id": "3CYH422oy1cZNoo0GTG1TK",
+                "uri": "spotify:track:3CYH422oy1cZNoo0GTG1TK",
+                "track_href": "https://api.spotify.com/v1/tracks/3CYH422oy1cZNoo0GTG1TK",
+                "analysis_url": "https://api.spotify.com/v1/audio-analysis/3CYH422oy1cZNoo0GTG1TK",
+                "duration_ms": 210560,
+                "time_signature": 4}],
+          "artistID": ["757aE44tKEUQEqRuT6GnEB", "6M2wZ9GZgrQXHCFfjv46we", "1z4g3DjTBBZKhvAroFlhOM"],
+          "artist": ["Roddy Ricch", "Dua Lipa", "Red Velvet"],
+          "name": ["The Box", "Don't Start Now", "Psycho"],
+          "genres": [["melodic rap", "rap"],[ "dance pop","pop","post-teen pop","uk pop"],["k-pop", "k-pop girl group"]]
+          }
+        }
+      }
+}

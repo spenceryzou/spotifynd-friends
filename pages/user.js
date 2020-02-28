@@ -10,7 +10,7 @@ var client_id = '2923d79235804ea58633989710346f3d';
 var client_secret = 'd4813d196edf4940b58ba0aeedbf9ebc';
 var redirect_uri = 'https://spotifynd-friends.herokuapp.com/';
 var scope = 'user-read-private user-read-email playlist-read-private';
-var top100 = '37i9dQZF1DXcBWIGoYBM5M';
+var top100 = '5tNkbVArsyCoI4NeO4QpCx';
 
 const override = css`
   display: block;
@@ -125,12 +125,12 @@ class User extends Component{
             }
         }
     }
-    getAudioFeatures = async (options) => {
+    /*getAudioFeatures = async (options) => {
         await axios(options)
             .then((body) => {
                 this.state.trackFeatures = body;
             });
-    }
+    }*/
     /*const user_account = async (access_token) => {
 
         const user = await axios.get("https://api.spotify.com/v1/me", {
@@ -199,6 +199,8 @@ class User extends Component{
                                         name: [...this.state.name, body.data.name],
                                         status: "Analyzing Playlist 1: " + body.data.name}) 
                         console.log(this.state.artistID);
+                        console.log(this.state.artist)
+                        console.log(this.state.name)
                         /*request.get(artistOptions, (error, response, body) => {
                             this.state.genres = body.name;
                             /*this.state.genres = body.genres.map((i) =>
@@ -566,6 +568,7 @@ class User extends Component{
         //     //console.log(`These playlists are `+ valenceScore + `% compatible by danceability.`)
         // }
         // console.log('done')
+        console.log()
         if(playlist1Total > playlist2Total)
             resolve(Math.trunc(playlist2Total))
         else
@@ -578,7 +581,7 @@ class User extends Component{
     }
     
     getPlaylistTracks = (i) => {
-        console.log(this.state.playlists[i].tracks.href)
+        console.log(this.state.playlists[i])
         var tracksOptions = {
             url: this.state.playlists[i].tracks.href,
             headers: { 'Authorization': 'Bearer ' + this.state.access_token },
@@ -694,7 +697,7 @@ class User extends Component{
                 <div>
                     <li>
                         {i.name}
-                        <button onClick={() => this.getPlaylistTracks(index)}>
+                        <button className = "button" onClick={() => this.getPlaylistTracks(index)}>
                             Select
                         </button>
                     </li>
