@@ -88,13 +88,13 @@ class User extends Component {
         
   
         dbRef.orderByChild('spotify_id').startAt(0).on("child_added", snapshot => {
-          if (snapshot.exists()) {
+          
+          //ignore key if it is you
+          if (snapshot.exists() && snapshot.key != this.state.user ) {
 
             console.log(snapshot.key)
 
             this.setState({ listOfUsers: [...this.state.listOfUsers, snapshot.key] })
-                    /*this.state.genres = body.genres.map((i) =>
-                    <li>{i}</li>)*/
              console.log(this.state.listOfUsers)
 
           }
@@ -823,6 +823,27 @@ class User extends Component {
                 playlists = <p>No playlists to display</p>
             }
         }
+
+        let list_ofUsers;
+
+        if (typeof (this.state.listOfUsers) != 'undefined') {
+            if (this.state.listOfUsers.length != 0) {
+                list_ofUsers = this.state.listOfUsers.map((i, index) =>
+                <div>
+                    <li>
+                        {i}
+                        <button className = "button" /*onClick={() => redirect to user page } */>
+                            Select User
+                        </button>
+                        </li>
+                    </div>
+                )
+            } else {
+                playlists = <p>No user to choose from</p>
+            }
+        }
+
+
         this.assigntop100tracknames();
         var message = ''
         var status = ''
@@ -850,6 +871,10 @@ class User extends Component {
                 <p>User ID: {this.state.user}</p>
                 <p>Playlists:</p>
                 <ul>{playlists}</ul>
+
+                <p>Compatible Users:</p>
+                <ul>{list_ofUsers}</ul>
+
                 <div className="sweet-loading">
                     <ScaleLoader
                         css={override}
