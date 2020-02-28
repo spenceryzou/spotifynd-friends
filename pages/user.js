@@ -55,7 +55,8 @@ class User extends Component {
             attribute: '',
             attributeScore: -1,
             status: '',
-            loading: false
+            loading: false,
+            listOfUsers: []
         }
         const firebaseConfig = {
             apiKey: "AIzaSyCBmjWVAetSGAQ2E7uE0oh5_lG--ogkWbc",
@@ -79,6 +80,27 @@ class User extends Component {
         console.log("query " + JSON.stringify({query}))
         return {query}
     }
+
+    showDBusers = () => {
+        var dbRef = firebase.database().ref('users')
+        console.log(this.state.user)
+  
+        
+  
+        dbRef.orderByChild('spotify_id').startAt(0).on("child_added", snapshot => {
+          if (snapshot.exists()) {
+
+            console.log(snapshot.key)
+
+            this.setState({ listOfUsers: [...this.state.listOfUsers, snapshot.key] })
+                    /*this.state.genres = body.genres.map((i) =>
+                    <li>{i}</li>)*/
+             console.log(this.state.listOfUsers)
+
+          }
+         
+        });
+      }
 
     writeUserData = (spotifyid) => {
         var database = firebase.database();
@@ -151,9 +173,10 @@ class User extends Component {
 
             if (myRef == null) {
                 this.writeUserData(this.state.user)
-
+                
             }
-
+            
+            this.showDBusers()
             console.log('user: ' + this.state.user)
             var playlistOptions = {
                 url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
