@@ -1,4 +1,10 @@
 # Spotifynd Friends
+
+## Github Actions
+### Documentation
+Our Github Actions currently run unit tests on various buttons on our app, as well as functional tests for all the functions of our app, including getting user information, getting topPlaylist information, getting playlist information, and comparing playlists.
+### Trigger
+on : push
 ## Project Summary
 ### Elevator Pitch  
 This webapp analyzes Spotify playlists and measures their compatability which can then be used to make friends and find people to go to concerts with.
