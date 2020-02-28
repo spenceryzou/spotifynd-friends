@@ -1,0 +1,486 @@
+{
+    "playlist1": {
+      "success": {
+        "res": {
+          "statusCode": 200,
+          "headers": {
+            "content-type": "application/json"
+          }
+        },
+        "body": {
+          "status": "success",
+          "trackFeatures": [{
+            "danceability": 0.896,
+            "energy": 0.586,
+            "key": 10,
+            "loudness": -6.687,
+            "mode": 0,
+            "speechiness": 0.0559,
+            "acousticness": 0.104,
+            "instrumentalness": 0,
+            "liveness": 0.79,
+            "valence": 0.642,
+            "tempo": 116.971,
+            "type": "audio_features",
+            "id": "0nbXyq5TXYPCO7pr3N8S4I",
+            "uri": "spotify:track:0nbXyq5TXYPCO7pr3N8S4I",
+            "track_href": "https://api.spotify.com/v1/tracks/0nbXyq5TXYPCO7pr3N8S4I",
+            "analysis_url": "https://api.spotify.com/v1/audio-analysis/0nbXyq5TXYPCO7pr3N8S4I",
+            "duration_ms": 196653,
+            "time_signature": 4
+         },
+         {
+            "danceability": 0.771,
+            "energy": 0.671,
+            "key": 2,
+            "loudness": -5.617,
+            "mode": 1,
+            "speechiness": 0.0553,
+            "acousticness": 0.00929,
+            "instrumentalness": 0,
+            "liveness": 0.0637,
+            "valence": 0.714,
+            "tempo": 85.026,
+            "type": "audio_features",
+            "id": "6RRNNciQGZEXnqk8SQ9yv5",
+            "uri": "spotify:track:6RRNNciQGZEXnqk8SQ9yv5",
+            "track_href": "https://api.spotify.com/v1/tracks/6RRNNciQGZEXnqk8SQ9yv5",
+            "analysis_url": "https://api.spotify.com/v1/audio-analysis/6RRNNciQGZEXnqk8SQ9yv5",
+            "duration_ms": 171360,
+            "time_signature": 4
+         },
+         {
+            "danceability": 0.343,
+            "energy": 0.00528,
+            "key": 1,
+            "loudness": -30.074,
+            "mode": 0,
+            "speechiness": 0.0524,
+            "acousticness": 0.993,
+            "instrumentalness": 0.867,
+            "liveness": 0.0888,
+            "valence": 0.226,
+            "tempo": 140.213,
+            "type": "audio_features",
+            "id": "14LnbVqMEasGX48zJsPrvG",
+            "uri": "spotify:track:14LnbVqMEasGX48zJsPrvG",
+            "track_href": "https://api.spotify.com/v1/tracks/14LnbVqMEasGX48zJsPrvG",
+            "analysis_url": "https://api.spotify.com/v1/audio-analysis/14LnbVqMEasGX48zJsPrvG",
+            "duration_ms": 257507,
+            "time_signature": 4}],
+        "artistID": ["757aE44tKEUQEqRuT6GnEB", "06HL4z0CvFAxyc27GXpf02", "7y97mc3bZRFXzT2szRM4L4"],
+        "artist": ["Roddy Ricch", "Taylor Swift", "Frédéric Chopin"],
+        "name": ["The Box", "You Need To Calm Down", "Nocturne in C-Sharp Minor, B. 49"],
+        "genres": [["melodic rap", "rap"],["dance pop", "pop", "post-teen pop"],["classical", "early romantic era", "polish classical"]]
+        }
+      }
+    },
+    "playlist2": {
+        "success": {
+          "res": {
+            "statusCode": 200,
+            "headers": {
+              "content-type": "application/json"
+            }
+          },
+          "body": {
+            "status": "success",
+            "trackFeatures": [{
+              "danceability": 0.896,
+              "energy": 0.586,
+              "key": 10,
+              "loudness": -6.687,
+              "mode": 0,
+              "speechiness": 0.0559,
+              "acousticness": 0.104,
+              "instrumentalness": 0,
+              "liveness": 0.79,
+              "valence": 0.642,
+              "tempo": 116.971,
+              "type": "audio_features",
+              "id": "0nbXyq5TXYPCO7pr3N8S4I",
+              "uri": "spotify:track:0nbXyq5TXYPCO7pr3N8S4I",
+              "track_href": "https://api.spotify.com/v1/tracks/0nbXyq5TXYPCO7pr3N8S4I",
+              "analysis_url": "https://api.spotify.com/v1/audio-analysis/0nbXyq5TXYPCO7pr3N8S4I",
+              "duration_ms": 196653,
+              "time_signature": 4
+           },
+           {
+                "danceability": 0.794,
+                "energy": 0.793,
+                "key": 11,
+                "loudness": -4.521,
+                "mode": 0,
+                "speechiness": 0.0842,
+                "acousticness": 0.0125,
+                "instrumentalness": 0,
+                "liveness": 0.0952,
+                "valence": 0.677,
+                "tempo": 123.941,
+                "type": "audio_features",
+                "id": "6WrI0LAC5M1Rw2MnX2ZvEg",
+                "uri": "spotify:track:6WrI0LAC5M1Rw2MnX2ZvEg",
+                "track_href": "https://api.spotify.com/v1/tracks/6WrI0LAC5M1Rw2MnX2ZvEg",
+                "analysis_url": "https://api.spotify.com/v1/audio-analysis/6WrI0LAC5M1Rw2MnX2ZvEg",
+                "duration_ms": 183290,
+                "time_signature": 4
+           },
+           {
+                "danceability": 0.664,
+                "energy": 0.666,
+                "key": 8,
+                "loudness": -2.203,
+                "mode": 1,
+                "speechiness": 0.0446,
+                "acousticness": 0.193,
+                "instrumentalness": 0,
+                "liveness": 0.0854,
+                "valence": 0.405,
+                "tempo": 139.987,
+                "type": "audio_features",
+                "id": "3CYH422oy1cZNoo0GTG1TK",
+                "uri": "spotify:track:3CYH422oy1cZNoo0GTG1TK",
+                "track_href": "https://api.spotify.com/v1/tracks/3CYH422oy1cZNoo0GTG1TK",
+                "analysis_url": "https://api.spotify.com/v1/audio-analysis/3CYH422oy1cZNoo0GTG1TK",
+                "duration_ms": 210560,
+                "time_signature": 4}],
+          "artistID": ["757aE44tKEUQEqRuT6GnEB", "6M2wZ9GZgrQXHCFfjv46we", "1z4g3DjTBBZKhvAroFlhOM"],
+          "artist": ["Roddy Ricch", "Dua Lipa", "Red Velvet"],
+          "name": ["The Box", "Don't Start Now", "Psycho"],
+          "genres": [["melodic rap", "rap"],[ "dance pop","pop","post-teen pop","uk pop"],["k-pop", "k-pop girl group"]]
+          }
+        }
+      },
+      "default":{
+            "collaborative": false,
+            "description": "",
+            "external_urls": {
+              "spotify": "https://open.spotify.com/playlist/5tNkbVArsyCoI4NeO4QpCx"
+            },
+            "followers": {
+              "href": null,
+              "total": 0
+            },
+            "href": "https://api.spotify.com/v1/playlists/5tNkbVArsyCoI4NeO4QpCx",
+            "id": "5tNkbVArsyCoI4NeO4QpCx",
+            "images": [
+              {
+                "height": 640,
+                "url": "https://i.scdn.co/image/ab67616d0000b273600adbc750285ea1a8da249f",
+                "width": 640
+              }
+            ],
+            "name": "SPENCER PUBLIC STUB 2",
+            "owner": {
+              "display_name": "danielxzou",
+              "external_urls": {
+                "spotify": "https://open.spotify.com/user/danielxzou"
+              },
+              "href": "https://api.spotify.com/v1/users/danielxzou",
+              "id": "danielxzou",
+              "type": "user",
+              "uri": "spotify:user:danielxzou"
+            },
+            "primary_color": null,
+            "public": true,
+            "snapshot_id": "NCw4MDcyNzgyNzg1ZjRiZjlkYTFmYzk2YjRmYTRjOTQ0YWRkMTIwM2Fk",
+            "tracks": {
+              "href": "https://api.spotify.com/v1/playlists/5tNkbVArsyCoI4NeO4QpCx/tracks?offset=0&limit=100&market=US",
+              "items": [
+                {
+                  "added_at": "2020-02-28T00:27:22Z",
+                  "added_by": {
+                    "external_urls": {
+                      "spotify": "https://open.spotify.com/user/danielxzou"
+                    },
+                    "href": "https://api.spotify.com/v1/users/danielxzou",
+                    "id": "danielxzou",
+                    "type": "user",
+                    "uri": "spotify:user:danielxzou"
+                  },
+                  "is_local": false,
+                  "primary_color": null,
+                  "track": {
+                    "album": {
+                      "album_type": "album",
+                      "artists": [
+                        {
+                          "external_urls": {
+                            "spotify": "https://open.spotify.com/artist/757aE44tKEUQEqRuT6GnEB"
+                          },
+                          "href": "https://api.spotify.com/v1/artists/757aE44tKEUQEqRuT6GnEB",
+                          "id": "757aE44tKEUQEqRuT6GnEB",
+                          "name": "Roddy Ricch",
+                          "type": "artist",
+                          "uri": "spotify:artist:757aE44tKEUQEqRuT6GnEB"
+                        }
+                      ],
+                      "external_urls": {
+                        "spotify": "https://open.spotify.com/album/52u4anZbHd6UInnmHRFzba"
+                      },
+                      "href": "https://api.spotify.com/v1/albums/52u4anZbHd6UInnmHRFzba",
+                      "id": "52u4anZbHd6UInnmHRFzba",
+                      "images": [
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab67616d0000b273600adbc750285ea1a8da249f",
+                          "width": 640
+                        },
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67616d00001e02600adbc750285ea1a8da249f",
+                          "width": 300
+                        },
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab67616d00004851600adbc750285ea1a8da249f",
+                          "width": 64
+                        }
+                      ],
+                      "name": "Please Excuse Me For Being Antisocial",
+                      "release_date": "2019-12-06",
+                      "release_date_precision": "day",
+                      "total_tracks": 16,
+                      "type": "album",
+                      "uri": "spotify:album:52u4anZbHd6UInnmHRFzba"
+                    },
+                    "artists": [
+                      {
+                        "external_urls": {
+                          "spotify": "https://open.spotify.com/artist/757aE44tKEUQEqRuT6GnEB"
+                        },
+                        "href": "https://api.spotify.com/v1/artists/757aE44tKEUQEqRuT6GnEB",
+                        "id": "757aE44tKEUQEqRuT6GnEB",
+                        "name": "Roddy Ricch",
+                        "type": "artist",
+                        "uri": "spotify:artist:757aE44tKEUQEqRuT6GnEB"
+                      }
+                    ],
+                    "disc_number": 1,
+                    "duration_ms": 196652,
+                    "episode": false,
+                    "explicit": true,
+                    "external_ids": {
+                      "isrc": "USAT21906978"
+                    },
+                    "external_urls": {
+                      "spotify": "https://open.spotify.com/track/0nbXyq5TXYPCO7pr3N8S4I"
+                    },
+                    "href": "https://api.spotify.com/v1/tracks/0nbXyq5TXYPCO7pr3N8S4I",
+                    "id": "0nbXyq5TXYPCO7pr3N8S4I",
+                    "is_local": false,
+                    "is_playable": true,
+                    "name": "The Box",
+                    "popularity": 100,
+                    "preview_url": "https://p.scdn.co/mp3-preview/52c74a85b9b187b8f51bfe1c7b19a25f7624161a?cid=774b29d4f13844c495f206cafdad9c86",
+                    "track": true,
+                    "track_number": 2,
+                    "type": "track",
+                    "uri": "spotify:track:0nbXyq5TXYPCO7pr3N8S4I"
+                  },
+                  "video_thumbnail": {
+                    "url": null
+                  }
+                },
+                {
+                  "added_at": "2020-02-28T00:27:34Z",
+                  "added_by": {
+                    "external_urls": {
+                      "spotify": "https://open.spotify.com/user/danielxzou"
+                    },
+                    "href": "https://api.spotify.com/v1/users/danielxzou",
+                    "id": "danielxzou",
+                    "type": "user",
+                    "uri": "spotify:user:danielxzou"
+                  },
+                  "is_local": false,
+                  "primary_color": null,
+                  "track": {
+                    "album": {
+                      "album_type": "single",
+                      "artists": [
+                        {
+                          "external_urls": {
+                            "spotify": "https://open.spotify.com/artist/6M2wZ9GZgrQXHCFfjv46we"
+                          },
+                          "href": "https://api.spotify.com/v1/artists/6M2wZ9GZgrQXHCFfjv46we",
+                          "id": "6M2wZ9GZgrQXHCFfjv46we",
+                          "name": "Dua Lipa",
+                          "type": "artist",
+                          "uri": "spotify:artist:6M2wZ9GZgrQXHCFfjv46we"
+                        }
+                      ],
+                      "external_urls": {
+                        "spotify": "https://open.spotify.com/album/0ix3XtPV1LwmZADsprKxcp"
+                      },
+                      "href": "https://api.spotify.com/v1/albums/0ix3XtPV1LwmZADsprKxcp",
+                      "id": "0ix3XtPV1LwmZADsprKxcp",
+                      "images": [
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab67616d0000b2738583df1a14bea9175f9ac520",
+                          "width": 640
+                        },
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67616d00001e028583df1a14bea9175f9ac520",
+                          "width": 300
+                        },
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab67616d000048518583df1a14bea9175f9ac520",
+                          "width": 64
+                        }
+                      ],
+                      "name": "Don't Start Now",
+                      "release_date": "2019-10-31",
+                      "release_date_precision": "day",
+                      "total_tracks": 1,
+                      "type": "album",
+                      "uri": "spotify:album:0ix3XtPV1LwmZADsprKxcp"
+                    },
+                    "artists": [
+                      {
+                        "external_urls": {
+                          "spotify": "https://open.spotify.com/artist/6M2wZ9GZgrQXHCFfjv46we"
+                        },
+                        "href": "https://api.spotify.com/v1/artists/6M2wZ9GZgrQXHCFfjv46we",
+                        "id": "6M2wZ9GZgrQXHCFfjv46we",
+                        "name": "Dua Lipa",
+                        "type": "artist",
+                        "uri": "spotify:artist:6M2wZ9GZgrQXHCFfjv46we"
+                      }
+                    ],
+                    "disc_number": 1,
+                    "duration_ms": 183290,
+                    "episode": false,
+                    "explicit": false,
+                    "external_ids": {
+                      "isrc": "GBAHT1901121"
+                    },
+                    "external_urls": {
+                      "spotify": "https://open.spotify.com/track/6WrI0LAC5M1Rw2MnX2ZvEg"
+                    },
+                    "href": "https://api.spotify.com/v1/tracks/6WrI0LAC5M1Rw2MnX2ZvEg",
+                    "id": "6WrI0LAC5M1Rw2MnX2ZvEg",
+                    "is_local": false,
+                    "is_playable": true,
+                    "name": "Don't Start Now",
+                    "popularity": 97,
+                    "preview_url": "https://p.scdn.co/mp3-preview/ed151225213380a41e5c4af00ff558e25b5875d1?cid=774b29d4f13844c495f206cafdad9c86",
+                    "track": true,
+                    "track_number": 1,
+                    "type": "track",
+                    "uri": "spotify:track:6WrI0LAC5M1Rw2MnX2ZvEg"
+                  },
+                  "video_thumbnail": {
+                    "url": null
+                  }
+                },
+                {
+                  "added_at": "2020-02-28T00:28:21Z",
+                  "added_by": {
+                    "external_urls": {
+                      "spotify": "https://open.spotify.com/user/danielxzou"
+                    },
+                    "href": "https://api.spotify.com/v1/users/danielxzou",
+                    "id": "danielxzou",
+                    "type": "user",
+                    "uri": "spotify:user:danielxzou"
+                  },
+                  "is_local": false,
+                  "primary_color": null,
+                  "track": {
+                    "album": {
+                      "album_type": "album",
+                      "artists": [
+                        {
+                          "external_urls": {
+                            "spotify": "https://open.spotify.com/artist/1z4g3DjTBBZKhvAroFlhOM"
+                          },
+                          "href": "https://api.spotify.com/v1/artists/1z4g3DjTBBZKhvAroFlhOM",
+                          "id": "1z4g3DjTBBZKhvAroFlhOM",
+                          "name": "Red Velvet",
+                          "type": "artist",
+                          "uri": "spotify:artist:1z4g3DjTBBZKhvAroFlhOM"
+                        }
+                      ],
+                      "external_urls": {
+                        "spotify": "https://open.spotify.com/album/3rVtm00UfbuzWOewdm4iYM"
+                      },
+                      "href": "https://api.spotify.com/v1/albums/3rVtm00UfbuzWOewdm4iYM",
+                      "id": "3rVtm00UfbuzWOewdm4iYM",
+                      "images": [
+                        {
+                          "height": 640,
+                          "url": "https://i.scdn.co/image/ab67616d0000b273df5022bdf1ac4bf52135c4be",
+                          "width": 640
+                        },
+                        {
+                          "height": 300,
+                          "url": "https://i.scdn.co/image/ab67616d00001e02df5022bdf1ac4bf52135c4be",
+                          "width": 300
+                        },
+                        {
+                          "height": 64,
+                          "url": "https://i.scdn.co/image/ab67616d00004851df5022bdf1ac4bf52135c4be",
+                          "width": 64
+                        }
+                      ],
+                      "name": "‘The ReVe Festival’ Finale",
+                      "release_date": "2019-12-23",
+                      "release_date_precision": "day",
+                      "total_tracks": 16,
+                      "type": "album",
+                      "uri": "spotify:album:3rVtm00UfbuzWOewdm4iYM"
+                    },
+                    "artists": [
+                      {
+                        "external_urls": {
+                          "spotify": "https://open.spotify.com/artist/1z4g3DjTBBZKhvAroFlhOM"
+                        },
+                        "href": "https://api.spotify.com/v1/artists/1z4g3DjTBBZKhvAroFlhOM",
+                        "id": "1z4g3DjTBBZKhvAroFlhOM",
+                        "name": "Red Velvet",
+                        "type": "artist",
+                        "uri": "spotify:artist:1z4g3DjTBBZKhvAroFlhOM"
+                      }
+                    ],
+                    "disc_number": 1,
+                    "duration_ms": 210560,
+                    "episode": false,
+                    "explicit": false,
+                    "external_ids": {
+                      "isrc": "KRA301900597"
+                    },
+                    "external_urls": {
+                      "spotify": "https://open.spotify.com/track/3CYH422oy1cZNoo0GTG1TK"
+                    },
+                    "href": "https://api.spotify.com/v1/tracks/3CYH422oy1cZNoo0GTG1TK",
+                    "id": "3CYH422oy1cZNoo0GTG1TK",
+                    "is_local": false,
+                    "is_playable": true,
+                    "name": "Psycho",
+                    "popularity": 84,
+                    "preview_url": "https://p.scdn.co/mp3-preview/ef27836e11b679c54eeb74bfc65824872c0b4f00?cid=774b29d4f13844c495f206cafdad9c86",
+                    "track": true,
+                    "track_number": 1,
+                    "type": "track",
+                    "uri": "spotify:track:3CYH422oy1cZNoo0GTG1TK"
+                  },
+                  "video_thumbnail": {
+                    "url": null
+                  }
+                }
+              ],
+              "limit": 100,
+              "next": null,
+              "offset": 0,
+              "previous": null,
+              "total": 3
+            },
+            "type": "playlist",
+            "uri": "spotify:playlist:5tNkbVArsyCoI4NeO4QpCx"
+          }
+      }
+
