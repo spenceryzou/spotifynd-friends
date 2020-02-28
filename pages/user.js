@@ -137,7 +137,7 @@ class User extends Component {
             headers: { 'Authorization': 'Bearer ' + access_token },
             json: true
         };
-
+        if(access_token != ""){
         // use the access token to access the Spotify Web API
         request.get(options, (error, response, body) => {
             console.log('Access token:' + access_token)
@@ -175,6 +175,7 @@ class User extends Component {
                 console.log('this.state.playlists' + this.state.playlists)
             });
         });
+     }
     }
     assignPlaylistTracksName = (items) => {
         if (typeof (items) != 'undefined') {
@@ -185,6 +186,7 @@ class User extends Component {
             } else {
                 this.state.playlisttracknames = <p>No playlists to display</p>
             }
+            console.log("playlist track names: "+this.state.playlisttracknames.length)
         }
     }
     assignTrackFeatures = (items) => {
@@ -493,6 +495,7 @@ class User extends Component {
             console.log('calculating')
             //var songDifferenceScore = 0;
             var imin = 100;
+            console.log(this.state.top100tracknames.length)
             for(let j = 0; j < this.state.top100tracknames.length; j++){
                 var differenceScore = 0;
                 // danceabilityScore += Math.abs(this.state.trackFeatures[i].danceability - this.state.top100trackFeatures[j].danceability)*10
@@ -528,7 +531,8 @@ class User extends Component {
                                 break;
                         }
                     }
-                    songDifferenceScore += differenceScore;
+                }
+                   /* songDifferenceScore += differenceScore;
                     //console.log(songDifferenceScore) 
                 }
                 songDifferenceScore /= this.state.top100trackFeatures.length;
@@ -537,7 +541,7 @@ class User extends Component {
                     console.log("songDifferenceScore: " + songDifferenceScore)
                     this.state.max = songDifferenceScore
                     this.state.mostCompatibleIndex = i
-                }
+                }*/
                 if(differenceScore < imin){
                     imin = differenceScore;
                 }
@@ -730,11 +734,10 @@ class User extends Component {
         if (url.indexOf('localhost') > -1) {
             redirect_uri = 'http://localhost:3000/index'
         }
-        if (url.indexOf('token') > -1) {
-            let access_token = url.split('token=')[1];
 
-            this.setState({ access_token })
+        let access_token = this.state.access_token
 
+        if(access_token != ""){
             var options = {
                 url: 'https://api.spotify.com/v1/playlists/' + top100,
                 headers: { 'Authorization': 'Bearer ' + this.state.access_token },
