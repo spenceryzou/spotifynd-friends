@@ -31,7 +31,7 @@ class Settings extends Component {
       refresh_token: '',
       playlists: [],
       topPlaylist: null,
-      location: 'no location set, please set on the right',
+      location: 'no location set, please set on below',
       image: '',
       display:  null
     }
@@ -276,7 +276,7 @@ class Settings extends Component {
         {data.name}
       </option>
     );
-    let displayInfo = "no playlist set, please set on the right"
+    let displayInfo = "no playlist set, please set on below"
     if (this.state.display){
       console.log("This worked")
       displayInfo = this.state.display.name

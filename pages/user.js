@@ -3,6 +3,8 @@ import Router from 'next/router'
 import { css } from "@emotion/core"
 import ScaleLoader from "react-spinners/ScaleLoader"
 import Header from '../components/Header'
+import {Modal,Button} from "react-bootstrap";
+
 
 var auth = require('firebase/auth');
 var database = require('firebase/database');
@@ -56,7 +58,8 @@ class User extends Component {
             attributeScore: -1,
             status: '',
             loading: false,
-            listOfUsers: []
+            listOfUsers: [],
+            show:false
         }
         const firebaseConfig = {
             apiKey: "AIzaSyCBmjWVAetSGAQ2E7uE0oh5_lG--ogkWbc",
@@ -84,11 +87,11 @@ class User extends Component {
     showDBusers = () => {
         var dbRef = firebase.database().ref('users')
         console.log(this.state.user)
-  
-        
-  
+
+
+
         dbRef.orderByChild('spotify_id').startAt(0).on("child_added", snapshot => {
-          
+
           //ignore key if it is you
           if (snapshot.exists() && snapshot.key != this.state.user ) {
 
@@ -98,7 +101,7 @@ class User extends Component {
              console.log(this.state.listOfUsers)
 
           }
-         
+
         });
       }
 
@@ -117,11 +120,13 @@ class User extends Component {
                 const userTopPlaylist = snapshot.val().topPlaylist;
                 const userSpotifyId = snapshot.val().spotify_id;
                 console.log("exists!", userData);
+
+
             }
         });
 
         if (userSpotifyId == null && userTopPlaylist == null && userLocation == null) {
-
+            console.log("had to create one")
             firebase.database().ref('users/' + spotifyid).set({
                 spotify_id: spotifyid,
                 location: '',
@@ -137,9 +142,12 @@ class User extends Component {
             }
 
             );
+            //Add an alert to go to settings right here after creating there
+            //this.AlertDismissible();
 
         }
     }
+
 
     componentDidMount = () => {
         this.getUserPlaylists();
@@ -148,6 +156,7 @@ class User extends Component {
 
 
     getUserPlaylists = () => {
+
         let url = window.location.href;
         if (url.indexOf('localhost') > -1) {
             redirect_uri = 'http://localhost:3000/index'
@@ -170,12 +179,14 @@ class User extends Component {
             var mDatabase = aDatabase.ref();
 
             var myRef = mDatabase.child(this.state.user).child('spotify_id');
-
+            console.log("HEREE")
             if (myRef == null) {
-                this.writeUserData(this.state.user)
-                
+                console.log("HEREE")
+                this.writeUserData(this.state.user);
+                this.handleModal();
+
             }
-            
+
             this.showDBusers()
             console.log('user: ' + this.state.user)
             var playlistOptions = {
@@ -237,15 +248,15 @@ class User extends Component {
           }
         })
         .then(response => {
-      
+
           // Return the full details of the user.
           return response;
-      
+
         })
         .catch(err => {
           throw Boom.badRequest(err);
         });
-      
+
         return user;
       }*/
 
@@ -453,9 +464,9 @@ class User extends Component {
         //                 break;
         //         }
         //         songDifferenceScore += differenceScore;
-        //         //console.log(songDifferenceScore) 
+        //         //console.log(songDifferenceScore)
         //     }
-        //     songDifferenceScore /= this.state.top100trackFeatures.length;              
+        //     songDifferenceScore /= this.state.top100trackFeatures.length;
         //     if(songDifferenceScore > this.state.max){
         //         this.state.max = songDifferenceScore
         //         this.state.mostCompatibleIndex = i
@@ -556,7 +567,7 @@ class User extends Component {
                     }
                 }
                    /* songDifferenceScore += differenceScore;
-                    //console.log(songDifferenceScore) 
+                    //console.log(songDifferenceScore)
                 }
                 songDifferenceScore /= this.state.top100trackFeatures.length;
                 if (songDifferenceScore > this.state.max) {
@@ -568,15 +579,15 @@ class User extends Component {
                 if(differenceScore < imin){
                     imin = differenceScore;
                 }
-                
+
                 //songDifferenceScore += differenceScore;
-                //console.log(songDifferenceScore) 
+                //console.log(songDifferenceScore)
             }
             imin = 100 - imin;
             console.log(this.state.name[i] + ": " + imin)
             playlist1Total += imin;
             console.log("playlist1 running total: "+playlist1Total)
-            /*songDifferenceScore /= this.state.top100trackFeatures.length;              
+            /*songDifferenceScore /= this.state.top100trackFeatures.length;
             if(songDifferenceScore > this.state.max){
                 console.log("current max: "+this.state.max)
                 console.log("songDifferenceScore: "+songDifferenceScore)
@@ -630,15 +641,15 @@ class User extends Component {
                 if(differenceScore < jmin){
                     jmin = differenceScore;
                 }
-                
+
                 //songDifferenceScore += differenceScore;
-                //console.log(songDifferenceScore) 
+                //console.log(songDifferenceScore)
             }
             jmin = 100 - jmin;
             console.log(this.state.top100name[j] + ": " + jmin)
             playlist2Total += jmin;
             console.log("playlist2 running total: "+playlist2Total)
-            /*songDifferenceScore /= this.state.top100trackFeatures.length;              
+            /*songDifferenceScore /= this.state.top100trackFeatures.length;
             if(songDifferenceScore > this.state.max){
                 console.log("current max: "+this.state.max)
                 console.log("songDifferenceScore: "+songDifferenceScore)
@@ -717,7 +728,7 @@ class User extends Component {
             console.log('this.state.playlists' + this.state.playlists)
             this.assignPlaylistTracksName(body.items);
             this.comparePlaylists();
-            /*console.log(body.items);    
+            /*console.log(body.items);
             console.log(this.state.count);
             console.log(this.state.playlisttracknames);*/
         });
@@ -804,8 +815,18 @@ class User extends Component {
         }, '/settings'
         )
     }
+    openModal = () =>{
+      $('#myModal').modal('show');
+
+    }
+    handleModal =  () =>{
+      this.setState({
+        show:!this.state.show
+      })
+    }
 
     render() {
+
         let playlists;
         if (typeof (this.state.playlists) != 'undefined') {
             if (this.state.playlists.length != 0) {
@@ -832,9 +853,9 @@ class User extends Component {
                 <div>
                     <li>
                         {i}
-                        <button className = "button" /*onClick={() => redirect to user page } */>
+                        <Button className = "button" /*onClick={() => redirect to user page } */>
                             Select User
-                        </button>
+                        </Button>
                         </li>
                     </div>
                 )
@@ -861,11 +882,41 @@ class User extends Component {
 
 
         return (
-            <div>
+
+
+                <div>
+                <head>
+                  <link
+                    rel="stylesheet"
+                    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+                    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+                    crossorigin="anonymous"
+                  />
+                </head>
+                <div>
+                      <Button onClick= {()=>{this.handleModal()}}> open modal </Button>
+                      <Modal show = {this.state.show} onHide = {()=>{this.handleModal()}}>
+                        <Modal.Header closeButton> Hi {this.state.user}!! Welcome to our Spotifynd Friends </Modal.Header>
+                        <Modal.Body>
+                          Before you do anything else, there are a few steps you need to take.
+                          1. Go to Settings
+                          2. Set your personal location and choose your favorite playlist.
+                          The location will help us connect you with people also in your area and the playlist will
+                          be displayed to these people!
+
+
+                        </Modal.Body>
+                        <Modal.Footer>
+                        <Button onClick= {()=>{this.goToSettings()}}>
+                          Settings
+                        </Button>
+                        </Modal.Footer>
+                      </Modal>
+                </div>
                 <Header props={this.state.access_token} />
                 <button onClick={() => this.goToSettings()}>
                     Settings
-                </button>
+                  </button>
                 <p>This is where user information will be displayed.</p>
                 <p>Access Token: {this.state.access_token}</p>
                 <p>User ID: {this.state.user}</p>
@@ -890,6 +941,7 @@ class User extends Component {
                 <p>{message}</p>
                 <p>{status}</p>
             </div>
+
         )
     }
 };
