@@ -210,8 +210,8 @@ class User extends Component {
             this.showDBusers()
             console.log('user: ' + this.state.user)
             var playlistOptions = {
-                url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
-                qs: { limit: '10' },
+                url: 'https://api.spotify.com/v1/users/' + 'testUser' + '/playlists',
+                qs: { limit: '50' },
                 headers: { 'Authorization': 'Bearer ' + access_token },
                 json: true
             };
@@ -227,6 +227,24 @@ class User extends Component {
                     console.log(this.state.playlists[i].key)
                 }
                 console.log('this.state.playlists' + this.state.playlists)
+
+                let playlistsLeft = body.total - 50;
+                let numRequests = 1;
+                while(playlistsLeft > 0){
+                    var playlistOptions = {
+                        url: 'https://api.spotify.com/v1/users/' + 'testUser' + '/playlists',
+                        qs: { limit: '50', offset: 50 * numRequests },
+                        headers: { 'Authorization': 'Bearer ' + access_token },
+                        json: true
+                    };
+
+                    request.get(playlistOptions, (error, response, body) => {
+                        this.setState({playlists: this.state.playlists.concat(body.items)})
+                    });
+
+                    playlistsLeft -= 50;
+                    numRequests++
+                }
             });
         });
      }
