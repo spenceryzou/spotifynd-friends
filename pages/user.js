@@ -183,7 +183,7 @@ class User extends Component {
            //  if (myRef == null) {
            //     this.writeUserData(this.state.user);
            //   }
-           firebase.database().ref(`users/${this.state.user}/spotify_id`).once("value", snapshot => {
+           firebase.database().ref(`users/${this.state.user}/location`).once("value", snapshot => {
              if (snapshot.exists()){
                //checking if the account alrady exists
                console.log("exists!");
@@ -898,7 +898,9 @@ class User extends Component {
                   />
                 </head>
                 <div>
-                   <Button onClick= {()=>{this.handleModal()}}> open modal </Button>
+                
+                  {/* <Button onClick= {()=>{this.handleModal()}}> open modal </Button>*/}
+
                       <Modal show = {this.state.show} onHide = {()=>{this.handleModal()} } backdrop="static" keyboard={false} >
                         <Modal.Header > Hi {this.state.user}!! Welcome to our Spotifynd Friends </Modal.Header>
                         <Modal.Body>
