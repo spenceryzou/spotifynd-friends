@@ -899,7 +899,7 @@ class User extends Component {
                 </head>
                 <div>
                    <Button onClick= {()=>{this.handleModal()}}> open modal </Button>
-                      <Modal show = {this.state.show} onHide = {()=>{this.handleModal()} } backdrop="static" keyboard="false" >
+                      <Modal show = {this.state.show} onHide = {()=>{this.handleModal()} } backdrop="static" keyboard={false} >
                         <Modal.Header > Hi {this.state.user}!! Welcome to our Spotifynd Friends </Modal.Header>
                         <Modal.Body>
                           Before you do anything else, there are a few steps you need to take.
