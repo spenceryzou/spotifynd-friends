@@ -108,7 +108,6 @@ class User extends Component {
     writeUserData = (spotifyid) => {
         var database = firebase.database();
 
-
         var dbRef = firebase.database().ref('users')
         console.log(this.state.user)
 
@@ -175,17 +174,28 @@ class User extends Component {
             console.log(body);
             this.setState({ user: body.id })
 
-            var aDatabase = firebase.database();
-            var mDatabase = aDatabase.ref();
+           // var aDatabase = firebase.database();
+           // var mDatabase = aDatabase.ref();
+           //
+           // var myRef = mDatabase.child(this.state.user).child('spotify_id');
+           //  console.log("HEREE")
+           //
+           //  if (myRef == null) {
+           //     this.writeUserData(this.state.user);
+           //   }
+           firebase.database().ref(`users/${this.state.user}/spotify_id`).once("value", snapshot => {
+             if (snapshot.exists()){
+               //checking if the account alrady exists
+               console.log("exists!");
+               console.log(snapshot.val());
 
-            var myRef = mDatabase.child(this.state.user).child('spotify_id');
-            console.log("HEREE")
-            if (myRef == null) {
-                console.log("HEREE")
-                this.writeUserData(this.state.user);
-                this.handleModal();
-
-            }
+             }
+             else{
+               console.log("does not exist");
+               //if accont doesn't exit then open Modal
+               this.handleModal();
+             }
+           });
 
             this.showDBusers()
             console.log('user: ' + this.state.user)
@@ -894,9 +904,9 @@ class User extends Component {
                   />
                 </head>
                 <div>
-                      <Button onClick= {()=>{this.handleModal()}}> open modal </Button>
+                   <Button onClick= {()=>{this.handleModal()}}> open modal </Button> 
                       <Modal show = {this.state.show} onHide = {()=>{this.handleModal()}}>
-                        <Modal.Header closeButton> Hi {this.state.user}!! Welcome to our Spotifynd Friends </Modal.Header>
+                        <Modal.Header> Hi {this.state.user}!! Welcome to our Spotifynd Friends </Modal.Header>
                         <Modal.Body>
                           Before you do anything else, there are a few steps you need to take.
                           1. Go to Settings
