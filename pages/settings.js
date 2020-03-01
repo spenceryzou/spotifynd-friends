@@ -31,7 +31,7 @@ class Settings extends Component {
       refresh_token: '',
       playlists: [],
       topPlaylist: null,
-      location: 'no location set, please set on the right',
+      location: 'no location set, please set on below',
       image: '',
       display:  null
     }
@@ -89,7 +89,8 @@ class Settings extends Component {
 
   writeUserLocation = (userid, userlocation) => {
     firebase.database().ref('users/' + this.state.user).update({
-        'location': userlocation
+        'location': userlocation,
+
       }, function (error) {
         if (error) {
           // The write failed...
@@ -109,7 +110,7 @@ class Settings extends Component {
   writeUserTopPlaylist = (userid, top_playlist) => {
     var database = firebase.database();
     firebase.database().ref('users/' + userid).update({
-        'topPlaylist': top_playlist
+        'topPlaylist': top_playlist,
       }, function (error) {
         if (error) {
           // The write failed...
@@ -276,7 +277,7 @@ class Settings extends Component {
         {data.name}
       </option>
     );
-    let displayInfo = "no playlist set, please set on the right"
+    let displayInfo = "no playlist set, please set on below"
     if (this.state.display){
       console.log("This worked")
       displayInfo = this.state.display.name
