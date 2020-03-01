@@ -183,14 +183,24 @@ class User extends Component {
            //  if (myRef == null) {
            //     this.writeUserData(this.state.user);
            //   }
+           var exist;
            firebase.database().ref(`users/${this.state.user}/location`).once("value", snapshot => {
              if (snapshot.exists()){
                //checking if the account alrady exists
                console.log("exists!");
-               console.log(snapshot.val());
+               firebase.database().ref(`users/${this.state.user}/topPlaylist`).once("value", snapshot => {
+                 if (snapshot.exists()){
+                   console.log("top playlist also exists")
+                 }
+                 else{
+                   console.log("top playlist doesnt exist but location does")
+                   this.handleModal();
+                 }
+               });
 
              }
              else{
+
                console.log("does not exist");
                //if accont doesn't exit then open Modal
                this.handleModal();
@@ -898,7 +908,7 @@ class User extends Component {
                   />
                 </head>
                 <div>
-                
+
                   {/* <Button onClick= {()=>{this.handleModal()}}> open modal </Button>*/}
 
                       <Modal show = {this.state.show} onHide = {()=>{this.handleModal()} } backdrop="static" keyboard={false} >

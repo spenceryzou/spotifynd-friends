@@ -90,7 +90,7 @@ class Settings extends Component {
   writeUserLocation = (userid, userlocation) => {
     firebase.database().ref('users/' + this.state.user).update({
         'location': userlocation,
-        
+
       }, function (error) {
         if (error) {
           // The write failed...
@@ -111,7 +111,6 @@ class Settings extends Component {
     var database = firebase.database();
     firebase.database().ref('users/' + userid).update({
         'topPlaylist': top_playlist,
-        'spotify_id': userid
       }, function (error) {
         if (error) {
           // The write failed...
