@@ -9,7 +9,6 @@ import Image from 'react-bootstrap/Image'
 import Header from '../components/Header'
 
 
-
 var auth = require('firebase/auth');
 var database = require('firebase/database');
 var firebase = require('firebase/app');
@@ -17,7 +16,6 @@ var firebase = require('firebase/app');
 
 
 var querystring = require('querystring');
-
 var request = require('request')
 //default setting of top playlist object and location are set to null
 //taking in user input and setting to variables which will be inputted into database later on
@@ -26,9 +24,6 @@ var request = require('request')
 class Settings extends Component {
   constructor(props) {
     super(props);
-    if(!this.props.query.access_token){
-      Router.push({pathname: '/'})
-    }
     this.state = {
       access_token: this.props.query.access_token,
       refresh_token: '',
@@ -62,8 +57,11 @@ class Settings extends Component {
   componentDidMount = () => {
 
     //var userRef = firebase.database().ref("users/" + this.state.user + '/spotify_id')
-
-    this.getUserPlaylists();
+    if(!this.state.access_token){
+      Router.push({pathname: '/'})
+    } else{
+      this.getUserPlaylists();
+    }
     //this.displayInfo();
     // var aDatabase = firebase.database();
     // var mDatabase = aDatabase.ref();
@@ -77,18 +75,9 @@ class Settings extends Component {
     //   this.setState(() => ({ location: userid }));
     // });
 
-
-
-
-
     //console.log(userid)
     //  this.state.location = locationVal
-
-
-
-
   }
-
 
   writeUserLocation = (userid, userlocation) => {
     firebase.database().ref('users/' + this.state.user).update({
@@ -102,13 +91,7 @@ class Settings extends Component {
         }
       }
     );
-
-
   }
-
-
-
-
 
   writeUserTopPlaylist = (userid, top_playlist) => {
     var database = firebase.database();
@@ -124,10 +107,7 @@ class Settings extends Component {
     );
   }
 
-
-
   displayImage = () => {
-
     playlistImage = (<img src={this.state.image} />)
   }
 
@@ -159,7 +139,6 @@ class Settings extends Component {
 
     console.log("Location" + this.state.location)
     //this.forceUpdate();
-
   }
 
   setTopPlaylist = (data) => {
