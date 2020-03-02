@@ -925,16 +925,16 @@ class User extends Component {
 
         return (
 
-
-                <div >
+            <html className="testclass">
+                <div className="testclass">
                 <style jsx>{`
                   .container {
                     margin: 50px;
                   }
-                  body {background-color: #92a8d1;}
+                  .testclass {background-color: #92a8d1;}
 
                     `}</style>
-                <head>
+                <head className="testclass">
                   <link
                     rel="stylesheet"
                     href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -943,8 +943,8 @@ class User extends Component {
                   />
                 </head>
                 <Header props={this.state.access_token} />
-                  <body >
-                <div bgcolor= "#2d4032">
+                <body className="testclass">
+                <div>
 
                   {/* <Button onClick= {()=>{this.handleModal()}}> open modal </Button>*/}
 
@@ -1029,9 +1029,13 @@ class User extends Component {
 
                 </div>
                 </body>
-
+                  <footer className="testclass">
+                      <Col>
+                        <p>Spotifynd Friends</p>
+                      </Col>
+                  </footer>
             </div>
-
+        </html>
         )
     }
 };
