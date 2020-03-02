@@ -322,7 +322,26 @@ class Settings extends Component {
     }
 
     return (
-      <div>
+      <div className = "testclass">
+
+      <style jsx>{`
+          .container {
+              margin: 50px;
+          }
+          .testclass {
+              background: linear-gradient(to bottom, #373737 0%, #191414 50%);
+              font-family: Montserrat;
+              padding-bottom: 100px;
+          }
+
+          .card {
+              background-color: #121212;
+              font-family: Montserrat;
+          }
+
+
+          `}</style>
+
         <Header props={this.state.access_token} />
         <head>
           <link
@@ -331,12 +350,14 @@ class Settings extends Component {
             integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
             crossorigin="anonymous"
           />
+          <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet" />
+
         </head>
-        <div className="row justify-content-center mt-5">
-        <Container>
+        <div >
+        <Container className= "testclasss">
           <Row>
             <Col>
-            <Card className="bg-dark text-white">
+            <Card className="bg-dark text-white" text="white">
                 <Card.Img src="https://thumbor.forbes.com/thumbor/960x0/https%3A%2F%2Fspecials-images.forbesimg.com%2Fimageserve%2F750037840%2F960x0.jpg%3Ffit%3Dscale" alt="Card image" fluid  />
                 <Card.ImgOverlay>
                   <Card.Title>Welcome, {this.state.user}</Card.Title>
@@ -351,15 +372,13 @@ class Settings extends Component {
               <img src={this.state.image} class="img-thumbnail" height="360" width="360" />
             </Col>
 
-
-
           </Row>
           <Row >
 
           <Col>
-              <Form>
+              <Form  >
                 <Form.Group controlId="exampleForm.ControlSelect1">
-                  <Form.Label>Set a new Location</Form.Label>
+                  <Form.Label class="text-white"  >Set a new Location</Form.Label>
                   <Form.Control defaultValue={-1}
                     as="select"
                     onChange={this.handleLocationChange}
@@ -370,7 +389,7 @@ class Settings extends Component {
                 </Form.Group>
 
                 <Form.Group controlId="exampleForm.ControlSelect2">
-                  <Form.Label>Select a new Playlist</Form.Label>
+                  <Form.Label class="text-white">Select a new Playlist</Form.Label>
                   <Form.Control defaultValue={-1}
                     as="select"
                     onChange={this.handlePlaylistChange}
@@ -386,14 +405,8 @@ class Settings extends Component {
         </Container>
 
 
-
-
         </div>
 
-
-        <div >
-
-        </div>
       </div>
 
     )
