@@ -90,7 +90,7 @@ class User extends Component {
 
 
 
-        dbRef.orderByChild('spotify_id').startAt(0).on("child_added", snapshot => {
+        dbRef.orderByValue().startAt(0).on("child_added", snapshot => {
 
           //ignore key if it is you
           if (snapshot.exists() && snapshot.key != this.state.user ) {
