@@ -3,7 +3,8 @@ import Router from 'next/router'
 import { css } from "@emotion/core"
 import ScaleLoader from "react-spinners/ScaleLoader"
 import Header from '../components/Header'
-import {Modal,Button} from "react-bootstrap";
+import {Modal,Button, Container, Row, Col, Card} from "react-bootstrap";
+
 
 
 var auth = require('firebase/auth');
@@ -865,10 +866,15 @@ class User extends Component {
                 playlists = this.state.playlists.map((i, index) =>
                 <div>
                     <li>
-                        {i.name}
-                        <button className = "button" onClick={() => this.getPlaylistTracks(index)}>
-                            Select
-                        </button>
+                    <Row>
+
+                        <Col>
+                        <Button className = "button" onClick={() => this.getPlaylistTracks(index)} variant="success" size="sm">
+                            {i.name}
+                        </Button>
+
+                        </Col>
+                        </Row>
                         </li>
                     </div>
                 )
@@ -884,10 +890,14 @@ class User extends Component {
                 list_ofUsers = this.state.listOfUsers.map((i, index) =>
                 <div>
                     <li>
-                        {i}
-                        <Button className = "button" /*onClick={() => redirect to user page } */>
+                      <Row>
+                        <Col>  {i} </Col>
+                        <Col>
+                        <Button className = "button" /*onClick={() => redirect to user page } */ variant="outline-secondary">
                             Select User
                         </Button>
+                        </Col>
+                        </Row>
                         </li>
                     </div>
                 )
@@ -916,7 +926,14 @@ class User extends Component {
         return (
 
 
-                <div>
+                <div >
+                <style jsx>{`
+                  .container {
+                    margin: 50px;
+                  }
+                  body {background-color: #92a8d1;}
+
+                    `}</style>
                 <head>
                   <link
                     rel="stylesheet"
@@ -925,7 +942,9 @@ class User extends Component {
                     crossorigin="anonymous"
                   />
                 </head>
-                <div>
+                <Header props={this.state.access_token} />
+                  <body >
+                <div bgcolor= "#2d4032">
 
                   {/* <Button onClick= {()=>{this.handleModal()}}> open modal </Button>*/}
 
@@ -941,39 +960,76 @@ class User extends Component {
 
                         </Modal.Body>
                         <Modal.Footer>
-                        <Button onClick= {()=>{this.goToSettings()}}>
+                        <Button onClick= {()=>{this.goToSettings()}} variant="light">
                           Settings
                         </Button>
                         </Modal.Footer>
                       </Modal>
                 </div>
-                <Header props={this.state.access_token} />
-                <button onClick={() => this.goToSettings()}>
-                    Settings
-                  </button>
-                <p>This is where user information will be displayed.</p>
-                <p>Access Token: {this.state.access_token}</p>
-                <p>User ID: {this.state.user}</p>
-                <p>Playlists:</p>
-                <ul>{playlists}</ul>
+                <div>
+                  <Container>
+                    <Row>
+                      <Col>
 
-                <p>Compatible Users:</p>
-                <ul>{list_ofUsers}</ul>
 
-                <div className="sweet-loading">
-                    <ScaleLoader
-                        css={override}
-                        size={5}
-                        height={30}
-                        width={10}
-                        radius={5}
-                        //size={"150px"} this also works
-                        color={"#36D7B7"}
-                        loading={this.state.loading}
-                    />
+                        <Card bg="dark" style={{ height: '550px' }} text="white" >
+                        <Card.Header>User ID: {this.state.user}</Card.Header>
+                            <div className="overflow-auto" style={{  maxHeight:"480px" }}>
+                        <Card.Body>
+                          <Card.Title>Playlists:</Card.Title>
+                          <Card.Text>
+
+
+                              <ul>{playlists}</ul>
+
+                          </Card.Text>
+                        </Card.Body>
+                          </div>
+                      </Card>
+
+
+
+
+                      </Col>
+                      <Col>
+                        <Card bg="dark" style={{ height: '550px' }} text="white" >
+                        <Card.Header>Compatible Users:</Card.Header>
+                        <div className="overflow-auto" style={{  maxHeight:"480px" }}>
+
+                            <Card.Body>
+                              <Card.Text>
+                                  <ul >{list_ofUsers}</ul>
+                              </Card.Text>
+                            </Card.Body>
+                            </div>
+                        </Card>
+                      </Col>
+                    </Row>
+                    <Row>
+                    <Col>
+                      <div className="sweet-loading">
+                        <ScaleLoader
+                            css={override}
+                            size={5}
+                            height={30}
+                            width={10}
+                            radius={5}
+                            //size={"150px"} this also works
+                            color={"#36D7B7"}
+                            loading={this.state.loading}
+                            />
+                        </div>
+                      <p>{message}</p>
+                      <p>{status}</p>
+                      </Col>
+                    </Row>
+
+                  </Container>
+
+
                 </div>
-                <p>{message}</p>
-                <p>{status}</p>
+                </body>
+
             </div>
 
         )
