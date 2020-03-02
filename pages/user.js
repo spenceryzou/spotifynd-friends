@@ -5,8 +5,6 @@ import ScaleLoader from "react-spinners/ScaleLoader"
 import Header from '../components/Header'
 import {Modal,Button, Container, Row, Col, Card} from "react-bootstrap";
 
-
-
 var auth = require('firebase/auth');
 var database = require('firebase/database');
 
@@ -925,25 +923,39 @@ class User extends Component {
 
         return (
 
-            <html className="testclass">
+            <html>
                 <div className="testclass">
+                <div>
                 <style jsx>{`
-                  .container {
-                    margin: 50px;
-                  }
-                  .testclass {background-color: #92a8d1;}
+                    .container {
+                        margin: 50px;
+                    }
+                    .testclass {
+                        background: linear-gradient(to bottom, #373737 0%, #191414 50%);
+                        font-family: Montserrat;
+                        padding-bottom: 100px;
+                    }
+                    .footer {
+                        padding-top: 25px;
+                        font-family: Montserrat;
+                        background-color: #373737;
+                        color: white;
+                    }
+                    .card {
+                        background-color: #121212;
+                    }
 
                     `}</style>
-                <head className="testclass">
+                <head>
                   <link
                     rel="stylesheet"
                     href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
                     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                     crossorigin="anonymous"
                   />
+                  <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet" /> 
                 </head>
                 <Header props={this.state.access_token} />
-                <body className="testclass">
                 <div>
 
                   {/* <Button onClick= {()=>{this.handleModal()}}> open modal </Button>*/}
@@ -972,7 +984,7 @@ class User extends Component {
                       <Col>
 
 
-                        <Card bg="dark" style={{ height: '550px' }} text="white" >
+                        <Card style={{ height: '550px', backgroundColor: '#121212' }} text="white" >
                         <Card.Header>User ID: {this.state.user}</Card.Header>
                             <div className="overflow-auto" style={{  maxHeight:"480px" }}>
                         <Card.Body>
@@ -1019,8 +1031,10 @@ class User extends Component {
                             loading={this.state.loading}
                             />
                         </div>
-                      <p>{message}</p>
-                      <p>{status}</p>
+                        <div style={{paddingTop: '20px', color: 'white'}}>
+                            <p>{message}</p>
+                            <p>{status}</p>
+                        </div>
                       </Col>
                     </Row>
 
@@ -1028,13 +1042,81 @@ class User extends Component {
 
 
                 </div>
-                </body>
-                  <footer className="testclass">
-                      <Col>
-                        <p>Spotifynd Friends</p>
-                      </Col>
-                  </footer>
             </div>
+            </div>
+                  {/* <footer className="testclass">
+                      {/* <div class="container"> */}
+                        {/* <Col>
+                            <p>Spotifynd Friends</p>
+                        </Col> */}
+                      {/* </div> */}
+                  {/* </footer> */} 
+
+                  <footer className="footer">
+
+                    <div class="container-fluid text-center text-md-left">
+
+                        <div class="row">
+
+                            <div class="col-md-6 mt-md-0 mt-3">
+
+                                <h5 class="text-uppercase">Footer Content</h5>
+                                <p>Here you can use rows and columns to organize your footer content.</p>
+
+                            </div>
+
+                            <hr class="clearfix w-100 d-md-none pb-3"></hr>
+
+                            <div class="col-md-3 mb-md-0 mb-3">
+
+                                <h5 class="text-uppercase">Links</h5>
+
+                                <ul class="list-unstyled">
+                                <li>
+                                    <a href="#!">Link 1</a>
+                                </li>
+                                <li>
+                                    <a href="#!">Link 2</a>
+                                </li>
+                                <li>
+                                    <a href="#!">Link 3</a>
+                                </li>
+                                <li>
+                                    <a href="#!">Link 4</a>
+                                </li>
+                                </ul>
+
+                            </div>
+
+                            <div class="col-md-3 mb-md-0 mb-3">
+
+                                <h5 class="text-uppercase">Links</h5>
+
+                                <ul class="list-unstyled">
+                                <li>
+                                    <a href="#!">Link 1</a>
+                                </li>
+                                <li>
+                                    <a href="#!">Link 2</a>
+                                </li>
+                                <li>
+                                    <a href="#!">Link 3</a>
+                                </li>
+                                <li>
+                                    <a href="#!">Link 4</a>
+                                </li>
+                                </ul>
+
+                            </div>
+                
+                        </div>
+
+                    </div>
+                    <div class="footer-copyright text-center py-3">© 2020 Copyright:
+                        <a href="https://mdbootstrap.com/"> MDBootstrap.com</a>
+                    </div>
+
+                    </footer>
         </html>
         )
     }
