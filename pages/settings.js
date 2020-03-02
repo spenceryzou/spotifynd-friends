@@ -26,6 +26,9 @@ var request = require('request')
 class Settings extends Component {
   constructor(props) {
     super(props);
+    if(!this.props.query.access_token){
+      Router.push({pathname: '/'})
+    }
     this.state = {
       access_token: this.props.query.access_token,
       refresh_token: '',
