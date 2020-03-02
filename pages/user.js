@@ -32,6 +32,7 @@ class User extends Component {
             access_token: this.props.query.access_token,
             refresh_token: '',
             user: '',
+            userImage: '',
             playlists: [],
             playlist: null,
             playlistName: '',
@@ -172,6 +173,9 @@ class User extends Component {
             console.log('Access token:' + access_token)
             console.log(body);
             this.setState({ user: body.id })
+            if(body.images.length != 0){
+
+            }
 
            // var aDatabase = firebase.database();
            // var mDatabase = aDatabase.ref();
@@ -941,11 +945,8 @@ class User extends Component {
                         background-color: #373737;
                         color: white;
                     }
-                    .card {
-                        background-color: #121212;
-                    }
 
-                    `}</style>
+                `}</style>
                 <head>
                   <link
                     rel="stylesheet"
@@ -980,15 +981,24 @@ class User extends Component {
                 </div>
                 <div>
                   <Container>
+                        <Row>
+                            {/* <Col>
+                                <img src={this.state.userImage}/>
+                            </Col> */}
+                            <Col style={{color: 'white', paddingBottom: '20px'}}>
+                                <p style={{fontSize: 'small'}}>USER</p>
+                                <h1><b>{this.state.user}</b></h1>
+                            </Col>
+                        </Row>
                     <Row>
                       <Col>
 
 
                         <Card style={{ height: '550px', backgroundColor: '#121212' }} text="white" >
-                        <Card.Header>User ID: {this.state.user}</Card.Header>
+                        <Card.Header>Playlists: </Card.Header>
                             <div className="overflow-auto" style={{  maxHeight:"480px" }}>
                         <Card.Body>
-                          <Card.Title>Playlists:</Card.Title>
+                          {/* <Card.Title>Playlists:</Card.Title> */}
                           <Card.Text>
 
 
@@ -1027,7 +1037,7 @@ class User extends Component {
                             width={10}
                             radius={5}
                             //size={"150px"} this also works
-                            color={"#36D7B7"}
+                            color={"#1DB954"}
                             loading={this.state.loading}
                             />
                         </div>

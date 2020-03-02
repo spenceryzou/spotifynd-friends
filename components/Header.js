@@ -11,6 +11,11 @@ const Header = (props) => {
   console.log("access token from header: " + access_token)
   return(
     <div>
+      <style jsx>{`
+        .navLink{
+          color: 'blue';
+        }
+      `}</style>
     <head>
     <link
     rel="stylesheet"
@@ -25,7 +30,7 @@ const Header = (props) => {
     <Navbar.Collapse id="basic-navbar-nav">
       <Nav className="mr-auto">
         <Link href={`/user?access_token=${props.props}`} as='/user' passHref>
-          <Nav.Link>User</Nav.Link>
+          <Nav.Link className='navLink'>User</Nav.Link>
         </Link>
         <Link href={`/settings?access_token=${props.props}`} as='/settings' passHref>
           <Nav.Link>Settings</Nav.Link>
