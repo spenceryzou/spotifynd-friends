@@ -228,24 +228,62 @@ class Settings extends Component {
       //  console.log(locationVal)
       //  this.state.location = locationVal
 
+      // var playlistOptions = {
+      //   url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
+      //   qs: { limit: '10' },
+      //   headers: { 'Authorization': 'Bearer ' + access_token },
+      //   json: true
+      // };
+
+      // console.log('user right before playlist: ' + this.state.user)
+
+      // // use the access token to access the Spotify Web API
+      // request.get(playlistOptions, (error, response, body) => {
+      //   console.log(body);
+      //   this.setState({ playlists: body.items })
+      //   for (var i = 0; i < this.state.playlists.length; i++) {
+      //     this.state.playlists[i].key = i.id
+      //     console.log(this.state.playlists[i].key)
+      //   }
+      //   console.log('this.state.playlists' + this.state.playlists)
+      // });
+      console.log('user: ' + this.state.user)
       var playlistOptions = {
-        url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
-        qs: { limit: '10' },
-        headers: { 'Authorization': 'Bearer ' + access_token },
-        json: true
+          url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
+          qs: { limit: '50' },
+          headers: { 'Authorization': 'Bearer ' + access_token },
+          json: true
       };
 
       console.log('user right before playlist: ' + this.state.user)
 
       // use the access token to access the Spotify Web API
       request.get(playlistOptions, (error, response, body) => {
-        console.log(body);
-        this.setState({ playlists: body.items })
-        for (var i = 0; i < this.state.playlists.length; i++) {
-          this.state.playlists[i].key = i.id
-          console.log(this.state.playlists[i].key)
-        }
-        console.log('this.state.playlists' + this.state.playlists)
+          console.log(body);
+          this.setState({ playlists: body.items })
+          for (var i = 0; i < this.state.playlists.length; i++) {
+              this.state.playlists[i].key = i.id
+              console.log(this.state.playlists[i].key)
+          }
+          console.log('this.state.playlists' + this.state.playlists)
+
+          let playlistsLeft = body.total - 50;
+          let numRequests = 1;
+          while(playlistsLeft > 0){
+              var playlistOptions = {
+                  url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
+                  qs: { limit: '50', offset: 50 * numRequests },
+                  headers: { 'Authorization': 'Bearer ' + access_token },
+                  json: true
+              };
+
+              request.get(playlistOptions, (error, response, body) => {
+                  this.setState({playlists: this.state.playlists.concat(body.items)})
+              });
+
+              playlistsLeft -= 50;
+              numRequests++
+          }
       });
     });
   }
