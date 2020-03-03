@@ -175,7 +175,7 @@ class User extends Component {
             console.log(body);
             this.setState({ user: body.id })
             if(body.images.length != 0){
-                this.setState({ userImage: body.image[0] })
+                this.setState({ userImage: body.images[0].url })
             }
 
            // var aDatabase = firebase.database();
@@ -946,6 +946,22 @@ class User extends Component {
                         background-color: #373737;
                         color: white;
                     }
+                    .image-cropper {
+                        width: 125px;
+                        height: 125px;
+                        position: relative;
+                        overflow: hidden;
+                        border-radius: 50%;
+                        padding-bottom: '20px';
+                    }
+                    .profile-pic {
+                      display: inline;
+                      margin: 0 auto;
+                      margin-left: -25%; //centers the image
+                      height: 100%;
+                      width: auto;
+                      padding-bottom: '20px';
+                    }
 
                 `}</style>
                 <head>
@@ -983,8 +999,10 @@ class User extends Component {
                 <div>
                   <Container>
                         <Row>
-                            <Col md="auto">
-                                <Image src={this.state.userImage} roundedCircle style={{width: '100px', paddingBottom: '20px'}}/>
+                            <Col md="auto" style={{paddingBottom: '20px'}}>
+                                <div className="image-cropper" style={{paddingBottom: '20px'}}>
+                                    <img className="profile-pic" src={this.state.userImage} style={{paddingBottom: '20px'}}/>
+                                </div>
                             </Col>
                             <Col style={{color: 'white', paddingBottom: '20px'}}>
                                 <p style={{fontSize: 'small'}}>USER</p>
