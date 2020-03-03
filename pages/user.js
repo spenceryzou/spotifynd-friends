@@ -33,7 +33,7 @@ class User extends Component {
             access_token: this.props.query.access_token,
             refresh_token: '',
             user: '',
-            userImage: 'https://i.ya-webdesign.com/images/default-image-png-1.png',
+            userImage: 'https://www.palmcityyachts.com/wp/wp-content/uploads/palmcityyachts.com/2015/09/default-profile.png',
             playlists: [],
             playlist: null,
             playlistName: '',
@@ -946,22 +946,12 @@ class User extends Component {
                         background-color: #373737;
                         color: white;
                     }
-                    .image-cropper {
-                        width: 125px;
-                        height: 125px;
-                        position: relative;
-                        overflow: hidden;
-                        border-radius: 50%;
-                        padding-bottom: '20px';
+                    img {
+                        object-fit: cover;
+                        width:120px;
+                        height:120px;
                     }
-                    .profile-pic {
-                      display: inline;
-                      margin: 0 auto;
-                      margin-left: -25%; //centers the image
-                      height: 100%;
-                      width: auto;
-                      padding-bottom: '20px';
-                    }
+                    //https://stackoverflow.com/questions/15167545/how-to-crop-a-rectangular-image-into-a-square-with-css
 
                 `}</style>
                 <head>
@@ -1000,9 +990,7 @@ class User extends Component {
                   <Container>
                         <Row>
                             <Col md="auto" style={{paddingBottom: '20px'}}>
-                                <div className="image-cropper" style={{paddingBottom: '20px'}}>
-                                    <img className="profile-pic" src={this.state.userImage} style={{paddingBottom: '20px'}}/>
-                                </div>
+                                <Image src={this.state.userImage} roundedCircle/>
                             </Col>
                             <Col style={{color: 'white', paddingBottom: '20px'}}>
                                 <p style={{fontSize: 'small'}}>USER</p>
