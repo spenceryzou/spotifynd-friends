@@ -562,7 +562,7 @@ class User extends Component {
         var totalDifferenceScore = 0;
         var playlist1Total = 0;
         var playlist2Total = 0;
-        var danceabilityScore = 0, energyScore=0, speachinessScore=0, acousticnessScore=0, instrumentalnessScore=0, livenessScore=0, valenceScore = 0;
+        var danceCount = 0, energyScore=0, speachinessScore=0, acousticnessScore=0, instrumentalnessScore=0, livenessScore=0, valenceScore = 0;
         for(let i = 0; i < this.state.playlisttracknames.length; i++){
             console.log('calculating')
             //var songDifferenceScore = 0;
@@ -650,12 +650,17 @@ class User extends Component {
                 // livenessScore += Math.abs(this.state.trackFeatures[i].liveness - this.state.top100trackFeatures[j].liveness)*10
                 // valenceScore += Math.abs(this.state.trackFeatures[i].valence - this.state.top100trackFeatures[j].valence)*10
                 differenceScore += Math.abs(this.state.trackFeatures[i].danceability - this.state.top100trackFeatures[j].danceability)*5
+                    dance += Math.abs(this.state.trackFeatures[i].danceability - this.state.top100trackFeatures[j].danceability)*5
                 differenceScore += Math.abs(this.state.trackFeatures[i].energy - this.state.top100trackFeatures[j].energy)*5
+                    energy += Math.abs(this.state.trackFeatures[i].energy - this.state.top100trackFeatures[j].energy)*5
                 //differenceScore += Math.abs(this.state.trackFeatures[i].speachiness - this.state.top100trackFeatures[j].speachiness)*10
                 differenceScore += Math.abs(this.state.trackFeatures[i].acousticness - this.state.top100trackFeatures[j].acousticness)*5
+                    acoustic += Math.abs(this.state.trackFeatures[i].acousticness - this.state.top100trackFeatures[j].acousticness)*5
                 //differenceScore += Math.abs(this.state.trackFeatures[i].instrumentalness - this.state.top100trackFeatures[j].instrumentalness)
                 differenceScore += Math.abs(this.state.trackFeatures[i].liveness - this.state.top100trackFeatures[j].liveness)*5
+                    live += Math.abs(this.state.trackFeatures[i].liveness - this.state.top100trackFeatures[j].liveness)*5
                 differenceScore += Math.abs(this.state.trackFeatures[i].valence - this.state.top100trackFeatures[j].valence)*5
+                    valence += Math.abs(this.state.trackFeatures[i].valence - this.state.top100trackFeatures[j].valence)*5
                 differenceScore += 75;
                 if(this.state.artistID[i] == this.state.top100artistID[j])
                     differenceScore -= 20;
@@ -676,9 +681,24 @@ class User extends Component {
                             break;
                     }
                 }
+                attributeMin = Math.min(dance,energy,acoustic,live,valence)
+                switch(attributeMin) {
+                    case dance:
+                      
+                      break;
+                    case energy:
+                      break;
+                    case acoustic:
+                      break;
+                    case live:
+                      break;
+                    case valence:
+                      break;
+                }
                 if(differenceScore < jmin){
                     jmin = differenceScore;
                 }
+                
 
                 //songDifferenceScore += differenceScore;
                 //console.log(songDifferenceScore)
