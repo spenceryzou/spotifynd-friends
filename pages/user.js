@@ -4,6 +4,7 @@ import { css } from "@emotion/core"
 import ScaleLoader from "react-spinners/ScaleLoader"
 import Header from '../components/Header'
 import {Modal,Button, Container, Row, Col, Card} from "react-bootstrap";
+import Image from 'react-bootstrap/Image'
 
 var auth = require('firebase/auth');
 var database = require('firebase/database');
@@ -32,7 +33,7 @@ class User extends Component {
             access_token: this.props.query.access_token,
             refresh_token: '',
             user: '',
-            userImage: '',
+            userImage: 'https://i.ya-webdesign.com/images/default-image-png-1.png',
             playlists: [],
             playlist: null,
             playlistName: '',
@@ -174,7 +175,7 @@ class User extends Component {
             console.log(body);
             this.setState({ user: body.id })
             if(body.images.length != 0){
-
+                this.setState({ userImage: body.image[0] })
             }
 
            // var aDatabase = firebase.database();
@@ -982,9 +983,9 @@ class User extends Component {
                 <div>
                   <Container>
                         <Row>
-                            {/* <Col>
-                                <img src={this.state.userImage}/>
-                            </Col> */}
+                            <Col md="auto">
+                                <Image src={this.state.userImage} roundedCircle style={{width: '100px', paddingBottom: '20px'}}/>
+                            </Col>
                             <Col style={{color: 'white', paddingBottom: '20px'}}>
                                 <p style={{fontSize: 'small'}}>USER</p>
                                 <h1><b>{this.state.user}</b></h1>
