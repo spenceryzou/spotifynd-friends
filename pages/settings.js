@@ -7,12 +7,14 @@ import Button from 'react-bootstrap/Button'
 import { FormGroup, ControlLabel, FormControl, Card ,Container, Row, Col} from "react-bootstrap";
 import Image from 'react-bootstrap/Image'
 import Header from '../components/Header'
+import axios from 'axios';
 
 
 var auth = require('firebase/auth');
 var database = require('firebase/database');
 var firebase = require('firebase/app');
 //var admin = require("firebase-admin");
+var redirect_uri;
 
 
 var querystring = require('querystring');
@@ -28,10 +30,46 @@ class Settings extends Component {
       access_token: this.props.query.access_token,
       refresh_token: '',
       playlists: [],
+      playlistTracks: [],
+      playlisttracknames: [],
       topPlaylist: null,
       location: 'no location set, please set on below',
       image: '',
-      display:  null
+      display:  null,
+      data: {
+                
+        labels: [
+            'Dancibility',
+            'Energy',
+            'Acousticness',
+            'Liveness',
+            'Valence'
+        ],
+        datasets: [{
+            hidden: true,
+            data: [0, 0, 0, 0, 0],
+            backgroundColor: [
+                '#66c2a4',
+                '#41ae76',
+                '#238b45',
+                '#006d2c',
+                '#00441b'
+                ],
+                hoverBackgroundColor: [
+                '#edf8fb',
+                '#edf8fb',
+                '#edf8fb',
+                '#edf8fb',
+                '#edf8fb'
+            ]
+        }]
+    },
+    trackFeatures: [],
+    genres: [],
+    artistID: [],
+    name: [],
+    artist: [],
+      
     }
     const firebaseConfig = {
       apiKey: "AIzaSyCBmjWVAetSGAQ2E7uE0oh5_lG--ogkWbc",
@@ -62,22 +100,9 @@ class Settings extends Component {
     } else{
       this.getUserPlaylists();
     }
-    //this.displayInfo();
-    // var aDatabase = firebase.database();
-    // var mDatabase = aDatabase.ref();
-
-    // var myRef =  mDatabase.child('gubybean').child('location');
-    // console.log(myRef)
-
-    // userRef.on("value", snapshot => {
-    //   const userid = snapshot.val();
-    //   console.log(userid);
-    //   this.setState(() => ({ location: userid }));
-    // });
-
-    //console.log(userid)
-    //  this.state.location = locationVal
   }
+
+  
 
   writeUserLocation = (userid, userlocation) => {
     firebase.database().ref('users/' + this.state.user).update({
@@ -111,12 +136,42 @@ class Settings extends Component {
     playlistImage = (<img src={this.state.image} />)
   }
 
-  handlePlaylistChange = (event) => {
+  handlePlaylistChange = async(event) => {
     let playlist = this.state.playlists.find(p => p.name === event.target.value)
     console.log("value: " + event.target.value)
     console.log("playlist: " + playlist.name)
     this.state.topPlaylist = playlist
     this.writeUserTopPlaylist(this.state.user, this.state.topPlaylist.id)
+
+    let url = window.location.href;
+    if (url.indexOf('localhost') > -1) {
+        redirect_uri = 'http://localhost:3000/index'
+    }
+
+    let access_token = this.state.access_token
+
+    if (access_token != "") {
+        var options = {
+            url: 'https://api.spotify.com/v1/playlists/' + this.state.topPlaylist.id,
+            headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+            json: true
+        };
+
+        request.get(options, (error, response, body) => {
+            console.log(error);
+            console.log(body);
+
+            this.setState({
+                playlistTracks: body.tracks.items
+            })
+
+        });
+    }
+    this.getPlaylistTracks()
+    console.log(this.state.playlisttracknames)
+
+
+
     console.log(JSON.stringify(event.target.value))
     console.log("top: " + this.state.topPlaylist.name)
     //this.state.image = playlist.images[0].url
@@ -128,6 +183,128 @@ class Settings extends Component {
     console.log(this.state.image)
     //this.forceUpdate();
   }
+
+  getPlaylistTracks = () => {
+    this.setState({data: {
+        labels: [
+            'Dance',
+            'Energy',
+            'Acoustic',
+            'Live',
+            'Valence'
+        ],
+        datasets: [{
+            data: [0, 0, 0, 0, 0],
+            backgroundColor: [
+            '#FF6384',
+            '#36A2EB',
+            '#FFCE56',
+            'Green',
+            'Orange',
+            'Purple'
+            ],
+            hoverBackgroundColor: [
+            '#FF6384',
+            '#36A2EB',
+            '#FFCE56',
+            'Grey',
+            'Cyan',
+            'Brown'
+            ]
+        }]}})
+    console.log(this.state.topPlaylist)
+    var tracksOptions = {
+        url: this.state.topPlaylist.tracks.href,
+        headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+        json: true
+    };
+
+    console.log('user right before tracks request: ' + this.state.user)
+
+    // use the access token to access the Spotify Web API
+    request.get(tracksOptions, (error, response, body) => {
+        console.log(body);
+        console.log('this.state.playlists' + this.state.topPlaylist)
+        this.assignPlaylistTracksName(body.items);
+        
+    });
+
+}
+
+assignPlaylistTracksName = async(items) => {
+  if (typeof (items) != 'undefined') {
+      if (items != 0) {
+          this.state.playlisttracknames = items.map((i) =>
+              <li>{i.track.id}</li>
+          )
+      } else {
+          this.state.playlisttracknames = <p>No playlists to display</p>
+      }
+      console.log("playlist track names: " + this.state.playlisttracknames.length)
+
+
+      this.setState({
+        trackFeatures: [],
+        genres: [],
+        artistID: [],
+        name: [],
+        artist: []
+        
+    })
+    //create arrays with selected playlist attributes
+    for (let i = 0; i < this.state.playlisttracknames.length; i++) {
+        var id = this.state.playlisttracknames[i].props.children;
+        var trackOptions = {
+            method: 'GET',
+            url: `https://api.spotify.com/v1/tracks/${id}`,
+            headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+            json: true
+        };
+        var audioFeaturesOptions = {
+            method: 'GET',
+            url: `https://api.spotify.com/v1/audio-features/${id}`,
+            headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+            json: true
+        };
+        await axios(audioFeaturesOptions)
+            .then((body) => {
+                this.setState({ trackFeatures: [...this.state.trackFeatures, body.data] })
+                console.log(this.state.trackFeatures);
+            });
+  
+        await axios(trackOptions)
+            .then((body) => {
+                if (body.data.artists != 0) {
+                    this.setState({
+                        artistID: [...this.state.artistID, body.data.artists[0].id],
+                        artist: [...this.state.artist, body.data.artists[0].name],
+                        name: [...this.state.name, body.data.name],
+                        status: "Analyzing Playlist 1: " + body.data.name
+                    })
+                    console.log(this.state.artistID);
+                    console.log(this.state.artist)
+                    console.log(this.state.name)
+                }
+            });
+        var artistOptions = {
+            method: 'GET',
+            url: `https://api.spotify.com/v1/artists/${this.state.artistID[i]}`,
+            headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+            json: true
+        };
+        await axios(artistOptions)
+            .then((body) => {
+                this.setState({ genres: [...this.state.genres, body.data.genres] })
+                /*this.state.genres = body.genres.map((i) =>
+                <li>{i}</li>)*/
+                console.log(this.state.genres)
+            });
+    }
+
+
+
+  }
+}
 
   handleLocationChange = (event) => {
     //this.state.location = event.target.value;
