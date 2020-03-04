@@ -3,7 +3,8 @@ import Router from 'next/router'
 import { css } from "@emotion/core"
 import ScaleLoader from "react-spinners/ScaleLoader"
 import Header from '../components/Header'
-import { Modal, Button } from "react-bootstrap";
+import {Modal,Button, Container, Row, Col, Card} from "react-bootstrap";
+import Image from 'react-bootstrap/Image'
 import { Doughnut } from 'react-chartjs-2';
 import 'chartjs-plugin-labels'
 
@@ -38,6 +39,7 @@ class User extends Component {
             access_token: this.props.query.access_token,
             refresh_token: '',
             user: '',
+            userImage: 'https://www.palmcityyachts.com/wp/wp-content/uploads/palmcityyachts.com/2015/09/default-profile.png',
             playlists: [],
             playlist: null,
             playlistName: '',
@@ -736,12 +738,19 @@ class User extends Component {
         if (typeof (this.state.playlists) != 'undefined') {
             if (this.state.playlists.length != 0) {
                 playlists = this.state.playlists.map((i, index) =>
-                    <div>
-                        <li>
+
+                <div>
+                    <li>
+                    <Row>
+
+                        <Col>
+                        <Button className = "button" onClick={() => this.getPlaylistTracks(index)} variant="success" size="sm">
                             {i.name}
-                            <button className="click" onClick={() => this.getPlaylistTracks(index)}>
-                                Select
-                        </button>
+                        </Button>
+
+                        </Col>
+                        </Row>
+
                         </li>
                     </div>
                 )
@@ -755,12 +764,16 @@ class User extends Component {
         if (typeof (this.state.listOfUsers) != 'undefined') {
             if (this.state.listOfUsers.length != 0) {
                 list_ofUsers = this.state.listOfUsers.map((i, index) =>
-                    <div>
-                        <li>
-                            {i}
-                            <Button className="button" /*onClick={() => redirect to user page } */>
-                                Select User
+                <div>
+                    <li>
+                      <Row>
+                        <Col>  {i} </Col>
+                        <Col>
+                        <Button className = "button" /*onClick={() => redirect to user page } */ variant="outline-secondary">
+                            Select User
                         </Button>
+                        </Col>
+                        </Row>
                         </li>
                     </div>
                 )
@@ -790,17 +803,42 @@ class User extends Component {
 
 
         return (
+            <html>
+                <div className="testclass">
+                <div>
+                <style jsx>{`
+                    .container {
+                        margin: 50px;
+                    }
+                    .testclass {
+                        background: linear-gradient(to bottom, #373737 0%, #191414 50%);
+                        font-family: Montserrat;
+                        padding-bottom: 100px;
+                    }
+                    .footer {
+                        padding-top: 25px;
+                        font-family: Montserrat;
+                        background-color: #373737;
+                        color: white;
+                    }
+                    img {
+                        object-fit: cover;
+                        width:120px;
+                        height:120px;
+                    }
+                    //https://stackoverflow.com/questions/15167545/how-to-crop-a-rectangular-image-into-a-square-with-css
 
-
-            <div>
+                `}</style>
                 <head>
-                    <link
-                        rel="stylesheet"
-                        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-                        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-                        crossorigin="anonymous"
-                    />
+                  <link
+                    rel="stylesheet"
+                    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+                    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+                    crossorigin="anonymous"
+                  />
+                  <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet" /> 
                 </head>
+                <Header props={this.state.access_token} />
                 <div>
 
                     {/* <Button onClick= {()=>{this.handleModal()}}> open modal </Button>*/}
@@ -817,36 +855,84 @@ class User extends Component {
 
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button onClick={() => { this.goToSettings() }}>
-                                Settings
+                        <Button onClick= {()=>{this.goToSettings()}} variant="light">
+                          Settings
                         </Button>
                         </Modal.Footer>
                     </Modal>
                 </div>
-                <Header props={this.state.access_token} />
-                <button onClick={() => this.goToSettings()}>
-                    Settings
-                  </button>
-                <p>This is where user information will be displayed.</p>
-                <p>Access Token: {this.state.access_token}</p>
-                <p>User ID: {this.state.user}</p>
-                <p>Playlists:</p>
-                <ul>{playlists}</ul>
+                <div>
+                  <Container>
+                        <Row>
+                            <Col md="auto" style={{paddingBottom: '20px'}}>
+                                <Image src={this.state.userImage} roundedCircle/>
+                            </Col>
+                            <Col style={{color: 'white', paddingBottom: '20px'}}>
+                                <p style={{fontSize: 'small'}}>USER</p>
+                                <h1><b>{this.state.user}</b></h1>
+                            </Col>
+                        </Row>
+                    <Row>
+                      <Col>
 
-                <p>Compatible Users:</p>
-                <ul>{list_ofUsers}</ul>
 
-                <div className="sweet-loading">
-                    <ScaleLoader
-                        css={override}
-                        size={5}
-                        height={30}
-                        width={10}
-                        radius={5}
-                        //size={"150px"} this also works
-                        color={"#36D7B7"}
-                        loading={this.state.loading}
-                    />
+                        <Card style={{ height: '550px', backgroundColor: '#121212' }} text="white" >
+                        <Card.Header>Playlists: </Card.Header>
+                            <div className="overflow-auto" style={{  maxHeight:"480px" }}>
+                        <Card.Body>
+                          {/* <Card.Title>Playlists:</Card.Title> */}
+                          <Card.Text>
+
+
+                              <ul>{playlists}</ul>
+
+                          </Card.Text>
+                        </Card.Body>
+                          </div>
+                      </Card>
+
+
+
+
+                      </Col>
+                      <Col>
+                        <Card bg="dark" style={{ height: '550px' }} text="white" >
+                        <Card.Header>Compatible Users:</Card.Header>
+                        <div className="overflow-auto" style={{  maxHeight:"480px" }}>
+
+                            <Card.Body>
+                              <Card.Text>
+                                  <ul >{list_ofUsers}</ul>
+                              </Card.Text>
+                            </Card.Body>
+                            </div>
+                        </Card>
+                      </Col>
+                    </Row>
+                    <Row>
+                    <Col>
+                      <div className="sweet-loading">
+                        <ScaleLoader
+                            css={override}
+                            size={5}
+                            height={30}
+                            width={10}
+                            radius={5}
+                            //size={"150px"} this also works
+                            color={"#1DB954"}
+                            loading={this.state.loading}
+                            />
+                        </div>
+                        <div style={{paddingTop: '20px', color: 'white'}}>
+                            <p>{message}</p>
+                            <p>{status}</p>
+                        </div>
+                      </Col>
+                    </Row>
+
+                  </Container>
+
+
                 </div>
                 <p>{message}</p>
                 <p>{status}</p>
@@ -868,7 +954,81 @@ class User extends Component {
                     />
                 </div>
             </div>
+            </div>
+                  {/* <footer className="testclass">
+                      {/* <div class="container"> */}
+                        {/* <Col>
+                            <p>Spotifynd Friends</p>
+                        </Col> */}
+                      {/* </div> */}
+                  {/* </footer> */} 
 
+                  <footer className="footer">
+
+                    <div class="container-fluid text-center text-md-left">
+
+                        <div class="row">
+
+                            <div class="col-md-6 mt-md-0 mt-3">
+
+                                <h5 class="text-uppercase">Footer Content</h5>
+                                <p>Here you can use rows and columns to organize your footer content.</p>
+
+                            </div>
+
+                            <hr class="clearfix w-100 d-md-none pb-3"></hr>
+
+                            <div class="col-md-3 mb-md-0 mb-3">
+
+                                <h5 class="text-uppercase">Links</h5>
+
+                                <ul class="list-unstyled">
+                                <li>
+                                    <a href="#!">Link 1</a>
+                                </li>
+                                <li>
+                                    <a href="#!">Link 2</a>
+                                </li>
+                                <li>
+                                    <a href="#!">Link 3</a>
+                                </li>
+                                <li>
+                                    <a href="#!">Link 4</a>
+                                </li>
+                                </ul>
+
+                            </div>
+
+                            <div class="col-md-3 mb-md-0 mb-3">
+
+                                <h5 class="text-uppercase">Links</h5>
+
+                                <ul class="list-unstyled">
+                                <li>
+                                    <a href="#!">Link 1</a>
+                                </li>
+                                <li>
+                                    <a href="#!">Link 2</a>
+                                </li>
+                                <li>
+                                    <a href="#!">Link 3</a>
+                                </li>
+                                <li>
+                                    <a href="#!">Link 4</a>
+                                </li>
+                                </ul>
+
+                            </div>
+                
+                        </div>
+
+                    </div>
+                    <div class="footer-copyright text-center py-3">© 2020 Copyright:
+                        <a href="https://mdbootstrap.com/"> MDBootstrap.com</a>
+                    </div>
+
+                    </footer>
+        </html>
         )
     }
 };
