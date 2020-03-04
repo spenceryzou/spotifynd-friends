@@ -111,7 +111,7 @@ describe('<User />', () => {
                             loading: false});
                     console.log(wrapper.state().compatibility)
                 })
-                wrapper.find('.button').prop('onClick')()               
+                wrapper.find('.click').prop('onClick')()               
                 let compatibility = await Promise.resolve(wrapper.state().compatibility)
                 wrapper.setState({compatibility: compatibility})
                 expect(wrapper.state().compatibility).to.equal(64);
