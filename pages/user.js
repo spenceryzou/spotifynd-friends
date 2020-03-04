@@ -82,6 +82,7 @@ class User extends Component {
                     'Valence'
                 ],
                 datasets: [{
+                    hidden: true,
                     data: [0, 0, 0, 0, 0],
                     backgroundColor: [
                         '#66c2a4',
@@ -128,6 +129,7 @@ class User extends Component {
             'Valence'
         ],
         datasets: [{
+            hidden: false,
             data: [this.state.danceCount,this.state.energyCount, this.state.acousticCount, this.state.liveCount, this.state.valenceCount],
             backgroundColor: [
                 '#66c2a4',
@@ -796,7 +798,7 @@ class User extends Component {
             status = ''
             message = `These playlists are ${this.state.compatibility}% compatible!`
             message += "\n" + this.state.name[this.state.mostCompatibleIndex] + " by " + this.state.artist[this.state.mostCompatibleIndex] + ` is the most compatible song by ${this.state.max}%.`
-                details = <Button onClick={() => this.setState({data: this.getData()})}>
+                details = <Button onClick={() => this.setState({data: this.getData()})} variant="success">
                     Details
                 </Button>
         }
@@ -929,30 +931,33 @@ class User extends Component {
                         </div>
                       </Col>
                     </Row>
+                    <Row>
+                        <Col>
+                            {details}
+                            <div>
+                                <Doughnut data={this.state.data}
+                                width={500}
+                                height={500}
+                                options={{ 
+                                    maintainAspectRatio: false,
+                                    plugins: {
+                                                labels: { render: 'label',
+                                                    fontColor: 'white'}
+                                    },
+                                    legend: {
+                                        display: false
+                                    }
+                                }}
+                                />
+                            </div>
+                        </Col>
+                    </Row>
 
                   </Container>
 
 
                 </div>
-                <p>{message}</p>
-                <p>{status}</p>
-                {details}
-                <div>
-                    <Doughnut data={this.state.data}
-                      width={500}
-                      height={500}
-                      options={{ 
-                          maintainAspectRatio: false,
-                          plugins: {
-                                    labels: { render: 'label',
-                                        fontColor: 'white'}
-                          },
-                          legend: {
-                            display: false
-                          }
-                      }}
-                    />
-                </div>
+                
             </div>
             </div>
                   {/* <footer className="testclass">
@@ -1032,5 +1037,14 @@ class User extends Component {
         )
     }
 };
-
+//user 2 name clickable, goes to profile
+//compatibility score next to name clickable, displays details on bottom
+//clicking another score updates the details
+//Details:
+//Here's how your songs stack up with {playlist2Name}
+//{songName} is the most compatible song by {percentage}
+//categories for chart, reflects the attribute of the song that most closely resembles the attributes of the playlist.
+//think of better blurb, ^this sucks
+//Your songs are most similar to {user2}'s playlist in terms of...
+//get plugin to show number of tracks in the middle: i.e 70 songs
 export default User
