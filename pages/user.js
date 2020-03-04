@@ -929,30 +929,33 @@ class User extends Component {
                         </div>
                       </Col>
                     </Row>
+                    <Row>
+                        <Col>
+                            {details}
+                            <div>
+                                <Doughnut data={this.state.data}
+                                width={500}
+                                height={500}
+                                options={{ 
+                                    maintainAspectRatio: false,
+                                    plugins: {
+                                                labels: { render: 'label',
+                                                    fontColor: 'white'}
+                                    },
+                                    legend: {
+                                        display: false
+                                    }
+                                }}
+                                />
+                            </div>
+                        </Col>
+                    </Row>
 
                   </Container>
 
 
                 </div>
-                <p>{message}</p>
-                <p>{status}</p>
-                {details}
-                <div>
-                    <Doughnut data={this.state.data}
-                      width={500}
-                      height={500}
-                      options={{ 
-                          maintainAspectRatio: false,
-                          plugins: {
-                                    labels: { render: 'label',
-                                        fontColor: 'white'}
-                          },
-                          legend: {
-                            display: false
-                          }
-                      }}
-                    />
-                </div>
+                
             </div>
             </div>
                   {/* <footer className="testclass">
