@@ -198,7 +198,12 @@ class User extends Component {
             firebase.database().ref('users/' + spotifyid).set({
                 spotify_id: spotifyid,
                 location: '',
-                topPlaylist: ''
+                topPlaylist: '',
+                trackFeatures: [],
+                genres: [],
+                artistID: [],
+                name: [],
+                artist: []
 
 
             }, function (error) {

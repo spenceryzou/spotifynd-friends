@@ -8,6 +8,7 @@ import { FormGroup, ControlLabel, FormControl, Card ,Container, Row, Col} from "
 import Image from 'react-bootstrap/Image'
 import Header from '../components/Header'
 import axios from 'axios';
+import { runInThisContext } from 'vm'
 
 
 var auth = require('firebase/auth');
@@ -301,9 +302,29 @@ assignPlaylistTracksName = async(items) => {
             });
     }
 
+    firebase.database().ref('users/' + this.state.user).update({
+      'trackFeatures': this.state.trackFeatures,
+      'genres': this.state.genres,
+      'artistID': this.state.artistID,
+      'name': this.state.name,
+      'artist': this.state.artist,
+  
+    }, function (error) {
+      if (error) {
+        // The write failed...
+      } else {
+        console.log("Updated trackFeatures: ");
+      }
+    }
+  );
+
 
 
   }
+
+
+
+
 }
 
   handleLocationChange = (event) => {
