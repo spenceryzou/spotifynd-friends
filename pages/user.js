@@ -733,6 +733,17 @@ class User extends Component {
         )
     }
 
+    goToProfile = (i) => {
+        console.log(this.state.listOfUsers)
+        let access_token = this.state.access_token;
+        let user = this.state.listOfUsers[i];
+        Router.push({
+            pathname: '/profile',
+            query: { access_token },
+        }, "/profile/" + user 
+        )
+    }
+
     handleModal = () => {
         this.setState({
             show: !this.state.show
@@ -740,7 +751,6 @@ class User extends Component {
     }
 
     render() {
-
         let playlists;
         if (typeof (this.state.playlists) != 'undefined') {
             if (this.state.playlists.length != 0) {
@@ -776,7 +786,7 @@ class User extends Component {
                       <Row>
                         <Col>  {i} </Col>
                         <Col>
-                        <Button className = "button" /*onClick={() => redirect to user page } */ variant="outline-secondary">
+                        <Button className = "button" onClick={() => this.goToProfile(index) }  variant="outline-secondary">
                             Select User
                         </Button>
                         </Col>

@@ -1,0 +1,24 @@
+# Attendance
+Project: Spotifynd Friends
+Mentor: Ekta
+Meeting Time: lab08
+Meeting Type: Daily Scrum
+Attendance:
+* Evelyn - Present  
+* Lan-Chi - Abset
+* Darian - Present
+* Eduardo - Present
+* Nick - Present
+* Spencer - Present
+
+#Notes
+Darian: Pass
+
+Spencer: added a wheel that categorizes songs based on which attribute is most similar to the compared playlist,
+hover/change color for links, homepage ui
+
+Eduardo: sends track attributes to database (not just playlist id), need to figure out how to prevent users from leaving page before done loading
+
+Nick: user profile, when click on button next to user name, goes to user profile, top playlist embedded on profile
+
+Evelyn: display songs by attribute when slice of pie chart is clicked
