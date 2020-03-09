@@ -101,7 +101,13 @@ class Settings extends Component {
     } else{
       this.getUserPlaylists();
     }
+
+    
   }
+
+
+
+
 
   
 
@@ -305,7 +311,7 @@ assignPlaylistTracksName = async(items) => {
     firebase.database().ref('users/' + this.state.user).update({
       'trackFeatures': this.state.trackFeatures,
       'genres': this.state.genres,
-      'artistID': this.state.artistID,
+      //'artistID': this.state.artistID,
       'name': this.state.name,
       'artist': this.state.artist,
   
