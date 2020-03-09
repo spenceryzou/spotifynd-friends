@@ -52,6 +52,16 @@ class User extends Component {
             acousticCount: 0,
             liveCount: 0,
             valenceCount: 0,
+            danceNames: [],
+            energyNames: [],
+            acousticNames: [],
+            liveNames: [],
+            valenceNames: [],
+            showDance: false,
+            showEnergy: false,
+            showAcoustic: false,
+            showLive: false,
+            showValence: false,
             trackFeatures: [],
             genres: [],
             artistID: [],
@@ -523,18 +533,28 @@ class User extends Component {
                 switch (attributeMin) {
                     case dance:
                         this.state.danceCount++
+                        this.setState({ danceNames: this.state.danceNames.concat(this.state.name[i]) });
+                        console.log('danceNames: ' + this.state.danceNames);
                         break;
                     case energy:
                         this.state.energyCount++
+                        this.setState({ energyNames: this.state.energyNames.concat(this.state.name[i]) });
+                        console.log('energyNames: ' + this.state.energyNames);
                         break;
                     case acoustic:
                         this.state.acousticCount++
+                        this.setState({ acousticNames: this.state.acousticNames.concat(this.state.name[i]) });
+                        console.log('acousticNames: ' + this.state.acousticNames);
                         break;
                     case live:
                         this.state.liveCount++
+                        this.setState({ liveNames: this.state.liveNames.concat(this.state.name[i]) });
+                        console.log('liveNames: ' + this.state.liveNames);
                         break;
                     case valence:
                         this.state.valenceCount++
+                        this.setState({ valenceNames: this.state.valenceNames.concat(this.state.name[i]) });
+                        console.log('valenceNames: ' + this.state.valenceNames);
                         break;
                 }
                 imin = 100 - imin;
@@ -635,7 +655,18 @@ class User extends Component {
                 'Cyan',
                 'Brown'
                 ]
-            }]}})
+            }]},
+            danceNames: [],
+            energyNames: [],
+            acousticNames: [],
+            liveNames: [],
+            valenceNames: [],
+            showDance: false,
+            showEnergy: false,
+            showAcoustic: false,
+            showLive: false,
+            showValence: false
+        })
         console.log(this.state.playlists[i])
         var tracksOptions = {
             url: this.state.playlists[i].tracks.href,
@@ -818,6 +849,113 @@ class User extends Component {
                 </Button>
         }
 
+        let danceList;
+        if (typeof (this.state.danceNames) != 'undefined') {
+            if (this.state.danceNames.length != 0) {
+                danceList = this.state.danceNames.map((i, index) =>
+
+                <div>
+                    <li>
+                        {i}
+                    </li>
+                </div>
+                )
+            }
+        }
+
+        let energyList;
+        if (typeof (this.state.energyNames) != 'undefined') {
+            if (this.state.energyNames.length != 0) {
+                energyList = this.state.energyNames.map((i, index) =>
+
+                <div>
+                    <li>
+                        {i}
+                    </li>
+                </div>
+                )
+            }
+        }
+
+        let acousticList;
+        if (typeof (this.state.acousticNames) != 'undefined') {
+            if (this.state.acousticNames.length != 0) {
+                acousticList = this.state.acousticNames.map((i, index) =>
+
+                <div>
+                    <li>
+                        {i}
+                    </li>
+                </div>
+                )
+            }
+        }
+
+        let liveList;
+        if (typeof (this.state.liveNames) != 'undefined') {
+            if (this.state.liveNames.length != 0) {
+                liveList = this.state.liveNames.map((i, index) =>
+
+                <div>
+                    <li>
+                        {i}
+                    </li>
+                </div>
+                )
+            }
+        }
+
+        let valenceList;
+        if (typeof (this.state.valenceNames) != 'undefined') {
+            if (this.state.valenceNames.length != 0) {
+                valenceList = this.state.valenceNames.map((i, index) =>
+
+                <div>
+                    <li>
+                        {i}
+                    </li>
+                </div>
+                )
+            }
+        }
+
+        let visibleList;
+        if(this.state.showDance){
+            visibleList = (
+                <div>
+                    <p>{this.state.danceCount} {this.state.danceCount == 1 ? 'song is': 'songs are'} most compatibility in Dancibility:</p>
+                    {danceList}
+                </div>
+            );
+        } else if(this.state.showEnergy){
+            visibleList = (
+                <div>
+                    <p>{this.state.energyCount} {this.state.energyCount == 1 ? 'song is': 'songs are'} most compatibility in Energy:</p>
+                    {energyList}
+                </div>
+            );
+        } else if(this.state.showAcoustic){
+            visibleList = (
+                <div>
+                    <p>{this.state.acousticCount} {this.state.acousticCount == 1 ? 'song is': 'songs are'} most compatibility in Acousticness:</p>
+                    {acousticList}
+                </div>
+            );
+        } else if(this.state.showLive){
+            visibleList = (
+                <div>
+                    <p>{this.state.liveCount} {this.state.liveCount == 1 ? 'song is': 'songs are'} most compatibility in Liveness:</p>
+                    {liveList}
+                </div>
+            );
+        } else if(this.state.showValence){
+            visibleList = (
+                <div>
+                    <p>{this.state.valenceCount} {this.state.valenceCount == 1 ? 'song is': 'songs are'} most compatibility in Valence:</p>
+                    {valenceList}
+                </div>
+            );
+        } 
 
         return (
             <html>
@@ -949,7 +1087,7 @@ class User extends Component {
                     <Row>
                         <Col>
                             {details}
-                            <div>
+                            <div style={{paddingTop: '150px!important'}}>
                                 <Doughnut data={this.state.data}
                                 width={500}
                                 height={500}
@@ -963,8 +1101,53 @@ class User extends Component {
                                         display: false
                                     }
                                 }}
+                                getElementsAtEvent={elems =>{
+                                    if(elems.length != 0){
+                                        if(elems[0]._index == 0){
+                                            console.log(elems[0]._index);
+                                            this.state.showDance = true;
+                                            this.state.showEnergy = false;
+                                            this.state.showAcoustic = false;
+                                            this.state.showLive = false;
+                                            this.state.showValence = false;
+                                            console.log('showDance: ' + this.state.showDance);
+                                            this.forceUpdate();
+                                        } else if(elems[0]._index == 1){
+                                            this.state.showDance = false;
+                                            this.state.showEnergy = true;
+                                            this.state.showAcoustic = false;
+                                            this.state.showLive = false;
+                                            this.state.showValence = false;
+                                            this.forceUpdate();
+                                        } else if(elems[0]._index == 2){
+                                            this.state.showDance = false;
+                                            this.state.showEnergy = false;
+                                            this.state.showAcoustic = true;
+                                            this.state.showLive = false;
+                                            this.state.showValence = false;
+                                            this.forceUpdate();
+                                        } else if(elems[0]._index == 3){
+                                            this.state.showDance = false;
+                                            this.state.showEnergy = false;
+                                            this.state.showAcoustic = false;
+                                            this.state.showLive = true;
+                                            this.state.showValence = false;
+                                            this.forceUpdate();
+                                        } else if(elems[0]._index == 4){
+                                            this.state.showDance = false;
+                                            this.state.showEnergy = false;
+                                            this.state.showAcoustic = false;
+                                            this.state.showLive = false;
+                                            this.state.showValence = true;
+                                            this.forceUpdate();
+                                        }
+                                    }
+                                }}
                                 />
                             </div>
+                        </Col>
+                        <Col style={{color: 'white', paddingTop: '35px', paddingLeft: '100px'}}>
+                            {visibleList}
                         </Col>
                     </Row>
 

@@ -565,7 +565,7 @@ assignPlaylistTracksName = async(items) => {
               <Form  >
                 <Form.Group controlId="exampleForm.ControlSelect1">
                   <Form.Label class="text-white"  >Set a new Location</Form.Label>
-                  <Form.Control defaultValue={-1}
+                  <Form.Control defaultValue={this.state.location = null ? -1 : this.state.location}
                     as="select"
                     onChange={this.handleLocationChange}
                   >
@@ -576,7 +576,7 @@ assignPlaylistTracksName = async(items) => {
 
                 <Form.Group controlId="exampleForm.ControlSelect2">
                   <Form.Label class="text-white">Select a new Playlist</Form.Label>
-                  <Form.Control defaultValue={-1}
+                  <Form.Control defaultValue={this.state.topPlaylist = null ? -1 : this.state.topPlaylist}
                     as="select"
                     onChange={this.handlePlaylistChange}
                     placeholder="select a playlist">
