@@ -40,6 +40,7 @@ class User extends Component {
             refresh_token: '',
             user: '',
             userImage: 'https://www.palmcityyachts.com/wp/wp-content/uploads/palmcityyachts.com/2015/09/default-profile.png',
+            location: '',
             playlists: [],
             playlist: null,
             playlistName: '',
@@ -167,16 +168,25 @@ class User extends Component {
         var dbRef = firebase.database().ref('users')
         console.log(this.state.user)
 
-
+        dbRef.orderByValue().startAt(0).on("child_added", snapshot => {
+            if(snapshot.exists() && snapshot.key == this.state.user){
+                this.setState({location: snapshot.child("location").val()})
+                // console.log(this.state.location)
+            }
+        });
 
         dbRef.orderByValue().startAt(0).on("child_added", snapshot => {
 
             //ignore key if it is you
             if (snapshot.exists() && snapshot.key != this.state.user) {
+                let otherLocation = snapshot.child("location").val();
 
-                console.log(snapshot.key)
+                console.log(snapshot.key + " location: " + otherLocation);
+                console.log(this.state.location)
 
-                this.setState({ listOfUsers: [...this.state.listOfUsers, snapshot.key] })
+                if(otherLocation == this.state.location){
+                    this.setState({ listOfUsers: [...this.state.listOfUsers, snapshot.key] })
+                }
                 console.log(this.state.listOfUsers)
 
             }
@@ -195,6 +205,7 @@ class User extends Component {
         dbRef.child(user_id).once("value", snapshot => {
             if (snapshot.exists()) {
                 const userLocation = snapshot.val().location;
+                this.setState({location: userLocation});
                 const userTopPlaylist = snapshot.val().topPlaylist;
                 const userSpotifyId = snapshot.val().spotify_id;
                 console.log("exists!", userData);
