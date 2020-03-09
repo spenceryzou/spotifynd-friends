@@ -83,7 +83,7 @@ class User extends Component {
             show: false,
             showChart: false,
             data: {
-                
+
                 labels: [
                     'Dancibility',
                     'Energy',
@@ -122,7 +122,7 @@ class User extends Component {
             appId: "1:775203379545:web:2e74554d15a4b1c3675448",
             measurementId: "G-QL50LT5KSH"
         };
-        
+
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig)
         }
@@ -766,7 +766,7 @@ class User extends Component {
         Router.push({
             pathname: '/profile',
             query: { access_token },
-        }, "/profile/" + user 
+        }, "/profile/" + user
         )
     }
 
@@ -950,7 +950,7 @@ class User extends Component {
                     {valenceList}
                 </div>
             );
-        } 
+        }
 
         return (
             <html>
@@ -986,7 +986,7 @@ class User extends Component {
                     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                     crossorigin="anonymous"
                   />
-                  <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet" /> 
+                  <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet" />
                 </head>
                 <Header props={this.state.access_token} />
                 <div>
@@ -1086,7 +1086,7 @@ class User extends Component {
                                 <Doughnut data={this.state.data}
                                 width={500}
                                 height={500}
-                                options={{ 
+                                options={{
                                     maintainAspectRatio: false,
                                     plugins: {
                                                 labels: { render: 'label',
@@ -1150,7 +1150,7 @@ class User extends Component {
 
 
                 </div>
-                
+
             </div>
             </div>
                   {/* <footer className="testclass">
@@ -1159,7 +1159,7 @@ class User extends Component {
                             <p>Spotifynd Friends</p>
                         </Col> */}
                       {/* </div> */}
-                  {/* </footer> */} 
+                  {/* </footer> */}
 
                   <footer className="footer">
 
@@ -1217,7 +1217,7 @@ class User extends Component {
                                 </ul>
 
                             </div>
-                
+
                         </div>
 
                     </div>
@@ -1230,7 +1230,7 @@ class User extends Component {
         )
     }
 };
-//user 2 name clickable, goes to profile
+//user 2 name clickable, goes to profile,
 //compatibility score next to name clickable, displays details on bottom
 //clicking another score updates the details
 //Details:
