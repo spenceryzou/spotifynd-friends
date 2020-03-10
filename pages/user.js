@@ -177,11 +177,57 @@ class User extends Component {
                 console.log(snapshot.key)
 
                 this.setState({ listOfUsers: [...this.state.listOfUsers, snapshot.key] })
+                //this.orderUsers(this.state.listOfUsers,0,this.state.listOfUsers.length-1);
                 console.log(this.state.listOfUsers)
 
             }
 
         });
+    }
+    orderUsers = (usersUnordered,low,high) => {
+      //Quicksort by the compatability score but for now, pseuodo sort by alphabet
+      //in the future will map with a key of the name maybe access the database for the compatability score?
+
+      Map< String,Integer> hm =  new HashMap< String,Integer>();
+      hm.put( new Integer(70),"user1");
+      hm.put(new Integer(80),"user2");
+      hm.put( new Integer(50),"user3");
+      hm.put( new Integer(40),"user4");
+      //given an array of compatability scores sort that array
+
+      if(low < high){
+        //pi is partiioining index
+        let pi = this.partition(usersUnordered, low, high);
+
+        this.orderUsers(usersUnordered, low, pi - 1);//before pi
+        this.orderUsers(usersUnordered, pi+1, high);//after pi
+
+      }
+    }
+
+    partition = (arr,low,high) => {
+      //pivot = element to placed at right position
+      let pivot = users[high];
+      let i = low -1; //index of the smaller element
+
+      for( int j= low; j<= high-1;j++){
+        // if current element is smaller than the pivot
+        if(arr[j]<pivot){
+          i++;
+          //swap arr[i] and arr[j]
+          let temp;
+          temp = arr[i];
+          arr[i] = arr[j];
+          arr[j]= temp;
+              }
+      }
+      //swap arr[i+1] and arr[high]
+
+      temp = arr[i+1];
+      arr[i+1] = arr[high];
+      arr[high]= temp;
+      return (i+1);
+
     }
 
     writeUserData = (spotifyid) => {
