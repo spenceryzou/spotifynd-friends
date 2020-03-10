@@ -181,7 +181,7 @@ class User extends Component {
         dbRef.orderByValue().startAt(0).on("child_added", snapshot => {
 
             //ignore key if it is you
-            if (snapshot.exists() && snapshot.key != this.state.user) {
+            if (snapshot.exists() /*&& snapshot.key != this.state.user*/) {
                 let otherLocation = snapshot.child("location").val();
 
                 console.log(snapshot.key + " location: " + otherLocation);
@@ -504,7 +504,6 @@ class User extends Component {
                 //var songDifferenceScore = 0;
                 var imin = 100;
                 for (let j = 0; j < otherTrackFeatures.length; j++) {
-                    console.log("current j: " + j)
                     var differenceScore = 0, dance = 0, energy = 0, acoustic = 0, live = 0, valence = 0
                     differenceScore += Math.abs(this.state.trackFeatures[i].danceability - otherTrackFeatures[j].danceability) * 5
                     dance += Math.abs(this.state.trackFeatures[i].danceability - otherTrackFeatures[j].danceability) * 5
