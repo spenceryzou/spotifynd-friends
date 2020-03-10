@@ -34,6 +34,7 @@ class Settings extends Component {
       playlistTracks: [],
       playlisttracknames: [],
       topPlaylist: null,
+      instagram: '',
       location: 'no location set, please set on below',
       image: '',
       display:  null,
@@ -345,6 +346,50 @@ assignPlaylistTracksName = async(items) => {
     //this.forceUpdate();
   }
 
+
+  
+  handleInstagramChange = (event) => {
+    //this.state.location = event.target.value;
+    console.log(event.target.value)
+    this.setState({
+      instagram: event.target.value
+    })
+    this.writeUserInstagram(this.state.user, event.target.value)
+
+    console.log("Instagram" + this.state.instagram)
+    //this.forceUpdate();
+  }
+
+
+  writeUserInstagram = (userid, userInstagram) => {
+    firebase.database().ref('users/' + this.state.user).update({
+        'instagram': userInstagram,
+
+      }, function (error) {
+        if (error) {
+          // The write failed...
+        } else {
+          console.log("Updated Instagram: " + userInstagram);
+        }
+      }
+    );
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   setTopPlaylist = (data) => {
     console.log("in test")
     console.log("data" + data.name)
@@ -378,11 +423,15 @@ assignPlaylistTracksName = async(items) => {
         if (snapshot.exists()) {
           const userLocation = snapshot.val().location;
           const userTopPlaylist = snapshot.val().topPlaylist;
+          const userInstagram = snapshot.val().instagram;
           console.log("exists!", userLocation);
           if (userLocation != null) {
             this.state.location = userLocation
             console.log(this.state.location)
           }
+          
+
+
           if (userTopPlaylist != null) {
             var options = {
               url: 'https://api.spotify.com/v1/playlists/'+userTopPlaylist,
@@ -563,6 +612,8 @@ assignPlaylistTracksName = async(items) => {
 
           <Col>
               <Form  >
+
+
                 <Form.Group controlId="exampleForm.ControlSelect1">
                   <Form.Label class="text-white"  >Set a new Location</Form.Label>
                   <Form.Control defaultValue={this.state.location = null ? -1 : this.state.location}
@@ -584,6 +635,25 @@ assignPlaylistTracksName = async(items) => {
                     {formItems}
                   </Form.Control>
                 </Form.Group>
+
+    
+                  <Form.Group controlId="exampleForm.ControlInput1">
+                  <Form.Label class="text-white">Link to Instagram</Form.Label>
+                    <Form.Control type="text" placeholder="https://www.instagram.com/placeholder/" 
+                    onChange ={this.handleInstagramChange}
+                    >
+                    </Form.Control>
+                    </Form.Group>
+
+                   
+
+
+                
+
+
+
+
+
               </Form>
               </Col>
           </Row>
