@@ -659,7 +659,8 @@ class User extends Component {
                 acousticNames: acousticNames,
                 liveNames: liveNames,
                 valenceNames: valenceNames,
-                compatibility: total
+                key: total,
+                value: key
             };
 
             console.log(otherCompatibility);
