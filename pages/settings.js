@@ -9,6 +9,8 @@ import Image from 'react-bootstrap/Image'
 import Header from '../components/Header'
 import axios from 'axios';
 import { runInThisContext } from 'vm'
+import { Formik } from 'formik';
+
 
 
 var auth = require('firebase/auth');
@@ -527,6 +529,11 @@ assignPlaylistTracksName = async(items) => {
   render() {
     let playlists = this.state.playlists;
 
+    // const schema = yup.object({
+    //   instagram: yup.string().required(),
+    
+    // });
+
     let locations = ["Bay Area", "Orange County", "Santa Barbara", "Other"];
     let items2 = locations.map((i) =>
       <option
@@ -639,12 +646,18 @@ assignPlaylistTracksName = async(items) => {
     
                   <Form.Group controlId="exampleForm.ControlInput1">
                   <Form.Label class="text-white">Link to Instagram</Form.Label>
-                    <Form.Control type="text" placeholder="https://www.instagram.com/placeholder/" 
+                    <Form.Control  defaultValue={this.state.instagram} 
+                    as ="input"
                     onChange ={this.handleInstagramChange}
+                    placeholder="https://www.instagram.com/placeholder/" 
+                    
                     >
                     </Form.Control>
                     </Form.Group>
 
+
+
+    
                    
 
 
