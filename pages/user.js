@@ -1245,22 +1245,31 @@ class User extends Component {
     // }
 
     generateUserCompButtons = () => {
-
         let list = this.convertToInt(this.state.listOfUserCompatibilities);
 
         let compButtons = list.map((i, index) =>
-            <li>
-                <Row>
-                    <Col>
-                        {i.value}
-                    </Col>
-                    <Col>
-                        <Button className="button" onClick={() => this.setOtherUsersDetails(index)} size="sm">
-                            Details
-                        </Button>
-                    </Col>
-                </Row>
-            </li>
+            <div>
+                <style jsx>{`
+                    .profile-link:hover{
+                        color: #1ed760;
+                        cursor: pointer;
+                    }
+                `}</style>
+                <li>
+                    <Row>
+                        <Col onClick={() => this.goToProfile(index) }>
+                            <div className="profile-link">
+                                {i.value}
+                            </div>
+                        </Col>
+                        <Col>
+                            <Button className="button" onClick={() => this.setOtherUsersDetails(index)} size="sm">
+                                Details
+                            </Button>
+                        </Col>
+                    </Row>
+                </li>
+            </div>
         )
         return compButtons;
     }
