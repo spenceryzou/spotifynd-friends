@@ -118,6 +118,9 @@ class Profile extends Component {
                     .container {
                         margin: 50px;
                     }
+                    .bg-primary {
+                        background-color: #373737;
+                    }
                     .testclass {
                         background: linear-gradient(to bottom, #373737 0%, #191414 50%);
                         font-family: Montserrat;
@@ -129,6 +132,7 @@ class Profile extends Component {
                         background-color: #373737;
                         color: white;
                     }
+
                     img {
                         object-fit: cover;
                         width:120px;
@@ -166,7 +170,7 @@ class Profile extends Component {
 
                     <Row>
                       <Col>
-                        <Card bg="dark" style={{ height: '550px' }} text="white" >
+                        
                         <div className="overflow-auto" style={{  maxHeight:"480px" }}>
 
                             <Card.Body>
@@ -177,7 +181,7 @@ class Profile extends Component {
                               </Card.Text>
                             </Card.Body>
                             </div>
-                        </Card>
+                       
                       </Col>
                     </Row>
  
