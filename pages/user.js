@@ -83,6 +83,7 @@ class User extends Component {
             listOfUsers: [],
             listOfUserCompatabilities: [],
             show: false,
+            showOtherUsers: false,
             showChart: false,
             data: {
 
@@ -448,7 +449,7 @@ class User extends Component {
         this.setState({ status: "Calculating score" })
         let compatibility = await this.calculateUserScore(key);
         this.setState({
-            listOfUserCompatabilities: [...this.state.listOfUserCompatabilities, compatibility],
+            listOfUserCompatabilities: this.state.listOfUserCompatabilities.concat(compatibility),
             loading: false
         });
         console.log('user compatabilities: ' + this.state.listOfUserCompatabilities);
@@ -489,6 +490,7 @@ class User extends Component {
                 }
             });
 
+            console.log("comparing with " + key);
             console.log("TRACK FEATURES: " + otherTrackFeatures);
             console.log("playlisttracknames.length: " + this.state.playlisttracknames.length);
             console.log("other genres: " + otherGenres[0]);
@@ -996,12 +998,15 @@ class User extends Component {
             
             //TAKING OUT TOP 50 TEST
             //this.comparePlaylists();
-
+        
+            this.setState({listOfUserCompatabilities: []})
             console.log("LENGTH FROM HERE: " + this.state.playlisttracknames.length)
             for(var i = 0; i < this.state.listOfUsers.length; i++){
                 this.compareWithOtherUser(this.state.listOfUsers[i]);
             }
+            this.setState({showOtherUsers: true})
         });
+
 
 
     }
@@ -1101,6 +1106,186 @@ class User extends Component {
         })
     }
 
+    setUserData = (ind) => {
+        let compList = this.state.listOfUserCompatabilities;
+        let danceCount = compList[ind].danceCount;
+        let energyCount = compList[ind].energyCount;
+        let acousticCount = compList[ind].acousticCount;
+        let liveCount = compList[ind].liveCount;
+        let valenceCount = compList[ind].valenceCount;
+        this.setState({data: {
+            labels: [
+                'Dancibility',
+                'Energy',
+                'Acousticness',
+                'Liveness',
+                'Valence'
+            ],
+            datasets: [{
+                hidden: false,
+                data: [danceCount,energyCount, acousticCount, liveCount, valenceCount],
+                backgroundColor: [
+                    '#66c2a4',
+                    '#41ae76',
+                    '#238b45',
+                    '#006d2c',
+                    '#00441b'
+                    ],
+                    hoverBackgroundColor: [
+                    '#edf8fb',
+                    '#edf8fb',
+                    '#edf8fb',
+                    '#edf8fb',
+                    '#edf8fb'
+                    ]
+            }]
+        }})
+    }
+
+    generateUserCompButtons = () => {
+        let list = this.state.listOfUserCompatabilities;
+
+        let compButtons = list.map((i, index) =>
+            <li>
+                <Row>
+                    <Col>
+                        {i.value}
+                    </Col>
+                    <Col>
+                        <Button className="button" onClick={() => this.setOtherUsersDetails(index)} size="sm">
+                            Details
+                        </Button>
+                    </Col>
+                </Row>
+            </li>
+        )
+        return compButtons;
+    }
+
+    setOtherUsersDetails = (i) => {
+        console.log("setting other users data")
+        let list = this.state.listOfUserCompatabilities;
+        let danceNames = list[i].danceNames;
+        let energyNames = list[i].energyNames;
+        let acousticNames = list[i].acousticNames;
+        let liveNames = list[i].liveNames;
+        let valenceNames = list[i].valenceNames;
+        let danceCount = list[i].danceCount;
+        let energyCount = list[i].energyCount;
+        let acousticCount = list[i].acousticCount;
+        let liveCount = list[i].liveCount;
+        let valenceCount = list[i].valenceCount;
+        this.setState({
+            showChart: true,
+            data: {
+                labels: [
+                    'Dancibility',
+                    'Energy',
+                    'Acousticness',
+                    'Liveness',
+                    'Valence'
+                ],
+                datasets: [{
+                    hidden: false,
+                    data: [danceCount, energyCount, acousticCount, liveCount, valenceCount],
+                    backgroundColor: [
+                        '#66c2a4',
+                        '#41ae76',
+                        '#238b45',
+                        '#006d2c',
+                        '#00441b'
+                        ],
+                        hoverBackgroundColor: [
+                        '#edf8fb',
+                        '#edf8fb',
+                        '#edf8fb',
+                        '#edf8fb',
+                        '#edf8fb'
+                        ]
+                }]
+            },
+            danceNames: danceNames,
+            energyNames: energyNames,
+            acousticNames: acousticNames,
+            liveNames: liveNames,
+            valenceNames: valenceNames,
+            showDance: false,
+            showEnergy: false,
+            showAcoustic: false,
+            showLive: false,
+            showValence: false
+        })
+    }
+
+    generateUserChart = () => {
+        console.log(this.state.data)
+        return (
+            <Row>
+                <Col>
+                    USER DETAILS
+                </Col>
+                <Col>
+                    <Doughnut data={this.state.data}
+                        width={500}
+                        height={500}
+                        options={{
+                            maintainAspectRatio: false,
+                            plugins: {
+                                        labels: { render: 'label',
+                                            fontColor: 'white'}
+                            },
+                            legend: {
+                                display: false
+                            }
+                        }}
+                        getElementsAtEvent={elems =>{
+                            if(elems.length != 0){
+                                if(elems[0]._index == 0){
+                                    console.log(elems[0]._index);
+                                    this.state.showDance = true;
+                                    this.state.showEnergy = false;
+                                    this.state.showAcoustic = false;
+                                    this.state.showLive = false;
+                                    this.state.showValence = false;
+                                    console.log('showDance: ' + this.state.showDance);
+                                    this.forceUpdate();
+                                } else if(elems[0]._index == 1){
+                                    this.state.showDance = false;
+                                    this.state.showEnergy = true;
+                                    this.state.showAcoustic = false;
+                                    this.state.showLive = false;
+                                    this.state.showValence = false;
+                                    this.forceUpdate();
+                                } else if(elems[0]._index == 2){
+                                    this.state.showDance = false;
+                                    this.state.showEnergy = false;
+                                    this.state.showAcoustic = true;
+                                    this.state.showLive = false;
+                                    this.state.showValence = false;
+                                    this.forceUpdate();
+                                } else if(elems[0]._index == 3){
+                                    this.state.showDance = false;
+                                    this.state.showEnergy = false;
+                                    this.state.showAcoustic = false;
+                                    this.state.showLive = true;
+                                    this.state.showValence = false;
+                                    this.forceUpdate();
+                                } else if(elems[0]._index == 4){
+                                    this.state.showDance = false;
+                                    this.state.showEnergy = false;
+                                    this.state.showAcoustic = false;
+                                    this.state.showLive = false;
+                                    this.state.showValence = true;
+                                    this.forceUpdate();
+                                }
+                            }
+                        }}
+                        />
+                </Col>
+            </Row>
+        )
+    }
+
     render() {
         let playlists;
         if (typeof (this.state.playlists) != 'undefined') {
@@ -1148,6 +1333,20 @@ class User extends Component {
             } else {
                 playlists = <p>No user to choose from</p>
             }
+        }
+
+        let userCompButtons;
+        if(this.state.showOtherUsers){
+            console.log("SHOWING OTHER USERS")
+            userCompButtons = this.generateUserCompButtons();
+        } else{
+            userCompButtons = 'make a comparison'
+        }
+
+        let userDetailsChart;
+        if(this.state.showChart){
+            console.log("generating chart");
+            userDetailsChart = this.generateUserChart();
         }
 
 
@@ -1377,7 +1576,8 @@ class User extends Component {
 
                             <Card.Body>
                               <Card.Text>
-                                  <ul >{list_ofUsers}</ul>
+                                  {/* <ul >{list_ofUsers}</ul> */}
+                                  <ul>{userCompButtons}</ul>
                               </Card.Text>
                             </Card.Body>
                             </div>
@@ -1470,6 +1670,9 @@ class User extends Component {
                             {visibleList}
                         </Col>
                     </Row>
+                    {/* <Row>
+                        {userDetailsChart}
+                    </Row> */}
 
                   </Container>
 
