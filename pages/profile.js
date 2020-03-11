@@ -150,13 +150,23 @@ class Profile extends Component {
 
                 <div>
                   <Container>
+
+
+                  <Row>
+                            <Col md="auto" style={{paddingBottom: '20px'}}>
+                                <Image src={this.state.userImage} roundedCircle/>
+                            </Col>
+                            <Col style={{color: 'white', paddingBottom: '20px'}}>
+                             
+                                <h1><b>{this.state.user}</b></h1>
+                            </Col>
+                        </Row>
           
 
 
                     <Row>
                       <Col>
-                        <Card bg="dark" style={{ height: '700px' }} text="white" >
-                        <Card.Header> <Image src={this.state.userImage} roundedCircle/> <h1><b>{this.state.user}</b></h1></Card.Header>
+                        <Card bg="dark" style={{ height: '550px' }} text="white" >
                         <div className="overflow-auto" style={{  maxHeight:"480px" }}>
 
                             <Card.Body>
