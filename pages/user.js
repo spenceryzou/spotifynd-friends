@@ -81,8 +81,7 @@ class User extends Component {
             status: '',
             loading: false,
             listOfUsers: [],
-            listOfUserCompatabilities: [],
-            listOfUserCompatabilitiesSorted: [],
+            listOfUserCompatibilities: [],          
             show: false,
             showOtherUsers: false,
             showChart: false,
@@ -455,11 +454,11 @@ class User extends Component {
         this.setState({ status: "Calculating score" })
         let compatibility = await this.calculateUserScore(key);
         this.setState({
-            listOfUserCompatabilities: this.state.listOfUserCompatabilities.concat(compatibility),
+            listOfUserCompatibilities: this.state.listOfUserCompatibilities.concat(compatibility),
             loading: false
         });
 
-        console.log('user compatabilities: ' + this.state.listOfUserCompatabilities);
+        console.log('user compatibilities: ' + this.state.listOfUserCompatibilities);
     }
 
     calculateUserScore = (key) => {
@@ -1093,9 +1092,10 @@ class User extends Component {
                     <li>{i}</li>)*/
                     console.log(this.state.genres)
                 });
+
         }
 
-        this.setState({listOfUserCompatabilities: []})
+        this.setState({listOfUserCompatibilities: []})
         console.log("LENGTH FROM HERE: " + this.state.playlisttracknames.length)
         for(var i = 0; i < this.state.listOfUsers.length; i++){
             this.compareWithOtherUser(this.state.listOfUsers[i]);
@@ -1246,7 +1246,7 @@ class User extends Component {
 
     generateUserCompButtons = () => {
 
-        let list = this.convertToInt(this.state.listOfUserCompatabilities);
+        let list = this.convertToInt(this.state.listOfUserCompatibilities);
 
         let compButtons = list.map((i, index) =>
             <li>
@@ -1267,7 +1267,7 @@ class User extends Component {
 
     setOtherUsersDetails = (i) => {
         console.log("setting other users data")
-        let list = this.convertToInt(this.state.listOfUserCompatabilities);
+        let list = this.convertToInt(this.state.listOfUserCompatibilities);
         let danceNames = list[i].danceNames;
         let energyNames = list[i].energyNames;
         let acousticNames = list[i].acousticNames;
