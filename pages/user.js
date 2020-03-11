@@ -372,80 +372,7 @@ class User extends Component {
         }
     }
 
-    compareWithOtherUser = async (key) => {
-        //clear arrays
-        this.setState({
-            trackFeatures: [],
-            genres: [],
-            artistID: [],
-            name: [],
-            artist: [],
-            top100trackFeatures: [],
-            top100genres: [],
-            top100artistID: [],
-            top100name: [],
-            top100artist: [],
-            max: -1,
-            mostCompatibleIndex: -1,
-            danceCount: 0,
-            energyCount: 0,
-            acousticCount: 0,
-            liveCount: 0,
-            valenceCount: 0,
-            compatibility: 'generating',
-            status: '',
-            loading: true
-        })
-        //create arrays with selected playlist attributes
-        for (let i = 0; i < this.state.playlisttracknames.length; i++) {
-            var id = this.state.playlisttracknames[i].props.children;
-            var trackOptions = {
-                method: 'GET',
-                url: `https://api.spotify.com/v1/tracks/${id}`,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
-                json: true
-            };
-            var audioFeaturesOptions = {
-                method: 'GET',
-                url: `https://api.spotify.com/v1/audio-features/${id}`,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
-                json: true
-            };
-            await axios(audioFeaturesOptions)
-                .then((body) => {
-                    this.setState({ trackFeatures: [...this.state.trackFeatures, body.data] })
-                    console.log(this.state.trackFeatures);
-                });
-
-            await axios(trackOptions)
-                .then((body) => {
-                    if (body.data.artists != 0) {
-                        this.setState({
-                            artistID: [...this.state.artistID, body.data.artists[0].id],
-                            artist: [...this.state.artist, body.data.artists[0].name],
-                            name: [...this.state.name, body.data.name],
-                            status: "Analyzing Playlist 1: " + body.data.name
-                        })
-                        console.log(this.state.artistID);
-                        console.log(this.state.artist)
-                        console.log(this.state.name)
-                    }
-                });
-            var artistOptions = {
-                method: 'GET',
-                url: `https://api.spotify.com/v1/artists/${this.state.artistID[i]}`,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
-                json: true
-            };
-            await axios(artistOptions)
-                .then((body) => {
-                    this.setState({ genres: [...this.state.genres, body.data.genres] })
-                    /*this.state.genres = body.genres.map((i) =>
-                    <li>{i}</li>)*/
-                    console.log(this.state.genres)
-                });
-        }
-        
+    compareWithOtherUser = async (key) => {    
         this.setState({ status: "Calculating score" })
         let compatibility = await this.calculateUserScore(key);
         this.setState({
@@ -581,7 +508,7 @@ class User extends Component {
                 playlist1Total += imin;
                 if(max < imin){
                     mostCompatibleIndex = i;
-                    max = Math.trunc(imin);
+                    max = Math.round(imin);
                 }
                 console.log("playlist1 running total: " + playlist1Total)
             }
@@ -661,11 +588,14 @@ class User extends Component {
                 liveNames: liveNames,
                 valenceNames: valenceNames,
                 key: total,
-                value: key
+                value: key,
+                mostCompatibleIndex: mostCompatibleIndex,
+                max: max
             };
 
             console.log(otherCompatibility);
 
+            this.setState({ status: 'All done! Choose a user to see details.'})
             resolve(otherCompatibility);
             
         })
@@ -998,17 +928,100 @@ class User extends Component {
             
             //TAKING OUT TOP 50 TEST
             //this.comparePlaylists();
-        
-            this.setState({listOfUserCompatabilities: []})
-            console.log("LENGTH FROM HERE: " + this.state.playlisttracknames.length)
-            for(var i = 0; i < this.state.listOfUsers.length; i++){
-                this.compareWithOtherUser(this.state.listOfUsers[i]);
-            }
-            this.setState({showOtherUsers: true})
+
+
+            this.getSelectedPlaylist();
+
         });
 
 
 
+    }
+
+    //compare selected playlist with users
+    getSelectedPlaylist = async () => {
+        //clear arrays
+        this.setState({
+            trackFeatures: [],
+            genres: [],
+            artistID: [],
+            name: [],
+            artist: [],
+            top100trackFeatures: [],
+            top100genres: [],
+            top100artistID: [],
+            top100name: [],
+            top100artist: [],
+            max: -1,
+            mostCompatibleIndex: -1,
+            danceCount: 0,
+            energyCount: 0,
+            acousticCount: 0,
+            liveCount: 0,
+            valenceCount: 0,
+            compatibility: 'generating',
+            status: '',
+            loading: true
+        })
+
+        //create arrays with selected playlist attributes
+        for (let i = 0; i < this.state.playlisttracknames.length; i++) {
+            var id = this.state.playlisttracknames[i].props.children;
+            var trackOptions = {
+                method: 'GET',
+                url: `https://api.spotify.com/v1/tracks/${id}`,
+                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                json: true
+            };
+            var audioFeaturesOptions = {
+                method: 'GET',
+                url: `https://api.spotify.com/v1/audio-features/${id}`,
+                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                json: true
+            };
+            await axios(audioFeaturesOptions)
+                .then((body) => {
+                    this.setState({ trackFeatures: [...this.state.trackFeatures, body.data] })
+                    console.log(this.state.trackFeatures);
+                });
+
+            await axios(trackOptions)
+                .then((body) => {
+                    if (body.data.artists != 0) {
+                        this.setState({
+                            artistID: [...this.state.artistID, body.data.artists[0].id],
+                            artist: [...this.state.artist, body.data.artists[0].name],
+                            name: [...this.state.name, body.data.name],
+                            status: "Analyzing Playlist 1: " + body.data.name
+                        })
+                        console.log(this.state.artistID);
+                        console.log(this.state.artist)
+                        console.log(this.state.name)
+                    }
+                });
+            var artistOptions = {
+                method: 'GET',
+                url: `https://api.spotify.com/v1/artists/${this.state.artistID[i]}`,
+                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                json: true
+            };
+            await axios(artistOptions)
+                .then((body) => {
+                    this.setState({ genres: [...this.state.genres, body.data.genres] })
+                    /*this.state.genres = body.genres.map((i) =>
+                    <li>{i}</li>)*/
+                    console.log(this.state.genres)
+                });
+        }      
+
+        this.setState({listOfUserCompatabilities: []})
+        console.log("LENGTH FROM HERE: " + this.state.playlisttracknames.length)
+        for(var i = 0; i < this.state.listOfUsers.length; i++){
+            this.compareWithOtherUser(this.state.listOfUsers[i]);
+        }
+        this.setState({
+            showOtherUsers: true
+        })
     }
 
 
@@ -1106,41 +1119,46 @@ class User extends Component {
         })
     }
 
-    setUserData = (ind) => {
-        let compList = this.state.listOfUserCompatabilities;
-        let danceCount = compList[ind].danceCount;
-        let energyCount = compList[ind].energyCount;
-        let acousticCount = compList[ind].acousticCount;
-        let liveCount = compList[ind].liveCount;
-        let valenceCount = compList[ind].valenceCount;
-        this.setState({data: {
-            labels: [
-                'Dancibility',
-                'Energy',
-                'Acousticness',
-                'Liveness',
-                'Valence'
-            ],
-            datasets: [{
-                hidden: false,
-                data: [danceCount,energyCount, acousticCount, liveCount, valenceCount],
-                backgroundColor: [
-                    '#66c2a4',
-                    '#41ae76',
-                    '#238b45',
-                    '#006d2c',
-                    '#00441b'
-                    ],
-                    hoverBackgroundColor: [
-                    '#edf8fb',
-                    '#edf8fb',
-                    '#edf8fb',
-                    '#edf8fb',
-                    '#edf8fb'
-                    ]
-            }]
-        }})
-    }
+    // setUserData = (ind) => {
+    //     let compList = this.state.listOfUserCompatabilities;
+    //     let danceCount = compList[ind].danceCount;
+    //     let energyCount = compList[ind].energyCount;
+    //     let acousticCount = compList[ind].acousticCount;
+    //     let liveCount = compList[ind].liveCount;
+    //     let valenceCount = compList[ind].valenceCount;
+    //     this.setState({data: {
+    //         labels: [
+    //             'Dancibility',
+    //             'Energy',
+    //             'Acousticness',
+    //             'Liveness',
+    //             'Valence'
+    //         ],
+    //         datasets: [{
+    //             hidden: false,
+    //             data: [danceCount,energyCount, acousticCount, liveCount, valenceCount],
+    //             backgroundColor: [
+    //                 '#66c2a4',
+    //                 '#41ae76',
+    //                 '#238b45',
+    //                 '#006d2c',
+    //                 '#00441b'
+    //                 ],
+    //                 hoverBackgroundColor: [
+    //                 '#edf8fb',
+    //                 '#edf8fb',
+    //                 '#edf8fb',
+    //                 '#edf8fb',
+    //                 '#edf8fb'
+    //                 ]
+    //         }]
+    //     },
+    //     compatibility: list[ind].key,
+    //     mostCompatibleIndex: list[ind].mostCompatibleIndex,
+    //     max: list[ind].max
+
+    //     })
+    // }
 
     generateUserCompButtons = () => {
         let list = this.state.listOfUserCompatabilities;
@@ -1213,16 +1231,33 @@ class User extends Component {
             showEnergy: false,
             showAcoustic: false,
             showLive: false,
-            showValence: false
+            showValence: false,
+            compatibility: list[i].key,
+            mostCompatibleIndex: list[i].mostCompatibleIndex,
+            max: list[i].max,
+            danceCount: list[i].danceCount,
+            energyCount: list[i].energyCount,
+            acousticCount: list[i].acousticCount,
+            liveCount: list[i].liveCount,
+            valenceCount: list[i].valenceCount,
+            
         })
     }
 
     generateUserChart = () => {
         console.log(this.state.data)
+        let status;
+        let message;
+        // status = ''
+        // message = `These playlists are ${this.state.compatibility}% compatible!`
+        // message += "\n" + this.state.name[this.state.mostCompatibleIndex] + " by "
+        // + this.state.artist[this.state.mostCompatibleIndex] 
+        // + ` is the most compatible song by ${this.state.max}%.`
         return (
             <Row>
                 <Col>
-                    USER DETAILS
+                    {status}
+                    {message}
                 </Col>
                 <Col>
                     <Doughnut data={this.state.data}
@@ -1363,9 +1398,6 @@ class User extends Component {
             status = ''
             message = `These playlists are ${this.state.compatibility}% compatible!`
             message += "\n" + this.state.name[this.state.mostCompatibleIndex] + " by " + this.state.artist[this.state.mostCompatibleIndex] + ` is the most compatible song by ${this.state.max}%.`
-                details = <Button onClick={() => this.setState({data: this.getData()})} variant="success">
-                    Details
-                </Button>
         }
 
         let danceList;
@@ -1606,7 +1638,6 @@ class User extends Component {
                     </Row>
                     <Row>
                         <Col>
-                            {details}
                             <div style={{paddingTop: '150px!important'}}>
                                 <Doughnut data={this.state.data}
                                 width={500}
