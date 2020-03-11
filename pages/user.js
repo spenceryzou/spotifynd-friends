@@ -82,7 +82,9 @@ class User extends Component {
             loading: false,
             listOfUsers: [],
             listOfUserCompatabilities: [],
+            listOfUserCompatabilitiesSorted: [],
             show: false,
+            showOtherUsers: false,
             showChart: false,
             data: {
 
@@ -196,33 +198,65 @@ class User extends Component {
 
         });
     }
-    orderUsers = (usersUnordered,low,high) => {
+    convertToInt= (previousArray) => {
+      var arr = new Map();
+      for(var i =0;i<previousArray.length;i++){
+        arr.set(previousArray[i].key,previousArray[i].value);//set the value as the int
+      }
+      console.log(arr);
+      var intArray = [];
+      for(let value of arr.keys()){
+         intArray.push(parseInt(value));
+       }
+
+
+      console.log(intArray);
+      this.orderUsers(intArray,0,intArray.length-1);
+      console.log(intArray);
+      var sortedString = [];
+      for(var x of intArray){
+        console.log(x);
+        sortedString.push(arr.get(x));
+      }
+      console.log(sortedString);
+      var sorted = [];
+      for(var name of sortedString){
+        for(var i =0;i<previousArray.length;i++){
+          if(name == previousArray[i].value){
+            sorted.push(previousArray[i]);
+          }
+        }
+      }
+      console.log(sorted);
+
+      listOfUserCompatabilitiesSorted: sorted
+
+      return(sorted);
+
+    }
+    orderUsers = (arr,low,high) => {
       //Quicksort by the compatability score but for now, pseuodo sort by alphabet
       //in the future will map with a key of the name maybe access the database for the compatability score?
 
-      Map< String,Integer> hm =  new HashMap< String,Integer>();
-      hm.put( new Integer(70),"user1");
-      hm.put(new Integer(80),"user2");
-      hm.put( new Integer(50),"user3");
-      hm.put( new Integer(40),"user4");
+
       //given an array of compatability scores sort that array
 
       if(low < high){
         //pi is partiioining index
-        let pi = this.partition(usersUnordered, low, high);
+        let pi = this.partition(arr, low, high);
 
-        this.orderUsers(usersUnordered, low, pi - 1);//before pi
-        this.orderUsers(usersUnordered, pi+1, high);//after pi
+        this.orderUsers(arr, low, pi - 1);//before pi
+        this.orderUsers(arr, pi+1, high);//after pi
 
       }
     }
 
     partition = (arr,low,high) => {
       //pivot = element to placed at right position
-      let pivot = users[high];
+      let pivot = arr[high];
       let i = low -1; //index of the smaller element
 
-      for( int j= low; j<= high-1;j++){
+      for(var j= low; j<= high-1;j++){
         // if current element is smaller than the pivot
         if(arr[j]<pivot){
           i++;
@@ -234,7 +268,7 @@ class User extends Component {
               }
       }
       //swap arr[i+1] and arr[high]
-
+      let temp;
       temp = arr[i+1];
       arr[i+1] = arr[high];
       arr[high]= temp;
@@ -417,85 +451,14 @@ class User extends Component {
     }
 
     compareWithOtherUser = async (key) => {
-        //clear arrays
-        this.setState({
-            trackFeatures: [],
-            genres: [],
-            artistID: [],
-            name: [],
-            artist: [],
-            top100trackFeatures: [],
-            top100genres: [],
-            top100artistID: [],
-            top100name: [],
-            top100artist: [],
-            max: -1,
-            mostCompatibleIndex: -1,
-            danceCount: 0,
-            energyCount: 0,
-            acousticCount: 0,
-            liveCount: 0,
-            valenceCount: 0,
-            compatibility: 'generating',
-            status: '',
-            loading: true
-        })
-        //create arrays with selected playlist attributes
-        for (let i = 0; i < this.state.playlisttracknames.length; i++) {
-            var id = this.state.playlisttracknames[i].props.children;
-            var trackOptions = {
-                method: 'GET',
-                url: `https://api.spotify.com/v1/tracks/${id}`,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
-                json: true
-            };
-            var audioFeaturesOptions = {
-                method: 'GET',
-                url: `https://api.spotify.com/v1/audio-features/${id}`,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
-                json: true
-            };
-            await axios(audioFeaturesOptions)
-                .then((body) => {
-                    this.setState({ trackFeatures: [...this.state.trackFeatures, body.data] })
-                    console.log(this.state.trackFeatures);
-                });
-
-            await axios(trackOptions)
-                .then((body) => {
-                    if (body.data.artists != 0) {
-                        this.setState({
-                            artistID: [...this.state.artistID, body.data.artists[0].id],
-                            artist: [...this.state.artist, body.data.artists[0].name],
-                            name: [...this.state.name, body.data.name],
-                            status: "Analyzing Playlist 1: " + body.data.name
-                        })
-                        console.log(this.state.artistID);
-                        console.log(this.state.artist)
-                        console.log(this.state.name)
-                    }
-                });
-            var artistOptions = {
-                method: 'GET',
-                url: `https://api.spotify.com/v1/artists/${this.state.artistID[i]}`,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
-                json: true
-            };
-            await axios(artistOptions)
-                .then((body) => {
-                    this.setState({ genres: [...this.state.genres, body.data.genres] })
-                    /*this.state.genres = body.genres.map((i) =>
-                    <li>{i}</li>)*/
-                    console.log(this.state.genres)
-                });
-        }
 
         this.setState({ status: "Calculating score" })
         let compatibility = await this.calculateUserScore(key);
         this.setState({
-            listOfUserCompatabilities: [...this.state.listOfUserCompatabilities, compatibility],
+            listOfUserCompatabilities: this.state.listOfUserCompatabilities.concat(compatibility),
             loading: false
         });
+
         console.log('user compatabilities: ' + this.state.listOfUserCompatabilities);
     }
 
@@ -534,6 +497,7 @@ class User extends Component {
                 }
             });
 
+            console.log("comparing with " + key);
             console.log("TRACK FEATURES: " + otherTrackFeatures);
             console.log("playlisttracknames.length: " + this.state.playlisttracknames.length);
             console.log("other genres: " + otherGenres[0]);
@@ -624,7 +588,7 @@ class User extends Component {
                 playlist1Total += imin;
                 if(max < imin){
                     mostCompatibleIndex = i;
-                    max = Math.trunc(imin);
+                    max = Math.round(imin);
                 }
                 console.log("playlist1 running total: " + playlist1Total)
             }
@@ -704,11 +668,15 @@ class User extends Component {
                 liveNames: liveNames,
                 valenceNames: valenceNames,
                 key: total,
-                value: key
+                value: key,
+                mostCompatibleIndex: mostCompatibleIndex,
+                max: max
             };
 
             console.log(otherCompatibility);
 
+
+            this.setState({ status: 'All done! Choose a user to see details.'})
             resolve(otherCompatibility);
 
         })
@@ -1042,12 +1010,101 @@ class User extends Component {
             //TAKING OUT TOP 50 TEST
             //this.comparePlaylists();
 
-            console.log("LENGTH FROM HERE: " + this.state.playlisttracknames.length)
-            for(var i = 0; i < this.state.listOfUsers.length; i++){
-                this.compareWithOtherUser(this.state.listOfUsers[i]);
-            }
+
+            this.getSelectedPlaylist();
+
         });
 
+
+
+    }
+
+    //compare selected playlist with users
+    getSelectedPlaylist = async () => {
+        //clear arrays
+        this.setState({
+            trackFeatures: [],
+            genres: [],
+            artistID: [],
+            name: [],
+            artist: [],
+            top100trackFeatures: [],
+            top100genres: [],
+            top100artistID: [],
+            top100name: [],
+            top100artist: [],
+            max: -1,
+            mostCompatibleIndex: -1,
+            danceCount: 0,
+            energyCount: 0,
+            acousticCount: 0,
+            liveCount: 0,
+            valenceCount: 0,
+            compatibility: 'generating',
+            status: '',
+            loading: true
+        })
+
+        //create arrays with selected playlist attributes
+        for (let i = 0; i < this.state.playlisttracknames.length; i++) {
+            var id = this.state.playlisttracknames[i].props.children;
+            var trackOptions = {
+                method: 'GET',
+                url: `https://api.spotify.com/v1/tracks/${id}`,
+                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                json: true
+            };
+            var audioFeaturesOptions = {
+                method: 'GET',
+                url: `https://api.spotify.com/v1/audio-features/${id}`,
+                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                json: true
+            };
+            await axios(audioFeaturesOptions)
+                .then((body) => {
+                    this.setState({ trackFeatures: [...this.state.trackFeatures, body.data] })
+                    console.log(this.state.trackFeatures);
+                });
+
+            await axios(trackOptions)
+                .then((body) => {
+                    if (body.data.artists != 0) {
+                        this.setState({
+                            artistID: [...this.state.artistID, body.data.artists[0].id],
+                            artist: [...this.state.artist, body.data.artists[0].name],
+                            name: [...this.state.name, body.data.name],
+                            status: "Analyzing Playlist 1: " + body.data.name
+                        })
+                        console.log(this.state.artistID);
+                        console.log(this.state.artist)
+                        console.log(this.state.name)
+                    }
+                });
+            var artistOptions = {
+                method: 'GET',
+                url: `https://api.spotify.com/v1/artists/${this.state.artistID[i]}`,
+                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                json: true
+            };
+            await axios(artistOptions)
+                .then((body) => {
+                    this.setState({ genres: [...this.state.genres, body.data.genres] })
+                    /*this.state.genres = body.genres.map((i) =>
+                    <li>{i}</li>)*/
+                    console.log(this.state.genres)
+                });
+        }
+
+        this.setState({listOfUserCompatabilities: []})
+        console.log("LENGTH FROM HERE: " + this.state.playlisttracknames.length)
+        for(var i = 0; i < this.state.listOfUsers.length; i++){
+            this.compareWithOtherUser(this.state.listOfUsers[i]);
+        }
+
+
+        this.setState({
+            showOtherUsers: true
+        })
 
     }
 
@@ -1146,6 +1203,209 @@ class User extends Component {
         })
     }
 
+    // setUserData = (ind) => {
+    //     let compList = this.state.listOfUserCompatabilities;
+    //     let danceCount = compList[ind].danceCount;
+    //     let energyCount = compList[ind].energyCount;
+    //     let acousticCount = compList[ind].acousticCount;
+    //     let liveCount = compList[ind].liveCount;
+    //     let valenceCount = compList[ind].valenceCount;
+    //     this.setState({data: {
+    //         labels: [
+    //             'Dancibility',
+    //             'Energy',
+    //             'Acousticness',
+    //             'Liveness',
+    //             'Valence'
+    //         ],
+    //         datasets: [{
+    //             hidden: false,
+    //             data: [danceCount,energyCount, acousticCount, liveCount, valenceCount],
+    //             backgroundColor: [
+    //                 '#66c2a4',
+    //                 '#41ae76',
+    //                 '#238b45',
+    //                 '#006d2c',
+    //                 '#00441b'
+    //                 ],
+    //                 hoverBackgroundColor: [
+    //                 '#edf8fb',
+    //                 '#edf8fb',
+    //                 '#edf8fb',
+    //                 '#edf8fb',
+    //                 '#edf8fb'
+    //                 ]
+    //         }]
+    //     },
+    //     compatibility: list[ind].key,
+    //     mostCompatibleIndex: list[ind].mostCompatibleIndex,
+    //     max: list[ind].max
+
+    //     })
+    // }
+
+    generateUserCompButtons = () => {
+
+        let list = this.convertToInt(this.state.listOfUserCompatabilities);
+
+        let compButtons = list.map((i, index) =>
+            <li>
+                <Row>
+                    <Col>
+                        {i.value}
+                    </Col>
+                    <Col>
+                        <Button className="button" onClick={() => this.setOtherUsersDetails(index)} size="sm">
+                            Details
+                        </Button>
+                    </Col>
+                </Row>
+            </li>
+        )
+        return compButtons;
+    }
+
+    setOtherUsersDetails = (i) => {
+        console.log("setting other users data")
+        let list = this.convertToInt(this.state.listOfUserCompatabilities);
+        let danceNames = list[i].danceNames;
+        let energyNames = list[i].energyNames;
+        let acousticNames = list[i].acousticNames;
+        let liveNames = list[i].liveNames;
+        let valenceNames = list[i].valenceNames;
+        let danceCount = list[i].danceCount;
+        let energyCount = list[i].energyCount;
+        let acousticCount = list[i].acousticCount;
+        let liveCount = list[i].liveCount;
+        let valenceCount = list[i].valenceCount;
+        this.setState({
+            showChart: true,
+            data: {
+                labels: [
+                    'Dancibility',
+                    'Energy',
+                    'Acousticness',
+                    'Liveness',
+                    'Valence'
+                ],
+                datasets: [{
+                    hidden: false,
+                    data: [danceCount, energyCount, acousticCount, liveCount, valenceCount],
+                    backgroundColor: [
+                        '#66c2a4',
+                        '#41ae76',
+                        '#238b45',
+                        '#006d2c',
+                        '#00441b'
+                        ],
+                        hoverBackgroundColor: [
+                        '#edf8fb',
+                        '#edf8fb',
+                        '#edf8fb',
+                        '#edf8fb',
+                        '#edf8fb'
+                        ]
+                }]
+            },
+            danceNames: danceNames,
+            energyNames: energyNames,
+            acousticNames: acousticNames,
+            liveNames: liveNames,
+            valenceNames: valenceNames,
+            showDance: false,
+            showEnergy: false,
+            showAcoustic: false,
+            showLive: false,
+            showValence: false,
+            compatibility: list[i].key,
+            mostCompatibleIndex: list[i].mostCompatibleIndex,
+            max: list[i].max,
+            danceCount: list[i].danceCount,
+            energyCount: list[i].energyCount,
+            acousticCount: list[i].acousticCount,
+            liveCount: list[i].liveCount,
+            valenceCount: list[i].valenceCount,
+
+        })
+    }
+
+    generateUserChart = () => {
+        console.log(this.state.data)
+        let status;
+        let message;
+        // status = ''
+        // message = `These playlists are ${this.state.compatibility}% compatible!`
+        // message += "\n" + this.state.name[this.state.mostCompatibleIndex] + " by "
+        // + this.state.artist[this.state.mostCompatibleIndex]
+        // + ` is the most compatible song by ${this.state.max}%.`
+        return (
+            <Row>
+                <Col>
+                    {status}
+                    {message}
+                </Col>
+                <Col>
+                    <Doughnut data={this.state.data}
+                        width={500}
+                        height={500}
+                        options={{
+                            maintainAspectRatio: false,
+                            plugins: {
+                                        labels: { render: 'label',
+                                            fontColor: 'white'}
+                            },
+                            legend: {
+                                display: false
+                            }
+                        }}
+                        getElementsAtEvent={elems =>{
+                            if(elems.length != 0){
+                                if(elems[0]._index == 0){
+                                    console.log(elems[0]._index);
+                                    this.state.showDance = true;
+                                    this.state.showEnergy = false;
+                                    this.state.showAcoustic = false;
+                                    this.state.showLive = false;
+                                    this.state.showValence = false;
+                                    console.log('showDance: ' + this.state.showDance);
+                                    this.forceUpdate();
+                                } else if(elems[0]._index == 1){
+                                    this.state.showDance = false;
+                                    this.state.showEnergy = true;
+                                    this.state.showAcoustic = false;
+                                    this.state.showLive = false;
+                                    this.state.showValence = false;
+                                    this.forceUpdate();
+                                } else if(elems[0]._index == 2){
+                                    this.state.showDance = false;
+                                    this.state.showEnergy = false;
+                                    this.state.showAcoustic = true;
+                                    this.state.showLive = false;
+                                    this.state.showValence = false;
+                                    this.forceUpdate();
+                                } else if(elems[0]._index == 3){
+                                    this.state.showDance = false;
+                                    this.state.showEnergy = false;
+                                    this.state.showAcoustic = false;
+                                    this.state.showLive = true;
+                                    this.state.showValence = false;
+                                    this.forceUpdate();
+                                } else if(elems[0]._index == 4){
+                                    this.state.showDance = false;
+                                    this.state.showEnergy = false;
+                                    this.state.showAcoustic = false;
+                                    this.state.showLive = false;
+                                    this.state.showValence = true;
+                                    this.forceUpdate();
+                                }
+                            }
+                        }}
+                        />
+                </Col>
+            </Row>
+        )
+    }
+
     render() {
         let playlists;
         if (typeof (this.state.playlists) != 'undefined') {
@@ -1176,6 +1436,7 @@ class User extends Component {
 
         if (typeof (this.state.listOfUsers) != 'undefined') {
             if (this.state.listOfUsers.length != 0) {
+
                 list_ofUsers = this.state.listOfUsers.map((i, index) =>
                 <div>
                     <li>
@@ -1195,6 +1456,21 @@ class User extends Component {
             }
         }
 
+        let userCompButtons;
+        if(this.state.showOtherUsers){
+            console.log("SHOWING OTHER USERS")
+
+            userCompButtons = this.generateUserCompButtons();
+        } else{
+            userCompButtons = 'make a comparison'
+        }
+
+        let userDetailsChart;
+        if(this.state.showChart){
+            console.log("generating chart");
+            userDetailsChart = this.generateUserChart();
+        }
+
 
         this.assigntop100tracknames();
         var message = ''
@@ -1209,9 +1485,6 @@ class User extends Component {
             status = ''
             message = `These playlists are ${this.state.compatibility}% compatible!`
             message += "\n" + this.state.name[this.state.mostCompatibleIndex] + " by " + this.state.artist[this.state.mostCompatibleIndex] + ` is the most compatible song by ${this.state.max}%.`
-                details = <Button onClick={() => this.setState({data: this.getData()})} variant="success">
-                    Details
-                </Button>
         }
 
         let danceList;
@@ -1422,7 +1695,8 @@ class User extends Component {
 
                             <Card.Body>
                               <Card.Text>
-                                  <ul >{list_ofUsers}</ul>
+                                  {/* <ul >{list_ofUsers}</ul> */}
+                                  <ul>{userCompButtons}</ul>
                               </Card.Text>
                             </Card.Body>
                             </div>
@@ -1451,7 +1725,6 @@ class User extends Component {
                     </Row>
                     <Row>
                         <Col>
-                            {details}
                             <div style={{paddingTop: '150px!important'}}>
                                 <Doughnut data={this.state.data}
                                 width={500}
@@ -1515,6 +1788,9 @@ class User extends Component {
                             {visibleList}
                         </Col>
                     </Row>
+                    {/* <Row>
+                        {userDetailsChart}
+                    </Row> */}
 
                   </Container>
 
