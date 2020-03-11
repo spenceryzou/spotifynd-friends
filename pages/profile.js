@@ -7,6 +7,9 @@ import styles from '../pages/index.module.css'
 import { FormGroup, ControlLabel, FormControl, Card ,Container, Row, Col} from "react-bootstrap";
 import Dropdown from 'react-bootstrap/Dropdown'
 import DropdownButton from 'react-bootstrap/DropdownButton'
+import Image from 'react-bootstrap/Image'
+import { Doughnut } from 'react-chartjs-2';
+import 'chartjs-plugin-labels'
 
 var auth = require('firebase/auth');
 var database = require('firebase/database');
@@ -33,6 +36,7 @@ class Profile extends Component {
             access_token: this.props.query.access_token,
             refresh_token: '',
             user: '',
+            userImage: 'https://www.palmcityyachts.com/wp/wp-content/uploads/palmcityyachts.com/2015/09/default-profile.png',
             playlists: [],
             item: {
                 album: {
@@ -146,11 +150,13 @@ class Profile extends Component {
 
                 <div>
                   <Container>
+          
+
 
                     <Row>
                       <Col>
-                        <Card bg="dark" style={{ height: '550px' }} text="white" >
-                        <Card.Header>User: {this.state.user}</Card.Header>
+                        <Card bg="dark" style={{ height: '700px' }} text="white" >
+                        <Card.Header> <Image src={this.state.userImage} roundedCircle/> <h1><b>{this.state.user}</b></h1></Card.Header>
                         <div className="overflow-auto" style={{  maxHeight:"480px" }}>
 
                             <Card.Body>

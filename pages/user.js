@@ -1049,6 +1049,7 @@ class User extends Component {
 
 
                       </Col>
+                      
                       <Col>
                         <Card bg="dark" style={{ height: '550px' }} text="white" >
                         <Card.Header>Compatible Users:</Card.Header>
@@ -1062,6 +1063,7 @@ class User extends Component {
                             </div>
                         </Card>
                       </Col>
+
                     </Row>
                     <Row>
                     <Col>
