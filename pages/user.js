@@ -216,12 +216,12 @@ class User extends Component {
       var sortedString = [];
       for(var x of intArray){
         console.log(x);
-        sortedString.push(arr.get(x));
+        sortedString.unshift(arr.get(x));
       }
       console.log(sortedString);
       var sorted = [];
       for(var name of sortedString){
-        for(var i =0;i<previousArray.length;i++){
+        for(var i=0;i<previousArray.length;i++){
           if(name == previousArray[i].value){
             sorted.push(previousArray[i]);
           }
@@ -229,7 +229,7 @@ class User extends Component {
       }
       console.log(sorted);
 
-      listOfUserCompatabilitiesSorted: sorted
+
 
       return(sorted);
 
