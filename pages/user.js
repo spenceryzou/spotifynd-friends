@@ -1507,7 +1507,15 @@ class User extends Component {
                     </div>
                 )
             } else {
-                playlists = <p>No user to choose from</p>
+                playlists = (
+                <div>
+                    <p>No users to compare with...</p>
+                    <p>Please go to Settings to change location or top playlist</p>
+                    <Button onClick= {()=>{this.goToSettings()}} variant="light">
+                          Settings
+                    </Button>
+                </div>
+                )
             }
         }
 
