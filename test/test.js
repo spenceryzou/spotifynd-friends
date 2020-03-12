@@ -69,6 +69,7 @@ describe('<User />', () => {
     it('assignPlaylistTracksNames returns no playlists to display when items is empty', () => {
         const wrapper = mount(comp);
         const instance = wrapper.instance();
+        sinon.stub(instance, 'getUserPlaylists');
         let items = [];
         instance.assignPlaylistTracksName(items);
         let state = wrapper.state().playlisttracknames;
