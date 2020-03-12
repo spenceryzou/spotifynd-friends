@@ -1,4 +1,4 @@
-import 'jsdom-global/register';
+//import 'jsdom-global/register';
 import { configure, mount, render, shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import { expect } from 'chai';
@@ -7,9 +7,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Spotify from '../pages/index.js';
 import User from '../pages/user.js';
-var request = require('request')
-var axios = require('axios')
-const playlists = require('./fixtures/playlists.json');
+let jsdom = require('jsdom-global')(
+    undefined,
+    {
+        url: "http://localhost"
+    }
+);
 
 configure({ adapter: new Adapter() });
 
@@ -46,6 +49,15 @@ describe('<Spotify />', () => {
 
 describe('<User />', () => {
     const comp = <User />;
+    let componentDidMountStub = null;
+    beforeEach(() => {
+        componentDidMountStub = sinon.stub(User.prototype, 'componentDidMount').callsFake(function() {
+            // Does nothing
+        });
+    });
+    afterEach(() => {
+        componentDidMountStub.restore();
+    });
     it('convertToInt returns array of same length as argument', () => {
         const wrapper = shallow(comp);
         const instance = wrapper.instance();

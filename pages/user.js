@@ -206,25 +206,16 @@ class User extends Component {
         });
     }
     convertToInt= (previousArray) => {
-        console.log(previousArray)
       var arr = new Map();
       for(var i =0;i<previousArray.length;i++){
         arr.set(previousArray[i].key,previousArray[i].value);//set the value as the int
       }
-      console.log(arr);
       var intArray = [];
-    //   for(let value of arr.keys()){
-    //      intArray.push(parseInt(value));
-    //    }
 
-    console.log("previousArray: " + previousArray)
     for(var i = 0; i < previousArray.length; i++){
-        console.log("inserting " + previousArray[i].value);
         intArray.push(parseInt(previousArray[i].key));
     }
 
-
-      console.log(intArray);
     //   this.orderUsers(intArray,0,intArray.length-1);
     this.orderUsers(previousArray, 0, previousArray.length-1);
     return previousArray;
