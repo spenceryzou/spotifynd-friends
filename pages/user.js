@@ -40,6 +40,7 @@ class User extends Component {
             refresh_token: '',
             user: '',
             userImage: 'https://www.palmcityyachts.com/wp/wp-content/uploads/palmcityyachts.com/2015/09/default-profile.png',
+            location: '',
             playlists: [],
             playlist: null,
             playlistName: '',
@@ -80,10 +81,12 @@ class User extends Component {
             status: '',
             loading: false,
             listOfUsers: [],
+            listOfUserCompatibilities: [],
             show: false,
+            showOtherUsers: false,
             showChart: false,
             data: {
-                
+
                 labels: [
                     'Dancibility',
                     'Energy',
@@ -122,7 +125,7 @@ class User extends Component {
             appId: "1:775203379545:web:2e74554d15a4b1c3675448",
             measurementId: "G-QL50LT5KSH"
         };
-        
+
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig)
         }
@@ -167,21 +170,120 @@ class User extends Component {
         var dbRef = firebase.database().ref('users')
         console.log(this.state.user)
 
-
+        var myLocation;
+        dbRef.orderByValue().startAt(0).on("child_added", snapshot => {
+            console.log('first');
+            if(snapshot.exists() && snapshot.key == this.state.user){
+                this.setState({location: snapshot.child("location").val()})
+                // console.log(this.state.location)
+                myLocation = snapshot.child("location").val();
+                console.log(myLocation);
+            }
+        });
 
         dbRef.orderByValue().startAt(0).on("child_added", snapshot => {
 
             //ignore key if it is you
             if (snapshot.exists() && snapshot.key != this.state.user) {
+                let otherLocation = snapshot.child("location").val();
 
-                console.log(snapshot.key)
+                console.log(snapshot.key + " location: " + otherLocation);
+                console.log(myLocation)
+                console.log(snapshot.child("trackFeatures").val())
 
-                this.setState({ listOfUsers: [...this.state.listOfUsers, snapshot.key] })
+                if(otherLocation == myLocation){
+                    this.setState({ listOfUsers: [...this.state.listOfUsers, snapshot.key] })
+                }
                 console.log(this.state.listOfUsers)
-
             }
 
         });
+    }
+    convertToInt= (previousArray) => {
+        console.log(previousArray)
+      var arr = new Map();
+      for(var i =0;i<previousArray.length;i++){
+        arr.set(previousArray[i].key,previousArray[i].value);//set the value as the int
+      }
+      console.log(arr);
+      var intArray = [];
+    //   for(let value of arr.keys()){
+    //      intArray.push(parseInt(value));
+    //    }
+
+    console.log("previousArray: " + previousArray)
+    for(var i = 0; i < previousArray.length; i++){
+        console.log("inserting " + previousArray[i].value);
+        intArray.push(parseInt(previousArray[i].key));
+    }
+
+
+      console.log(intArray);
+    //   this.orderUsers(intArray,0,intArray.length-1);
+    this.orderUsers(previousArray, 0, previousArray.length-1);
+    return previousArray;
+    //   console.log(intArray);
+    //   var sortedString = [];
+    //   for(var x of intArray){
+    //     console.log(x);
+    //     sortedString.unshift(arr.get(x));
+    //   }
+    //   console.log(sortedString);
+    //   var sorted = [];
+    //   for(var name of sortedString){
+    //     for(var i=0;i<previousArray.length;i++){
+    //       if(name == previousArray[i].value){
+    //         sorted.push(previousArray[i]);
+    //       }
+    //     }
+    //   }
+    //   console.log("sorted: " + sorted);
+
+
+
+    //   return(sorted);
+
+    }
+    orderUsers = (arr,low,high) => {
+      //Quicksort by the compatability score but for now, pseuodo sort by alphabet
+      //in the future will map with a key of the name maybe access the database for the compatability score?
+
+
+      //given an array of compatability scores sort that array
+
+      if(low < high){
+        //pi is partiioining index
+        let pi = this.partition(arr, low, high);
+
+        this.orderUsers(arr, low, pi - 1);//before pi
+        this.orderUsers(arr, pi+1, high);//after pi
+
+      }
+    }
+
+    partition = (arr,low,high) => {
+      //pivot = element to placed at right position
+      let pivot = arr[high];
+      let i = low -1; //index of the smaller element
+
+      for(var j= low; j<= high-1;j++){
+        // if current element is smaller than the pivot
+        if(arr[j].key > pivot.key){
+          i++;
+          //swap arr[i] and arr[j]
+          let temp;
+          temp = arr[i];
+          arr[i] = arr[j];
+          arr[j]= temp;
+              }
+      }
+      //swap arr[i+1] and arr[high]
+      let temp;
+      temp = arr[i+1];
+      arr[i+1] = arr[high];
+      arr[high]= temp;
+      return (i+1);
+
     }
 
     writeUserData = (spotifyid) => {
@@ -195,6 +297,7 @@ class User extends Component {
         dbRef.child(user_id).once("value", snapshot => {
             if (snapshot.exists()) {
                 const userLocation = snapshot.val().location;
+                this.setState({location: userLocation});
                 const userTopPlaylist = snapshot.val().topPlaylist;
                 const userSpotifyId = snapshot.val().spotify_id;
                 console.log("exists!", userData);
@@ -208,7 +311,12 @@ class User extends Component {
             firebase.database().ref('users/' + spotifyid).set({
                 spotify_id: spotifyid,
                 location: '',
-                topPlaylist: ''
+                topPlaylist: '',
+                trackFeatures: [],
+                genres: [],
+                artistID: [],
+                name: [],
+                artist: []
 
 
             }, function (error) {
@@ -350,6 +458,241 @@ class User extends Component {
                 this.state.playlisttracknames = <p>No playlists to display</p>
             }
         }
+    }
+
+    compareWithOtherUser = async (key) => {
+
+        this.setState({ status: "Calculating score" })
+        let compatibility = await this.calculateUserScore(key);
+        this.setState({
+            listOfUserCompatibilities: this.state.listOfUserCompatibilities.concat(compatibility),
+            loading: false
+        });
+
+        console.log('user compatibilities: ' + this.state.listOfUserCompatibilities);
+    }
+
+    calculateUserScore = (key) => {
+        return new Promise(resolve => {
+            var playlist1Total = 0;
+            var playlist2Total = 0;
+
+            // var otherLength = key.child("name").length;
+            // var otherTrackFeatures = key.child("trackFeatures").val();
+
+            var otherLength;
+            var otherTrackFeatures;
+            var otherArtistID;
+            var otherGenres;
+
+            var danceCount = 0;
+            var energyCount = 0;
+            var acousticCount = 0;
+            var liveCount = 0;
+            var valenceCount = 0;
+            var danceNames = [];
+            var energyNames = [];
+            var acousticNames = [];
+            var liveNames = [];
+            var valenceNames = [];
+
+            var dbRef = firebase.database().ref('users')
+
+            dbRef.orderByValue().startAt(0).on("child_added", snapshot => {
+                if(snapshot.exists() && snapshot.key == key){
+                    otherLength = snapshot.child("name").val().length;
+                    otherTrackFeatures = snapshot.child("trackFeatures").val();
+                    otherArtistID = snapshot.child("artistID").val();
+                    otherGenres = snapshot.child("genres").val();
+                }
+            });
+
+            console.log("comparing with " + key);
+            console.log("TRACK FEATURES: " + otherTrackFeatures);
+            console.log("playlisttracknames.length: " + this.state.playlisttracknames.length);
+            console.log("other genres: " + otherGenres[0]);
+            console.log("genres length: " + otherGenres.length)
+            console.log("other length: " + otherLength)
+
+            var max = -1;
+            var mostCompatibleIndex = -1;
+
+            for (let i = 0; i < this.state.playlisttracknames.length; i++) {
+                console.log('calculating')
+                console.log('LENGTH: ' + otherLength)
+                //var songDifferenceScore = 0;
+                var imin = 100;
+                for (let j = 0; j < otherTrackFeatures.length; j++) {
+                    var differenceScore = 0, dance = 0, energy = 0, acoustic = 0, live = 0, valence = 0
+                    differenceScore += Math.abs(this.state.trackFeatures[i].danceability - otherTrackFeatures[j].danceability) * 5
+                    dance += Math.abs(this.state.trackFeatures[i].danceability - otherTrackFeatures[j].danceability) * 5
+                    differenceScore += Math.abs(this.state.trackFeatures[i].energy - otherTrackFeatures[j].energy) * 5
+                    energy += Math.abs(this.state.trackFeatures[i].energy - otherTrackFeatures[j].energy) * 5
+                    differenceScore += Math.abs(this.state.trackFeatures[i].acousticness - otherTrackFeatures[j].acousticness) * 5
+                    acoustic += Math.abs(this.state.trackFeatures[i].acousticness - otherTrackFeatures[j].acousticness) * 5
+                    differenceScore += Math.abs(this.state.trackFeatures[i].liveness - otherTrackFeatures[j].liveness) * 5
+                    live += Math.abs(this.state.trackFeatures[i].liveness - otherTrackFeatures[j].liveness) * 5
+                    differenceScore += Math.abs(this.state.trackFeatures[i].valence - otherTrackFeatures[j].valence) * 5
+                    valence += Math.abs(this.state.trackFeatures[i].valence - otherTrackFeatures[j].valence) * 5
+                    differenceScore += 75;
+                    if (this.state.artistID[i] == otherArtistID[j])
+                        differenceScore -= 20;
+                    if (!(this.state.genres[i].length === 0)) {
+                        for (let k = 0; k < this.state.genres[i].length; k++) {
+                            let found = false;
+                            if(otherGenres[j] != null){
+                                if (!(otherGenres[j].length === 0)) {
+                                    for (let l = 0; l < otherGenres[j].length; l++) {
+                                        if (this.state.genres[i][k] == otherGenres[j][l]) {
+                                            differenceScore -= 55;
+                                            found = true;
+                                            console.log("same genre")
+                                            break;
+                                        }
+                                    }
+                                    if (found == true)
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                    if (differenceScore < imin) {
+                        imin = differenceScore;
+                    }
+                }
+
+                var attributeMin = Math.min(dance, energy, acoustic, live, valence)
+
+
+
+                switch (attributeMin) {
+                    case dance:
+                        danceCount++
+                        // danceNames = [...danceNames, this.state.name[i]];
+                        danceNames = danceNames.concat(this.state.name[i]);
+                        console.log('danceNames: ' + danceNames);
+                        break;
+                    case energy:
+                        energyCount++
+                        energyNames = [...energyNames, this.state.name[i]];
+                        console.log('energyNames: ' + energyNames);
+                        break;
+                    case acoustic:
+                        acousticCount++
+                        acousticNames = [...acousticNames, this.state.name[i]];
+                        console.log('acousticNames: ' + acousticNames);
+                        break;
+                    case live:
+                        liveCount++
+                        liveNames = [...liveNames, this.state.name[i]];
+                        console.log('liveNames: ' + liveNames);
+                        break;
+                    case valence:
+                        valenceCount++
+                        valenceNames = [...valenceNames, this.state.name[i]];
+                        console.log('valenceNames: ' + valenceNames);
+                        break;
+                }
+                imin = 100 - imin;
+                console.log(this.state.name[i] + ": " + imin)
+                playlist1Total += imin;
+                if(max < imin){
+                    mostCompatibleIndex = i;
+                    // max = Math.round(imin);
+                    max = imin;
+                }
+                console.log("playlist1 running total: " + playlist1Total)
+            }
+            playlist1Total /= this.state.playlisttracknames.length;
+            console.log("playlist1 total: " + playlist1Total);
+            for (let j = 0; j < otherTrackFeatures.length; j++) {
+                console.log('calculating')
+                var jmin = 100;
+
+                for (let i = 0; i < this.state.playlisttracknames.length; i++) {
+                    var differenceScore = 0, dance = 0, energy = 0, acoustic = 0, live = 0, valence = 0
+                    differenceScore += Math.abs(this.state.trackFeatures[i].danceability - otherTrackFeatures[j].danceability) * 5
+                    dance += Math.abs(this.state.trackFeatures[i].danceability - otherTrackFeatures[j].danceability) * 5
+                    differenceScore += Math.abs(this.state.trackFeatures[i].energy - otherTrackFeatures[j].energy) * 5
+                    energy += Math.abs(this.state.trackFeatures[i].energy - otherTrackFeatures[j].energy) * 5
+                    differenceScore += Math.abs(this.state.trackFeatures[i].acousticness - otherTrackFeatures[j].acousticness) * 5
+                    acoustic += Math.abs(this.state.trackFeatures[i].acousticness - otherTrackFeatures[j].acousticness) * 5
+                    differenceScore += Math.abs(this.state.trackFeatures[i].liveness - otherTrackFeatures[j].liveness) * 5
+                    live += Math.abs(this.state.trackFeatures[i].liveness - otherTrackFeatures[j].liveness) * 5
+                    differenceScore += Math.abs(this.state.trackFeatures[i].valence - otherTrackFeatures[j].valence) * 5
+                    valence += Math.abs(this.state.trackFeatures[i].valence - otherTrackFeatures[j].valence) * 5
+                    differenceScore += 75;
+                    if (this.state.artistID[i] == otherArtistID[j])
+                        differenceScore -= 20;
+                    if(otherGenres[j] != null){
+                        if (!(otherGenres[j].length === 0)) {
+                            for (let l = 0; l < otherGenres[j].length; l++) {
+                                let found = false;
+                                if (!(this.state.genres[i].length === 0)) {
+                                    for (let k = 0; k < this.state.genres[i].length; k++) {
+                                        if (this.state.genres[i][k] == otherGenres[j][l]) {
+                                            differenceScore -= 55;
+                                            found = true;
+                                            console.log("same genre")
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (found == true)
+                                    break;
+                            }
+                        }
+                    }
+                    if (differenceScore < jmin) {
+                        jmin = differenceScore;
+                    }
+                }
+                jmin = 100 - jmin;
+                console.log(this.state.top100name[j] + ": " + jmin)
+                playlist2Total += jmin;
+                console.log("playlist2 running total: " + playlist2Total)
+            }
+            playlist2Total /= otherLength;
+            console.log("playlist2 total: " + playlist2Total);
+            console.log("Your songs are closest by: \n" + danceCount + "/" + this.state.playlisttracknames.length + " dancibility\n" +
+                energyCount + "/" + this.state.playlisttracknames.length + " energy\n" +
+                acousticCount + "/" + this.state.playlisttracknames.length + " acousticness\n" +
+                liveCount + "/" + this.state.playlisttracknames.length + " liveness\n" +
+                valenceCount + "/" + this.state.playlisttracknames.length + " valence\n"
+            )
+
+            var total;
+            if (playlist1Total > playlist2Total)
+                // total = Math.round(playlist2Total)
+                total = playlist2Total;
+            else
+                // total = Math.round(playlist1Total)
+                total = playlist1Total;
+
+            var otherCompatibility = {
+                danceCount: danceCount,
+                energyCount: energyCount,
+                acousticCount: acousticCount,
+                liveCount: liveCount,
+                valenceCount: valenceCount,
+                danceNames: danceNames,
+                energyNames: energyNames,
+                acousticNames: acousticNames,
+                liveNames: liveNames,
+                valenceNames: valenceNames,
+                key: total,
+                value: key,
+                mostCompatibleIndex: mostCompatibleIndex,
+                max: max
+            };
+
+            console.log(otherCompatibility);
+
+
+            this.setState({ status: 'All done! Choose a user to see details.'})
+            resolve(otherCompatibility);
+
+        })
     }
 
     comparePlaylists = async () => {
@@ -676,8 +1019,106 @@ class User extends Component {
             console.log(body);
             console.log('this.state.playlists' + this.state.playlists)
             this.assignPlaylistTracksName(body.items);
-            this.comparePlaylists();
+
+            //TAKING OUT TOP 50 TEST
+            //this.comparePlaylists();
+
+
+            this.getSelectedPlaylist();
+
         });
+
+
+
+    }
+
+    //compare selected playlist with users
+    getSelectedPlaylist = async () => {
+        //clear arrays
+        this.setState({
+            trackFeatures: [],
+            genres: [],
+            artistID: [],
+            name: [],
+            artist: [],
+            top100trackFeatures: [],
+            top100genres: [],
+            top100artistID: [],
+            top100name: [],
+            top100artist: [],
+            max: -1,
+            mostCompatibleIndex: -1,
+            danceCount: 0,
+            energyCount: 0,
+            acousticCount: 0,
+            liveCount: 0,
+            valenceCount: 0,
+            compatibility: 'generating',
+            status: '',
+            loading: true
+        })
+
+        //create arrays with selected playlist attributes
+        for (let i = 0; i < this.state.playlisttracknames.length; i++) {
+            var id = this.state.playlisttracknames[i].props.children;
+            var trackOptions = {
+                method: 'GET',
+                url: `https://api.spotify.com/v1/tracks/${id}`,
+                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                json: true
+            };
+            var audioFeaturesOptions = {
+                method: 'GET',
+                url: `https://api.spotify.com/v1/audio-features/${id}`,
+                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                json: true
+            };
+            await axios(audioFeaturesOptions)
+                .then((body) => {
+                    this.setState({ trackFeatures: [...this.state.trackFeatures, body.data] })
+                    console.log(this.state.trackFeatures);
+                });
+
+            await axios(trackOptions)
+                .then((body) => {
+                    if (body.data.artists != 0) {
+                        this.setState({
+                            artistID: [...this.state.artistID, body.data.artists[0].id],
+                            artist: [...this.state.artist, body.data.artists[0].name],
+                            name: [...this.state.name, body.data.name],
+                            status: "Analyzing Playlist 1: " + body.data.name
+                        })
+                        console.log(this.state.artistID);
+                        console.log(this.state.artist)
+                        console.log(this.state.name)
+                    }
+                });
+            var artistOptions = {
+                method: 'GET',
+                url: `https://api.spotify.com/v1/artists/${this.state.artistID[i]}`,
+                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                json: true
+            };
+            await axios(artistOptions)
+                .then((body) => {
+                    this.setState({ genres: [...this.state.genres, body.data.genres] })
+                    /*this.state.genres = body.genres.map((i) =>
+                    <li>{i}</li>)*/
+                    console.log(this.state.genres)
+                });
+
+        }
+
+        this.setState({listOfUserCompatibilities: []})
+        console.log("LENGTH FROM HERE: " + this.state.playlisttracknames.length)
+        for(var i = 0; i < this.state.listOfUsers.length; i++){
+            this.compareWithOtherUser(this.state.listOfUsers[i]);
+        }
+
+
+        this.setState({
+            showOtherUsers: true
+        })
 
     }
 
@@ -762,11 +1203,13 @@ class User extends Component {
     goToProfile = (i) => {
         console.log(this.state.listOfUsers)
         let access_token = this.state.access_token;
-        let user = this.state.listOfUsers[i];
+        console.log(access_token)
+        let user = this.state.listOfUserCompatibilities[i].value;
+        console.log(user)
         Router.push({
             pathname: '/profile',
             query: { access_token },
-        }, "/profile/" + user 
+        }, "/profile/" + user
         )
     }
 
@@ -774,6 +1217,244 @@ class User extends Component {
         this.setState({
             show: !this.state.show
         })
+    }
+
+    // setUserData = (ind) => {
+    //     let compList = this.state.listOfUserCompatabilities;
+    //     let danceCount = compList[ind].danceCount;
+    //     let energyCount = compList[ind].energyCount;
+    //     let acousticCount = compList[ind].acousticCount;
+    //     let liveCount = compList[ind].liveCount;
+    //     let valenceCount = compList[ind].valenceCount;
+    //     this.setState({data: {
+    //         labels: [
+    //             'Dancibility',
+    //             'Energy',
+    //             'Acousticness',
+    //             'Liveness',
+    //             'Valence'
+    //         ],
+    //         datasets: [{
+    //             hidden: false,
+    //             data: [danceCount,energyCount, acousticCount, liveCount, valenceCount],
+    //             backgroundColor: [
+    //                 '#66c2a4',
+    //                 '#41ae76',
+    //                 '#238b45',
+    //                 '#006d2c',
+    //                 '#00441b'
+    //                 ],
+    //                 hoverBackgroundColor: [
+    //                 '#edf8fb',
+    //                 '#edf8fb',
+    //                 '#edf8fb',
+    //                 '#edf8fb',
+    //                 '#edf8fb'
+    //                 ]
+    //         }]
+    //     },
+    //     compatibility: list[ind].key,
+    //     mostCompatibleIndex: list[ind].mostCompatibleIndex,
+    //     max: list[ind].max
+
+    //     })
+    // }
+
+    // generateUserCompButtons = () => {
+
+    //     let list = this.convertToInt(this.state.listOfUserCompatibilities);
+
+    //     let compButtons = list.map((i, index) =>
+    //         <li>
+    //             <Row>
+    //                 <Col>
+    //                     {i.value}
+    //                 </Col>
+    //                 <Col>
+    //                     <Button className="button" onClick={() => this.setOtherUsersDetails(index)} size="sm">
+    //                         Details
+    //                     </Button>
+    //                 </Col>
+    //             </Row>
+    //         </li>
+    //     )
+    //     return compButtons;
+    // }
+
+    generateUserCompButtons = () => {
+        // let list = this.convertToInt(this.state.listOfUserCompatibilities);
+        let list = this.state.listOfUserCompatibilities;
+
+        let compButtons = list.map((i, index) =>
+            <div>
+                <style jsx>{`
+                    .profile-link:hover{
+                        color: #1ed760;
+                        cursor: pointer;
+                    }
+                `}</style>
+                <li>
+                    <Row>
+                        <Col onClick={() => this.goToProfile(index) }>
+                            <div className="profile-link">
+                                {i.value}
+                            </div>
+                        </Col>
+                        <Col>
+                            <Button className="button" onClick={() => this.setOtherUsersDetails(index)} size="sm">
+                                Details
+                            </Button>
+                        </Col>
+                    </Row>
+                </li>
+            </div>
+        )
+        return compButtons;
+    }
+
+    setOtherUsersDetails = (i) => {
+        console.log("setting other users data")
+        let list = this.state.listOfUserCompatibilities;
+        let danceNames = list[i].danceNames;
+        let energyNames = list[i].energyNames;
+        let acousticNames = list[i].acousticNames;
+        let liveNames = list[i].liveNames;
+        let valenceNames = list[i].valenceNames;
+        let danceCount = list[i].danceCount;
+        let energyCount = list[i].energyCount;
+        let acousticCount = list[i].acousticCount;
+        let liveCount = list[i].liveCount;
+        let valenceCount = list[i].valenceCount;
+        this.setState({
+            showChart: true,
+            data: {
+                labels: [
+                    'Dancibility',
+                    'Energy',
+                    'Acousticness',
+                    'Liveness',
+                    'Valence'
+                ],
+                datasets: [{
+                    hidden: false,
+                    data: [danceCount, energyCount, acousticCount, liveCount, valenceCount],
+                    backgroundColor: [
+                        '#66c2a4',
+                        '#41ae76',
+                        '#238b45',
+                        '#006d2c',
+                        '#00441b'
+                        ],
+                        hoverBackgroundColor: [
+                        '#edf8fb',
+                        '#edf8fb',
+                        '#edf8fb',
+                        '#edf8fb',
+                        '#edf8fb'
+                        ]
+                }]
+            },
+            danceNames: danceNames,
+            energyNames: energyNames,
+            acousticNames: acousticNames,
+            liveNames: liveNames,
+            valenceNames: valenceNames,
+            showDance: false,
+            showEnergy: false,
+            showAcoustic: false,
+            showLive: false,
+            showValence: false,
+            compatibility: list[i].key,
+            mostCompatibleIndex: list[i].mostCompatibleIndex,
+            max: list[i].max,
+            danceCount: list[i].danceCount,
+            energyCount: list[i].energyCount,
+            acousticCount: list[i].acousticCount,
+            liveCount: list[i].liveCount,
+            valenceCount: list[i].valenceCount,
+
+        })
+    }
+
+    generateUserChart = () => {
+        console.log(this.state.data)
+        let status;
+        let message;
+        // status = ''
+        // message = `These playlists are ${this.state.compatibility}% compatible!`
+        // message += "\n" + this.state.name[this.state.mostCompatibleIndex] + " by "
+        // + this.state.artist[this.state.mostCompatibleIndex]
+        // + ` is the most compatible song by ${this.state.max}%.`
+        return (
+            <Row>
+                <Col>
+                    {status}
+                    {message}
+                </Col>
+                <Col>
+                    <Doughnut data={this.state.data}
+                        width={500}
+                        height={500}
+                        options={{
+                            maintainAspectRatio: false,
+                            plugins: {
+                                        labels: { render: 'label',
+                                            fontColor: 'white'}
+                            },
+                            legend: {
+                                display: false
+                            }
+                        }}
+                        getElementsAtEvent={elems =>{
+                            if(elems.length != 0){
+                                if(elems[0]._index == 0){
+                                    console.log(elems[0]._index);
+                                    this.state.showDance = true;
+                                    this.state.showEnergy = false;
+                                    this.state.showAcoustic = false;
+                                    this.state.showLive = false;
+                                    this.state.showValence = false;
+                                    console.log('showDance: ' + this.state.showDance);
+                                    this.forceUpdate();
+                                } else if(elems[0]._index == 1){
+                                    this.state.showDance = false;
+                                    this.state.showEnergy = true;
+                                    this.state.showAcoustic = false;
+                                    this.state.showLive = false;
+                                    this.state.showValence = false;
+                                    this.forceUpdate();
+                                } else if(elems[0]._index == 2){
+                                    this.state.showDance = false;
+                                    this.state.showEnergy = false;
+                                    this.state.showAcoustic = true;
+                                    this.state.showLive = false;
+                                    this.state.showValence = false;
+                                    this.forceUpdate();
+                                } else if(elems[0]._index == 3){
+                                    this.state.showDance = false;
+                                    this.state.showEnergy = false;
+                                    this.state.showAcoustic = false;
+                                    this.state.showLive = true;
+                                    this.state.showValence = false;
+                                    this.forceUpdate();
+                                } else if(elems[0]._index == 4){
+                                    this.state.showDance = false;
+                                    this.state.showEnergy = false;
+                                    this.state.showAcoustic = false;
+                                    this.state.showLive = false;
+                                    this.state.showValence = true;
+                                    this.forceUpdate();
+                                }
+                            }
+                        }}
+                        />
+                </Col>
+            </Row>
+        )
+    }
+
+    setUserCompList = () => {
+        this.convertToInt(this.state.listOfUserCompatibilities);
     }
 
     render() {
@@ -806,6 +1487,7 @@ class User extends Component {
 
         if (typeof (this.state.listOfUsers) != 'undefined') {
             if (this.state.listOfUsers.length != 0) {
+
                 list_ofUsers = this.state.listOfUsers.map((i, index) =>
                 <div>
                     <li>
@@ -825,6 +1507,31 @@ class User extends Component {
             }
         }
 
+        let userCompButtons;
+        if(this.state.showOtherUsers){
+            console.log("SHOWING OTHER USERS")
+            this.setUserCompList();
+            userCompButtons = this.generateUserCompButtons();
+        } else{
+            userCompButtons = "no users yet";
+            // userCompButtons = this.state.listOfUsers.map((i, index) =>
+            // <div>
+            //     <li>
+            //       <Row>
+            //         <Col>  {i} </Col>
+            //         </Row>
+            //         </li>
+            //         </div>
+            //       )
+
+        }
+
+        let userDetailsChart;
+        if(this.state.showChart){
+            console.log("generating chart");
+            userDetailsChart = this.generateUserChart();
+        }
+
 
         this.assigntop100tracknames();
         var message = ''
@@ -837,11 +1544,8 @@ class User extends Component {
             status = `${this.state.status}`
         } else if (this.state.compatibility > 0) {
             status = ''
-            message = `These playlists are ${this.state.compatibility}% compatible!`
-            message += "\n" + this.state.name[this.state.mostCompatibleIndex] + " by " + this.state.artist[this.state.mostCompatibleIndex] + ` is the most compatible song by ${this.state.max}%.`
-                details = <Button onClick={() => this.setState({data: this.getData()})} variant="success">
-                    Details
-                </Button>
+            message = `These playlists are ${Math.round(this.state.compatibility)}% compatible!`
+            message += "\n" + this.state.name[this.state.mostCompatibleIndex] + " by " + this.state.artist[this.state.mostCompatibleIndex] + ` is the most compatible song by ${Math.round(this.state.max)}%.`
         }
 
         let danceList;
@@ -950,7 +1654,7 @@ class User extends Component {
                     {valenceList}
                 </div>
             );
-        } 
+        }
 
         return (
             <html>
@@ -986,7 +1690,7 @@ class User extends Component {
                     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                     crossorigin="anonymous"
                   />
-                  <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet" /> 
+                  <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet" />
                 </head>
                 <Header props={this.state.access_token} />
                 <div>
@@ -1052,7 +1756,8 @@ class User extends Component {
 
                             <Card.Body>
                               <Card.Text>
-                                  <ul >{list_ofUsers}</ul>
+                                  {/* <ul >{list_ofUsers}</ul> */}
+                                  <ul>{userCompButtons}</ul>
                               </Card.Text>
                             </Card.Body>
                             </div>
@@ -1081,12 +1786,11 @@ class User extends Component {
                     </Row>
                     <Row>
                         <Col>
-                            {details}
                             <div style={{paddingTop: '150px!important'}}>
                                 <Doughnut data={this.state.data}
                                 width={500}
                                 height={500}
-                                options={{ 
+                                options={{
                                     maintainAspectRatio: false,
                                     plugins: {
                                                 labels: { render: 'label',
@@ -1145,12 +1849,15 @@ class User extends Component {
                             {visibleList}
                         </Col>
                     </Row>
+                    {/* <Row>
+                        {userDetailsChart}
+                    </Row> */}
 
                   </Container>
 
 
                 </div>
-                
+
             </div>
             </div>
                   {/* <footer className="testclass">
@@ -1159,7 +1866,7 @@ class User extends Component {
                             <p>Spotifynd Friends</p>
                         </Col> */}
                       {/* </div> */}
-                  {/* </footer> */} 
+                  {/* </footer> */}
 
                   <footer className="footer">
 
@@ -1217,7 +1924,7 @@ class User extends Component {
                                 </ul>
 
                             </div>
-                
+
                         </div>
 
                     </div>
@@ -1230,7 +1937,7 @@ class User extends Component {
         )
     }
 };
-//user 2 name clickable, goes to profile
+//user 2 name clickable, goes to profile,
 //compatibility score next to name clickable, displays details on bottom
 //clicking another score updates the details
 //Details:
