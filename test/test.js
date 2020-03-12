@@ -15,9 +15,9 @@ configure({ adapter: new Adapter() });
 
 describe('<Spotify />', () => {
     const comp = <Spotify />;
-    it('button displays text \'Login\' when user is not logged in', () => {
+    it('button displays text \'Continue With Spotify\' when user is not logged in', () => {
         const wrapper = render(comp);
-        expect(wrapper.text()).to.contain('Login');
+        expect(wrapper.text()).to.contain('Continue with Spotify');
     })
     it('button displays text \'Enter\' when user is logged in and access code is set', () => {
         const wrapper = mount(comp);
@@ -106,7 +106,8 @@ describe('<User />', () => {
                                       top100genres: playlists.playlist2.success.body.genres
                                     })
                     wrapper.setState({status: "Calculating score"})
-                    let compatibility = component.calculateScore()
+                    var key = 'null'
+                    let compatibility = component.calculateScore(key)
                         wrapper.setState({compatibility: compatibility,
                             loading: false});
                     console.log(wrapper.state().compatibility)
