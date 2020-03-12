@@ -3,11 +3,13 @@ import Router from 'next/router'
 import { css } from "@emotion/core"
 import ScaleLoader from "react-spinners/ScaleLoader"
 import Header from '../components/Header'
+import Footer from '../components/Footer'
 import {Modal,Button, Container, Row, Col, Card, Carousel} from "react-bootstrap";
 import Image from 'react-bootstrap/Image'
 import { Doughnut } from 'react-chartjs-2';
 import 'chartjs-plugin-labels';
 import styles from './user.module.css';
+import {MdKeyboardBackspace} from 'react-icons/md'
 
 var auth = require('firebase/auth');
 var database = require('firebase/database');
@@ -39,12 +41,7 @@ const override = css`
 class User extends Component {
     constructor(props) {
         super(props);
-        if(!this.props.query.access_token){
-            Router.push({pathname: '/'})
-        }
         this.state = {
-            access_token: this.props.query.access_token,
-            refresh_token: '',
             user: '',
             userImage: 'https://www.palmcityyachts.com/wp/wp-content/uploads/palmcityyachts.com/2015/09/default-profile.png',
             location: '',
@@ -183,10 +180,14 @@ class User extends Component {
         dbRef.orderByValue().startAt(0).on("child_added", snapshot => {
             console.log('first');
             if(snapshot.exists() && snapshot.key == this.state.user){
-                this.setState({location: snapshot.child("location").val()})
+                this.setState({
+                    location: snapshot.child("location").val(),
+                    userImage: snapshot.child("image").val()
+                })
                 // console.log(this.state.location)
                 myLocation = snapshot.child("location").val();
                 console.log(myLocation);
+                console.log(this.state.userImage);
             }
         });
 
@@ -345,6 +346,7 @@ class User extends Component {
 
 
     componentDidMount = () => {
+        
         this.getUserPlaylists();
         this.get100();
     }
@@ -357,7 +359,7 @@ class User extends Component {
             redirect_uri = 'http://localhost:3000/index'
         }
 
-        let access_token = this.state.access_token
+        let access_token = window.sessionStorage.access_token;
         var options = {
             url: 'https://api.spotify.com/v1/me',
             headers: { 'Authorization': 'Bearer ' + access_token },
@@ -504,6 +506,7 @@ class User extends Component {
             var acousticNames = [];
             var liveNames = [];
             var valenceNames = [];
+            var image = ''
 
             var dbRef = firebase.database().ref('users')
 
@@ -513,6 +516,7 @@ class User extends Component {
                     otherTrackFeatures = snapshot.child("trackFeatures").val();
                     otherArtistID = snapshot.child("artistID").val();
                     otherGenres = snapshot.child("genres").val();
+                    image = snapshot.child("image").val();
                 }
             });
 
@@ -692,7 +696,8 @@ class User extends Component {
                 key: total,
                 value: key,
                 mostCompatibleIndex: mostCompatibleIndex,
-                max: max
+                max: max,
+                image: image
             };
 
             console.log(otherCompatibility);
@@ -734,13 +739,13 @@ class User extends Component {
             var trackOptions = {
                 method: 'GET',
                 url: `https://api.spotify.com/v1/tracks/${id}`,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
                 json: true
             };
             var audioFeaturesOptions = {
                 method: 'GET',
                 url: `https://api.spotify.com/v1/audio-features/${id}`,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
                 json: true
             };
             await axios(audioFeaturesOptions)
@@ -766,7 +771,7 @@ class User extends Component {
             var artistOptions = {
                 method: 'GET',
                 url: `https://api.spotify.com/v1/artists/${this.state.artistID[i]}`,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
                 json: true
             };
             await axios(artistOptions)
@@ -783,13 +788,13 @@ class User extends Component {
             var trackOptions = {
                 method: 'GET',
                 url: `https://api.spotify.com/v1/tracks/${id}`,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
                 json: true
             };
             var audioFeaturesOptions = {
                 method: 'GET',
                 url: `https://api.spotify.com/v1/audio-features/${id}`,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
                 json: true
             };
             await axios(audioFeaturesOptions)
@@ -812,7 +817,7 @@ class User extends Component {
             var artistOptions = {
                 method: 'GET',
                 url: `https://api.spotify.com/v1/artists/${this.state.top100artistID[j]}`,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
                 json: true
             };
             await axios(artistOptions)
@@ -1017,7 +1022,7 @@ class User extends Component {
         console.log(this.state.playlists[i])
         var tracksOptions = {
             url: this.state.playlists[i].tracks.href,
-            headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+            headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
             json: true
         };
 
@@ -1073,13 +1078,13 @@ class User extends Component {
             var trackOptions = {
                 method: 'GET',
                 url: `https://api.spotify.com/v1/tracks/${id}`,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
                 json: true
             };
             var audioFeaturesOptions = {
                 method: 'GET',
                 url: `https://api.spotify.com/v1/audio-features/${id}`,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
                 json: true
             };
             await axios(audioFeaturesOptions)
@@ -1105,7 +1110,7 @@ class User extends Component {
             var artistOptions = {
                 method: 'GET',
                 url: `https://api.spotify.com/v1/artists/${this.state.artistID[i]}`,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
                 json: true
             };
             await axios(artistOptions)
@@ -1134,18 +1139,21 @@ class User extends Component {
     }
 
     refresh = () => {
+        console.log(this.state.refresh_token);
+
         var authOptions = {
-            url: 'https://accounts.spotify.com/api/token',
-            headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
-            form: {
+              url: 'https://accounts.spotify.com/api/token',
+              headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
+              form: {
                 grant_type: 'refresh_token',
-                refresh_token: this.state.refresh_token,
-            },
-            json: true
+                refresh_token: this.state.refresh_token
+              },
+              json: true
         };
 
         request.post(authOptions, (error, response, body) => {
             console.log(error);
+            console.log(body.expires_in);
             if (!error && response.statusCode === 200) {
 
                 this.setState({
@@ -1153,7 +1161,6 @@ class User extends Component {
                 });
             }
         });
-        console.log("This is the new access_token" + this.state.access_token);
     }
 
     get100 = () => {
@@ -1163,12 +1170,12 @@ class User extends Component {
             redirect_uri = 'http://localhost:3000/index'
         }
 
-        let access_token = this.state.access_token
+        let access_token = window.sessionStorage.access_token
 
         if (access_token != "") {
             var options = {
                 url: 'https://api.spotify.com/v1/playlists/' + top100,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
                 json: true
             };
 
@@ -1200,7 +1207,7 @@ class User extends Component {
     };
 
     goToSettings = () => {
-        let access_token = this.state.access_token;
+        let access_token = window.sessionStorage.access_token;
         Router.push({
             pathname: '/settings',
             query: { access_token }
@@ -1210,7 +1217,7 @@ class User extends Component {
 
     goToProfile = (i) => {
         console.log(this.state.listOfUsers)
-        let access_token = this.state.access_token;
+        let access_token = window.sessionStorage.access_token;
         console.log(access_token)
         let user = this.state.listOfUserCompatibilities[i].value;
         console.log(user)
@@ -1290,7 +1297,7 @@ class User extends Component {
 
                         </div>
                         <div className = "usercardphoto">
-                        <Image src={this.state.userImage} roundedCircle/>
+                        <Image src={list[index].image} roundedCircle/>
                         </div>
 
                     </Col>
@@ -1381,8 +1388,10 @@ class User extends Component {
         // + ` is the most compatible song by ${this.state.max}%.`
         return (
             <Row>
-                <Col>
-                    {status}
+                <Col style={{textAlign: 'center'}}>
+                    <div style={{textAlign: 'center'}}>
+                        {status}
+                    </div>
                     {message}
                 </Col>
                 <Col>
@@ -1504,7 +1513,15 @@ class User extends Component {
                     </div>
                 )
             } else {
-                playlists = <p>No user to choose from</p>
+                playlists = (
+                <div>
+                    <p>No users to compare with...</p>
+                    <p>Please go to Settings to change location or top playlist</p>
+                    <Button onClick= {()=>{this.goToSettings()}} variant="light">
+                          Settings
+                    </Button>
+                </div>
+                )
             }
         }
 
@@ -1704,7 +1721,9 @@ class User extends Component {
             if(!this.state.loading){
                 rightSide = (
                     <Col>
-                        <p style={{color: 'white', fontSize: '50pt'}}>Choose a playlist to find compatible users near you</p>
+                        <p style={{color: 'white', fontSize: '50pt'}}>Choose a playlist to find compatible users near you<br/>
+                        <MdKeyboardBackspace style={{color: 'white'}} size={150}/></p>
+                        <p></p>
                     </Col>
                 );
             }
@@ -1715,8 +1734,12 @@ class User extends Component {
                 toggle = (
                     <Col md="auto">
                         <div id="mySidepanel" className="sidepanel" style={{width: '20vw'}}>
-                            <a className="closebtn" onClick={() => this.closeNav()} style={{color: 'white'}}>&times;</a>
-                            {playlists}
+                            <Row>
+                                <a className="closebtn" onClick={() => this.closeNav()} style={{color: 'white'}}>&times;</a>
+                            </Row>
+                            <Row style={{paddingTop: '20px', paddingRight: '20px'}}>
+                                <ul>{playlists}</ul>
+                            </Row>
                         </div>
                     </Col>
                 );
@@ -1781,8 +1804,8 @@ class User extends Component {
                             left:-10px;
                             bottom:-10px;
                             font-size: 36px;
-                            margin-left: 50px;
-                            margin-right: 15px;
+                            margin-right: 15%;
+                            margin-left: 80%;
                             margin-top: 5px;
                             text-align: right;
                             cursor: pointer;
@@ -1840,8 +1863,10 @@ class User extends Component {
                             />
                         </div>
                         {/* <Col> */}
-                        <Row>
-                            {status}
+                        <Row style={{textAlign: 'center'}}>
+                            <div style={{textAlign: 'center'}}>
+                                {status}
+                            </div>
                             {message}
                         </Row>
                         {/* </Col>
@@ -1924,8 +1949,10 @@ class User extends Component {
                             loading={this.state.loading}
                             />
                     </div>
-                    <Row>
-                        {status}
+                    <Row style={{textAlign: 'center'}}>
+                        <div style={{textAlign: 'center'}}>
+                            {status}
+                        </div>
                         {message}
                     </Row>
                 </Col>
@@ -1968,7 +1995,7 @@ class User extends Component {
                   />
                   <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet" />
                 </head>
-                <Header props={this.state.access_token} />
+                <Header props={''} />
                 <div>
 
                     {/* <Button onClick= {()=>{this.handleModal()}}> open modal </Button>*/}
@@ -2006,12 +2033,12 @@ class User extends Component {
                         {leftSide}
                         {rightSide}
                         {compData}
-                        
+
 
 
                     </Row>
                     <Row>
-                    
+
                     </Row>
                     {/* <Row>
                         <Col>
@@ -2096,72 +2123,7 @@ class User extends Component {
                         </Col> */}
                       {/* </div> */}
                   {/* </footer> */}
-
-                  <footer className="footer">
-
-                    <div class="container-fluid text-center text-md-left">
-
-                        <div class="row">
-
-                            <div class="col-md-6 mt-md-0 mt-3">
-
-                                <h5 class="text-uppercase">Footer Content</h5>
-                                <p>Here you can use rows and columns to organize your footer content.</p>
-
-                            </div>
-
-                            <hr class="clearfix w-100 d-md-none pb-3"></hr>
-
-                            <div class="col-md-3 mb-md-0 mb-3">
-
-                                <h5 class="text-uppercase">Links</h5>
-
-                                <ul class="list-unstyled">
-                                <li>
-                                    <a href="#!">Link 1</a>
-                                </li>
-                                <li>
-                                    <a href="#!">Link 2</a>
-                                </li>
-                                <li>
-                                    <a href="#!">Link 3</a>
-                                </li>
-                                <li>
-                                    <a href="#!">Link 4</a>
-                                </li>
-                                </ul>
-
-                            </div>
-
-                            <div class="col-md-3 mb-md-0 mb-3">
-
-                                <h5 class="text-uppercase">Links</h5>
-
-                                <ul class="list-unstyled">
-                                <li>
-                                    <a href="#!">Link 1</a>
-                                </li>
-                                <li>
-                                    <a href="#!">Link 2</a>
-                                </li>
-                                <li>
-                                    <a href="#!">Link 3</a>
-                                </li>
-                                <li>
-                                    <a href="#!">Link 4</a>
-                                </li>
-                                </ul>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-                    <div class="footer-copyright text-center py-3">© 2020 Copyright:
-                        <a href="https://mdbootstrap.com/"> MDBootstrap.com</a>
-                    </div>
-
-                    </footer>
+                  <Footer />
         </html>
         )
     }
