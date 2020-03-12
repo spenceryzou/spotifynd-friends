@@ -28,12 +28,6 @@ var redirect_uri = 'https://spotifynd-friends.herokuapp.com/';
 var scope = 'user-read-private user-read-email playlist-read-private';
 var top100 = '5tNkbVArsyCoI4NeO4QpCx';
 
-/*const clickLink = {
-    cursor: 'pointer',
-    color: 'white',
-    hover: {color: 'green'}
-  };*/
-
 const override = css`
   display: block;
   margin: 0 auto;
@@ -138,9 +132,6 @@ class User extends Component {
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig)
         }
-        console.log(firebase)
-
-
     }
     getData = () => ({
         labels: [
@@ -213,48 +204,18 @@ class User extends Component {
         });
     }
     convertToInt= (previousArray) => {
-        console.log(previousArray)
       var arr = new Map();
       for(var i =0;i<previousArray.length;i++){
         arr.set(previousArray[i].key,previousArray[i].value);//set the value as the int
       }
-      console.log(arr);
       var intArray = [];
-    //   for(let value of arr.keys()){
-    //      intArray.push(parseInt(value));
-    //    }
 
-    console.log("previousArray: " + previousArray)
     for(var i = 0; i < previousArray.length; i++){
-        console.log("inserting " + previousArray[i].value);
         intArray.push(parseInt(previousArray[i].key));
     }
 
-
-      console.log(intArray);
-    //   this.orderUsers(intArray,0,intArray.length-1);
     this.orderUsers(previousArray, 0, previousArray.length-1);
     return previousArray;
-    //   console.log(intArray);
-    //   var sortedString = [];
-    //   for(var x of intArray){
-    //     console.log(x);
-    //     sortedString.unshift(arr.get(x));
-    //   }
-    //   console.log(sortedString);
-    //   var sorted = [];
-    //   for(var name of sortedString){
-    //     for(var i=0;i<previousArray.length;i++){
-    //       if(name == previousArray[i].value){
-    //         sorted.push(previousArray[i]);
-    //       }
-    //     }
-    //   }
-    //   console.log("sorted: " + sorted);
-
-
-
-    //   return(sorted);
 
     }
     orderUsers = (arr,low,high) => {
@@ -375,16 +336,6 @@ class User extends Component {
                 console.log('Access token:' + access_token)
                 console.log(body);
                 this.setState({ user: body.id })
-
-                // var aDatabase = firebase.database();
-                // var mDatabase = aDatabase.ref();
-                //
-                // var myRef = mDatabase.child(this.state.user).child('spotify_id');
-                //  console.log("HEREE")
-                //
-                //  if (myRef == null) {
-                //     this.writeUserData(this.state.user);
-                //   }
                 var exist;
                 firebase.database().ref(`users/${this.state.user}/location`).once("value", snapshot => {
                     if (snapshot.exists()) {
@@ -491,9 +442,6 @@ class User extends Component {
         return new Promise(resolve => {
             var playlist1Total = 0;
             var playlist2Total = 0;
-
-            // var otherLength = key.child("name").length;
-            // var otherTrackFeatures = key.child("trackFeatures").val();
 
             var otherLength;
             var otherTrackFeatures;

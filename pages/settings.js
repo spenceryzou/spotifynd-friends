@@ -11,7 +11,6 @@ import Image from 'react-bootstrap/Image'
 import Header from '../components/Header'
 import axios from 'axios';
 import { runInThisContext } from 'vm'
-// import { Formik } from 'formik';
 import Footer from '../components/Footer'
 
 var auth = require('firebase/auth');
