@@ -182,7 +182,7 @@ class User extends Component {
         dbRef.orderByValue().startAt(0).on("child_added", snapshot => {
 
             //ignore key if it is you
-            if (snapshot.exists() /*&& snapshot.key != this.state.user*/) {
+            if (snapshot.exists() && snapshot.key != this.state.user) {
                 let otherLocation = snapshot.child("location").val();
 
                 console.log(snapshot.key + " location: " + otherLocation);
@@ -1203,8 +1203,9 @@ class User extends Component {
         let access_token = this.state.access_token;
         console.log(access_token)
         let user = this.state.listOfUserCompatibilities[i].value;
+        console.log(user)
         Router.push({
-            pathname: '/settings',
+            pathname: '/profile',
             query: { access_token },
         }, "/profile/" + user
         )
@@ -1301,11 +1302,6 @@ class User extends Component {
                             <Button className="button" onClick={() => this.setOtherUsersDetails(index)} size="sm">
                                 Details
                             </Button>
-                        </Col>
-                        <Col>
-                        <Button className = "button" onClick={() => this.goToProfile(index) }  variant="outline-secondary">
-                            Select User
-                        </Button>
                         </Col>
                     </Row>
                 </li>
