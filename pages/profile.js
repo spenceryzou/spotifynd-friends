@@ -3,14 +3,15 @@ import Router from 'next/router'
 import { css } from "@emotion/core"
 import ScaleLoader from "react-spinners/ScaleLoader"
 import Header from '../components/Header'
-import styles from '../pages/index.module.css'
 import { FormGroup, ControlLabel, FormControl, Card ,Container, Row, Col} from "react-bootstrap";
 import Dropdown from 'react-bootstrap/Dropdown'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Image from 'react-bootstrap/Image'
 import { Doughnut } from 'react-chartjs-2';
 import 'chartjs-plugin-labels'
+import styles from '../pages/profile.module.css'
 import Footer from '../components/Footer'
+
 
 var auth = require('firebase/auth');
 var database = require('firebase/database');
@@ -51,7 +52,8 @@ class Profile extends Component {
             progress_ms: 0,
             instagram: '',
             instagramUrl: '',
-            hasInstagram:''
+            hasInstagram:'',
+            location: ''
 
         }
         const firebaseConfig = {
@@ -117,6 +119,7 @@ class Profile extends Component {
 
                 const userInstagram = snapshot.val().instagram;
                 const userTopPlaylist = snapshot.val().topPlaylist;
+                const userLocation = snapshot.val().location;
 
                 console.log(snapshot.key)
                 console.log(snapshot.val().topPlaylist)
@@ -130,6 +133,10 @@ class Profile extends Component {
                     this.setState({instagram: snapshot.val().instagram})
 
                 }
+
+                if(userLocation != null){
+                    this.setState({location: snapshot.val().location})
+                }
                 console.log(this.state.listOfUsers)
 
             }
@@ -142,17 +149,18 @@ class Profile extends Component {
 
         
         if(instagramUsername != ''){
-
             return (<div>
             <h1><b>{this.state.user}</b></h1>
-                            
-             <a href={this.state.instagramUrl}  target="_blank" >{this.state.hasInstagram} </a> on Instagram </div> )
-
-        }
+            <a><b>{this.state.location}</b></a>
+            <button style={{fontFamily: 'Roboto'}} onClick={ event => window.open(this.state.instagramUrl, "_blank")} className={styles.button}>
+              <i className={styles.iconinstagram}></i>{this.state.hasInstagram}
+            </button>
+            </div>                
+        )}
 
         return (<div>
             <h1><b>{this.state.user}</b></h1>
-     
+            <a><b>{this.state.location}</b></a>
                                      
              <p >{this.state.hasInstagram}</p> </div>
             
@@ -166,9 +174,9 @@ class Profile extends Component {
 
     render() {
         
-        var message = '';
-        message = "https://open.spotify.com/embed/playlist/" + this.state.topID 
-        console.log(message);
+        var playlist = '';
+        playlist = "https://open.spotify.com/embed/playlist/" + this.state.topID 
+        console.log(playlist);
 
         this.state.hasInstagram = "User hasn't linked their instagram"
         var instagramUser = this.state.instagram
@@ -180,7 +188,7 @@ class Profile extends Component {
 
         if(instagramUser != ''){
 
-            this.state.hasInstagram = "@" + this.state.instagram 
+            this.state.hasInstagram = this.state.instagram 
 
             this.state.instagramUrl = 'https://www.instagram.com/' + instagramUser
 
@@ -221,6 +229,7 @@ class Profile extends Component {
                         width:120px;
                         height:120px;
                     }
+                    
                     //https://stackoverflow.com/questions/15167545/how-to-crop-a-rectangular-image-into-a-square-with-css
 
                 `}</style>
@@ -231,6 +240,7 @@ class Profile extends Component {
                     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                     crossorigin="anonymous"
                   />
+                    <link href="https://fonts.googleapis.com/css?family=Roboto:700&display=swap" rel="stylesheet"></link>
                   <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet" /> 
                 </head>
                 <Header props={''} />
@@ -242,13 +252,14 @@ class Profile extends Component {
                                       
                   <Row>
                             <Col md="auto" style={{}}>
-                                <Image src={this.state.userImage} roundedCircle/>
+                                <Image src={this.state.userImage} roundedCircle style={{marginTop:'150px', marginLeft: '80px'}}/>
                             </Col>
-                            <Col style={{color: 'white', paddingBottom: '20px'}}>
+                            <Col style={{color: 'white', paddingTop: '120px'}}>
 
                             <Row>
                                 {this.checkIfInstagramLinked(this.state.instagram)}
                             </Row>
+                            
                             <Row>
                                 <iframe src={'https://open.spotify.com/follow/1/?uri=' + `${uri}` + '&size=detail&theme=dark'
                                 } style={{border: 'none', overflow: 'hidden', allowtransparency: 'true', padding: '0px'}}
@@ -256,22 +267,15 @@ class Profile extends Component {
                             </Row>
                                 
                             </Col>
-                            
-                        </Row>
-                
-                    <Row>
-                      <Col>
-                        
-                        <div className="overflow-auto" style={{  maxHeight:"480px" }}>
-
+                            <Col>
+                            <div className="overflow-auto" style={{  maxHeight:"480px", marginTop: '20px' }}>
                             <Card.Body>
                               <Card.Text>
-                                  <iframe src={message} width="300" height="380" frameborder="100" allowtransparency="true" 
+                                  <iframe src={playlist} width="500px" height="400px" frameborder="100" allowtransparency="true" 
                                   allow="encrypted-media" className={styles.centeri} ></iframe>
                               </Card.Text>
                             </Card.Body>
                             </div>
-                       
                       </Col>
                     </Row>
  
