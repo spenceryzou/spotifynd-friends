@@ -35,10 +35,11 @@ describe('<Spotify />', () => {
         expect(instance.generateRandomString(length6).length).equal(length6);
         expect(instance.generateRandomString(-1).length).equal(0);
     })
-    // it('button displays text \'Continue With Spotify\' when user is not logged in', () => {
-    //     const wrapper = render(comp);
-    //     expect(wrapper.text()).to.contain('Continue with Spotify');
-    // })
+    it('home page shows title \"spotifynd friends\"', () => {
+        const wrapper = render(comp);
+        expect(wrapper.text()).to.contain('spotifynd');
+        expect(wrapper.text()).to.contain('friends');
+    })
     // it('button displays text \'Enter\' when user is logged in and access code is set', () => {
     //     const wrapper = mount(comp);
     //     wrapper.setState({ access_token: "thisIsAFakeAccessToken" });
@@ -51,9 +52,7 @@ describe('<User />', () => {
     const comp = <User />;
     let componentDidMountStub = null;
     beforeEach(() => {
-        componentDidMountStub = sinon.stub(User.prototype, 'componentDidMount').callsFake(function() {
-            // Does nothing
-        });
+        componentDidMountStub = sinon.stub(User.prototype, 'componentDidMount');
     });
     afterEach(() => {
         componentDidMountStub.restore();
