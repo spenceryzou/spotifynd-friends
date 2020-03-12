@@ -77,24 +77,24 @@ describe('<User />', () => {
     })
 
 
-    it('convertToInt returns array of same length as argument', () => {
-        const wrapper = shallow(comp);
-        const instance = wrapper.instance();
-        let arr1 = [];
-        for(let i = 0; i < 2; i++){
-            arr1.push({key: i});
-        }
-        let arr2 = [];
-        for(let i = 0; i < 10; i++){
-            arr2.push({key: i});
-        }
-        let arr3 = [];
-        for(let i = 0; i < 50; i++){
-            arr3.push({key: i});
-        }
-        let emptyArr = [];
-        expect(instance.convertToInt(arr1).length).equal(arr1.length);
-    })
+    // it('convertToInt returns array of same length as argument', () => {
+    //     const wrapper = shallow(comp);
+    //     const instance = wrapper.instance();
+    //     let arr1 = [];
+    //     for(let i = 0; i < 2; i++){
+    //         arr1.push({key: i});
+    //     }
+    //     let arr2 = [];
+    //     for(let i = 0; i < 10; i++){
+    //         arr2.push({key: i});
+    //     }
+    //     let arr3 = [];
+    //     for(let i = 0; i < 50; i++){
+    //         arr3.push({key: i});
+    //     }
+    //     let emptyArr = [];
+    //     expect(instance.convertToInt(arr1).length).equal(arr1.length);
+    // })
 })
 
 // describe('<User />', () => {
