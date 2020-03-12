@@ -34,7 +34,7 @@ class Profile extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            access_token: this.props.query.access_token,
+            access_token: '',
             refresh_token: '',
             user: '',
             userImage: 'https://www.palmcityyachts.com/wp/wp-content/uploads/palmcityyachts.com/2015/09/default-profile.png',
@@ -233,7 +233,7 @@ class Profile extends Component {
                   />
                   <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet" /> 
                 </head>
-                <Header props={this.state.access_token} />
+                <Header props={''} />
                 
 
                 <div>
