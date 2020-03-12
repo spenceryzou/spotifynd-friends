@@ -81,7 +81,7 @@ class User extends Component {
             status: '',
             loading: false,
             listOfUsers: [],
-            listOfUserCompatibilities: [],          
+            listOfUserCompatibilities: [],
             show: false,
             showOtherUsers: false,
             showChart: false,
@@ -170,12 +170,14 @@ class User extends Component {
         var dbRef = firebase.database().ref('users')
         console.log(this.state.user)
 
-        let myLocation;
+        var myLocation;
         dbRef.orderByValue().startAt(0).on("child_added", snapshot => {
+            console.log('first');
             if(snapshot.exists() && snapshot.key == this.state.user){
                 this.setState({location: snapshot.child("location").val()})
                 // console.log(this.state.location)
                 myLocation = snapshot.child("location").val();
+                console.log(myLocation);
             }
         });
 
@@ -1511,7 +1513,17 @@ class User extends Component {
             this.setUserCompList();
             userCompButtons = this.generateUserCompButtons();
         } else{
-            userCompButtons = 'make a comparison'
+            userCompButtons = "no users yet";
+            // userCompButtons = this.state.listOfUsers.map((i, index) =>
+            // <div>
+            //     <li>
+            //       <Row>
+            //         <Col>  {i} </Col>
+            //         </Row>
+            //         </li>
+            //         </div>
+            //       )
+
         }
 
         let userDetailsChart;
