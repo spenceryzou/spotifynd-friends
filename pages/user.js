@@ -1382,8 +1382,10 @@ class User extends Component {
         // + ` is the most compatible song by ${this.state.max}%.`
         return (
             <Row>
-                <Col>
-                    {status}
+                <Col style={{textAlign: 'center'}}>
+                    <div style={{textAlign: 'center'}}>
+                        {status}
+                    </div>
                     {message}
                 </Col>
                 <Col>
@@ -1841,8 +1843,10 @@ class User extends Component {
                             />
                         </div>
                         {/* <Col> */}
-                        <Row>
-                            {status}
+                        <Row style={{textAlign: 'center'}}>
+                            <div style={{textAlign: 'center'}}>
+                                {status}
+                            </div>
                             {message}
                         </Row>
                         {/* </Col>
@@ -1925,8 +1929,10 @@ class User extends Component {
                             loading={this.state.loading}
                             />
                     </div>
-                    <Row>
-                        {status}
+                    <Row style={{textAlign: 'center'}}>
+                        <div style={{textAlign: 'center'}}>
+                            {status}
+                        </div>
                         {message}
                     </Row>
                 </Col>
