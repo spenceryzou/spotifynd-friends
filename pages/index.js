@@ -1,13 +1,8 @@
 import React, { Component } from 'react'
-import Router from 'next/router'
-import User from '../pages/user'
 import styles from '../pages/index.module.css'
-import Header from '../components/Header'
 
 var querystring = require('querystring');
-var request = require('request')
 var client_id = '2923d79235804ea58633989710346f3d';
-var client_secret = 'd4813d196edf4940b58ba0aeedbf9ebc';
 var redirect_uri = 'https://spotifynd-friends.herokuapp.com/login';
 var scope = 'user-read-private user-read-email playlist-read-private';
 
@@ -56,8 +51,6 @@ class Spotify extends Component {
   }
 
   render() {
-    const { access_token } = this.state;
-
     return (
       <div className="background">
       <head>
@@ -76,7 +69,7 @@ class Spotify extends Component {
 
             <div>
               <button style={{fontFamily: 'Roboto'}} onClick={event => this.makeSpotifyProfileCall(event)} className={styles.button}>
-              <i className={styles.iconspotify}></i>{access_token !== '' ? 'Enter' : 'Continue with Spotify'}
+              <i className={styles.iconspotify}></i>{'Continue with Spotify'}
               </button>
             </div>
         </div>
