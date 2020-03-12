@@ -1223,28 +1223,75 @@ class User extends Component {
         let list = this.state.listOfUserCompatibilities;
 
         let compButtons = list.map((i, index) =>
-            <div>
-                <style jsx>{`
-                    .profile-link:hover{
-                        color: #1ed760;
-                        cursor: pointer;
-                    }
-                `}</style>
-                <li>
-                    <Row>
-                        <Col onClick={() => this.goToProfile(index) }>
-                            <div className="profile-link">
-                                {i.value}
+        <div className = 'usercard'>
+
+            <style jsx>{`
+
+                .profile-link:hover{
+                    color: #1ed760;
+                    cursor: pointer;
+
+                }
+                .profile-link{
+                  text-align: center;
+
+                }
+                .usercard{
+                  padding-bottom: 30px;
+
+                }
+                .usercardphoto{
+                  text-align: center;
+                }
+                .percent{
+                  padding-left: 50px;
+                  padding-top:10px;
+                  font-size:120px ;
+                }
+                .percent:hover{
+                    color: #1ed760;
+                    cursor: pointer;
+
+
+                }
+                .cardimage-top{
+                  object-fit:cover;
+                }
+
+            `}</style>
+
+
+              <Card border="dark" style={{ height: '200px'}} text="white">
+              <Card.Img className = "cardimage" src="https://media.gettyimages.com/photos/colorful-clouds-on-dramatic-sunset-sky-picture-id888845986?b=1&k=6&m=888845986&s=612x612&w=0&h=IyxUtRdQEQGV-DwLn9HaGJdhZRGZFVg3vXcefQRrIqI=" alt="Card image" style={{ height: '200px'}}/>
+              <Card.ImgOverlay>
+                <Row>
+
+                    <Col onClick={() => this.setOtherUsersDetails(index)} >
+
+                        <div className = 'percent' >
+                            {Math.round(i.key)}
                             </div>
-                        </Col>
-                        <Col>
-                            <Button className="button" onClick={() => this.setOtherUsersDetails(index)} size="sm">
-                                Details
-                            </Button>
-                        </Col>
-                    </Row>
-                </li>
-            </div>
+
+                    </Col>
+
+                    <Col onClick={() => this.goToProfile(index) } style={{fontSize: 'medium', paddingTop: '20px'}}>
+                        <div className="profile-link">
+                            {i.value}
+
+                        </div>
+                        <div className = "usercardphoto">
+                        <Image src={this.state.userImage} roundedCircle/>
+                        </div>
+
+                    </Col>
+
+
+                  </Row>
+                   </Card.ImgOverlay>
+                </Card>
+
+
+        </div>
         )
         return compButtons;
     }
@@ -1398,12 +1445,12 @@ class User extends Component {
         // document.getElementById("mySidepanel").style.width = "250px";
         this.setState({showPlaylists: true})
     }
-        
+
         /* Set the width of the sidebar to 0 (hide it) */
     closeNav() {
         // document.getElementById("mySidepanel").style.width = "0";
         this.setState({showPlaylists: false})
-    } 
+    }
 
     render() {
         let playlists;
@@ -1637,7 +1684,7 @@ class User extends Component {
                     </Card.Body>
                         </div>
                 </Card>
-                </Col>      
+                </Col>
             );
             rightSide = (
                 <Col>
@@ -1682,7 +1729,7 @@ class User extends Component {
                             // overflow-x: hidden; /* Disable horizontal scroll */
                             // padding-top: 60px; /* Place content 60px from the top */
                             // transition: 0.5s; /* 0.5 second transition effect to slide in the sidepanel */
-                        
+
                             border: 3px solid black;
                             padding: 15px;
                             background-color: #111;
@@ -1693,7 +1740,7 @@ class User extends Component {
                             top: 0;
                             overflow-y: scroll;
                         }
-                         
+
                          /* The sidepanel links */
                         .sidepanel a {
                             padding: 8px 8px 8px 32px;
@@ -1703,12 +1750,12 @@ class User extends Component {
                             display: block;
                             transition: 0.3s;
                         }
-                         
+
                          /* When you mouse over the navigation links, change their color */
                         .sidepanel a:hover {
                             color: #f1f1f1;
-                        }  
-                         
+                        }
+
                          /* Position and style the close button (top right corner) */
                         .sidepanel .closebtn {
                             position: absolute;
@@ -1723,7 +1770,7 @@ class User extends Component {
                             text-align: right;
                             cursor: pointer;
                         }
-                         
+
                          /* Style the button that is used to open the sidepanel */
                         .openbtn {
                             font-size: 20px;
@@ -1733,10 +1780,10 @@ class User extends Component {
                             padding: 10px 15px;
                             border: none;
                         }
-                         
+
                         .openbtn:hover {
                             background-color: #444;
-                        } 
+                        }
                     `}
                     </style>
                         {toggle}
@@ -1750,7 +1797,7 @@ class User extends Component {
 
                         <Card.Body>
                             <Card.Text>
-                                <ul>{userCompButtons}</ul>
+                                {userCompButtons}
                             </Card.Text>
                         </Card.Body>
                         </div>
@@ -1831,8 +1878,8 @@ class User extends Component {
                     <Row>
                       {leftSide}
                       {rightSide}
-                      
-                      
+
+
 
                     </Row>
                     <Row>
