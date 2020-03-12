@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
+import Link from 'next/link'
 import { css } from "@emotion/core"
 import ScaleLoader from "react-spinners/ScaleLoader"
 import Header from '../components/Header'
@@ -10,6 +11,7 @@ import { Doughnut } from 'react-chartjs-2';
 import 'chartjs-plugin-labels';
 import styles from './user.module.css';
 import {MdKeyboardBackspace} from 'react-icons/md'
+import Profile from './profile'
 
 var auth = require('firebase/auth');
 var database = require('firebase/database');
@@ -42,6 +44,7 @@ class User extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            access_token: '',
             user: '',
             userImage: 'https://www.palmcityyachts.com/wp/wp-content/uploads/palmcityyachts.com/2015/09/default-profile.png',
             location: '',
@@ -360,6 +363,7 @@ class User extends Component {
         }
 
         let access_token = window.sessionStorage.access_token;
+        this.setState({access_token})
         var options = {
             url: 'https://api.spotify.com/v1/me',
             headers: { 'Authorization': 'Bearer ' + access_token },
@@ -1216,6 +1220,17 @@ class User extends Component {
     }
 
     goToProfile = (i) => {
+        // let profile = (
+        //     <div className="modal">
+        //         <div className="modal_content">
+        //         <span className="close" onClick={this.handleClick}>&times;    </span>
+        //         <p>I'm A Pop Up!!!</p>
+        //         </div>
+        //     </div>
+        // );
+
+        // this.setState({profile: profile})
+
         console.log(this.state.listOfUsers)
         let access_token = window.sessionStorage.access_token;
         console.log(access_token)
@@ -1223,7 +1238,7 @@ class User extends Component {
         console.log(user)
         Router.push({
             pathname: '/profile',
-            query: { access_token },
+            query: { access_token, user },
         }, "/profile/" + user
         )
     }
@@ -1238,6 +1253,7 @@ class User extends Component {
         // let list = this.convertToInt(this.state.listOfUserCompatibilities);
         let list = this.state.listOfUserCompatibilities;
         // this.state.showCompData = true;
+        let access_token = this.state.access_token;
 
         let compButtons = list.map((i, index) =>
         <div className = 'usercard'>
@@ -1292,11 +1308,17 @@ class User extends Component {
 
                     </Col>
 
-                    <Col onClick={() => this.goToProfile(index) }  style={{fontSize: '1.1vw', paddingTop: '20px', whiteSpace: 'nowrap', overflowX: 'auto'}}>
-                        <div className="profile-link">
-                            {i.value}
-
-                        </div>
+                    <Col style={{fontSize: '1.1vw', paddingTop: '20px', whiteSpace: 'nowrap', overflowX: 'auto'}}>
+                        <Link href={{
+                            pathname: '/profile',
+                            query: { access_token: access_token, user: i.value}} }
+                            passHref>
+                            <a target="_blank">
+                                <div className="profile-link">
+                                    {i.value}
+                                </div>
+                            </a>
+                        </Link>
                         <div className = "usercardphoto">
                         <Image src={list[index].image} roundedCircle/>
                         </div>

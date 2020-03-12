@@ -35,9 +35,9 @@ class Profile extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            access_token: '',
+            access_token: this.props.query.access_token,
             refresh_token: '',
-            user: '',
+            user: this.props.query.user,
             userImage: 'https://www.palmcityyachts.com/wp/wp-content/uploads/palmcityyachts.com/2015/09/default-profile.png',
             playlists: [],
             item: {
@@ -81,15 +81,19 @@ class Profile extends Component {
 
 
     componentDidMount = () => {
-        let url = window.location.href;
-        var res = url.split("/");
+        console.log("access: " + this.state.access_token);
+        console.log("user: " + this.state.user)
+        // let url = window.location.href;
+        // var res = url.split("/");
 
-        this.setState({ user: res[4] })
-        this.getUserPlayer(res[4]);
-        this.getURI(res[4]);
+        // this.setState({ user: res[4] })
+        this.getUserPlayer(this.state.user);
+        this.getURIandImage(this.state.user);
     }
 
-    getURI = (user) => {
+    getURIandImage = (user) => {
+        console.log("in geturi user: " + this.state.access_token);
+
         let access_token = this.state.access_token
         var options = {
             url: 'https://api.spotify.com/v1/users/' + user,
@@ -102,7 +106,10 @@ class Profile extends Component {
                 console.log('Access token:' + access_token)
                 console.log(body);
                 console.log(body.uri);
-                this.setState({ uri: body.uri })
+                this.setState({ uri: body.uri});
+                if(body.images.length != 0){
+                    this.setState({userImage: body.images[0].url});
+                }
             });
         }
         console.log(this.state.uri);
