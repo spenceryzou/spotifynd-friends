@@ -25,7 +25,42 @@ class Spotify extends Component {
 
 
  
-  
+  /*componentWillMount= () => {
+    let url = window.location.href;
+    let access_token = '';
+    let refresh_token = '';
+    if (url.indexOf('code') > -1) {
+      let code = url.split('code=')[1].split("&")[0].trim();
+      var authOptions = {
+        url: 'https://accounts.spotify.com/api/token',
+        form: {
+          code: code,
+          redirect_uri: redirect_uri,
+          grant_type: 'authorization_code'
+        },
+        headers: {
+          'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+        },
+        json: true
+      };
+
+      request.post(authOptions, (error, response, body) => {
+        if (!error && response.statusCode === 200) {
+          access_token = body.access_token,
+            refresh_token = body.refresh_token;
+          this.setState({
+            access_token: access_token,
+            refresh_token: refresh_token
+          });
+          Router.push({
+            pathname: '/user',
+            query: { access_token } //may be unnecessary
+          }, '/user'
+          )
+        }
+     })
+    }
+  }*/
 
   componentDidMount = () => {
     let url = window.location.href;
@@ -59,7 +94,6 @@ class Spotify extends Component {
             access_token: access_token,
             refresh_token: refresh_token
           });
-
           var options = {
             url: 'https://api.spotify.com/v1/me',
             headers: { 'Authorization': 'Bearer ' + access_token },
@@ -115,15 +149,28 @@ class Spotify extends Component {
     // }
 
     return (
-        <div>
-          <Header props={this.state.access_token} />
-            <h1 className={styles.center}> Welcome to Spotifynd Friends! </h1>
-      <div className="row justify-content-center mt-5">
-            <button onClick={event => this.makeSpotifyProfileCall(event)} className={styles.button}>
-          {access_token !== '' ? 'Enter' : 'Login'}
-        </button>
-      </div>
+      <div className="background">
+      <head>
+        <link href="https://fonts.googleapis.com/css?family=Roboto:700&display=swap" rel="stylesheet"></link>
+      </head>
+      <div>
+      <style jsx>{`
+                    body {
+                      background: #19e68c;
+                      margin-left: 144px;
+                      margin-top: 144px;
+                      overflow-x: hidden;
+                    }
+                `}</style>
+            <a className={styles.title}> spotifynd <br></br> friends</a>
+            
+            <div>
+              <button style={{fontFamily: 'Roboto'}} onClick={event => this.makeSpotifyProfileCall(event)} className={styles.button}>
+              <i className={styles.iconspotify}></i>{access_token !== '' ? 'Enter' : 'Continue with Spotify'}
+              </button>
             </div>
+        </div>
+      </div>
     );
   }
 }

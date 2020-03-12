@@ -1,4 +1,6 @@
-module.exports = {
+const withImages = require('next-images')
+module.exports = withImages()
+module.exports = withImages({
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.node = {
@@ -8,4 +10,4 @@ module.exports = {
       };
     }    return config;
   },
-};
+});

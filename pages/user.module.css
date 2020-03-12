@@ -1,0 +1,5 @@
+  .clickLink{
+      cursor: pointer;
+      color: green !important;
+  }
+  .clickLink:hover {color: white !important}
