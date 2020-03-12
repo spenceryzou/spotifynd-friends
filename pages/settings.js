@@ -685,8 +685,8 @@ assignPlaylistTracksName = async(items) => {
 
 
 
-                <Form.Group controlId="exampleForm.ControlSelect1">
-                  <Form.Label class="text-white"  >Set a new Location</Form.Label>
+                <Form.Group controlId="exampleForm.ControlSelect1" style={{paddingTop: '20px'}}>
+                  <Form.Label class="text-white"  >Set a new Location. You will be compared with users in your area</Form.Label>
                   <Form.Control defaultValue={-1}
                     as="select"
                     onChange={this.handleLocationChange}
@@ -698,7 +698,7 @@ assignPlaylistTracksName = async(items) => {
 
                 <Form.Group controlId="exampleForm.ControlSelect2">
 
-                  <Form.Label class="text-white">Select a new Playlist</Form.Label>
+                  <Form.Label class="text-white">Select a new Playlist. This is the playlist others will see and be compared with</Form.Label>
 
                   <Form.Control defaultValue={-1}
                     as="select"
