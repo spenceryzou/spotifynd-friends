@@ -48,7 +48,7 @@ describe('<Spotify />', () => {
     // })
 });
 
-describe('<User />', () => {
+/*describe('<User />', () => {
     const comp = <User />;
     let componentDidMountStub = null;
     beforeEach(() => {
@@ -96,7 +96,7 @@ describe('<User />', () => {
     //     let emptyArr = [];
     //     expect(instance.convertToInt(arr1).length).equal(arr1.length);
     // })
-})
+})*/
 
 // describe('<User />', () => {
 //     let props = { query: { access_token: "" }}
