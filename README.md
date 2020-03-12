@@ -78,7 +78,7 @@ Go to https://spotifynd-friends.herokuapp.com/
 10. On the user's profile page, you can play their top playlist, go to their Instagram page via the Instagram logo button, and follow them on Spotify via the follow button. 
 
 ## Known Problems
-None at the moment.
+Navigating to the settings page via the navbar will sometimes take a while to load without informative feedback that it is loading.
 
 ## Contributing
 1. Fork it!  
