@@ -44,7 +44,7 @@ class User extends Component {
         }
         this.state = {
             access_token: this.props.query.access_token,
-            refresh_token: '',
+            refresh_token: this.props.query.refresh,
             user: '',
             userImage: 'https://www.palmcityyachts.com/wp/wp-content/uploads/palmcityyachts.com/2015/09/default-profile.png',
             location: '',
@@ -345,6 +345,7 @@ class User extends Component {
 
 
     componentDidMount = () => {
+        
         this.getUserPlaylists();
         this.get100();
     }
@@ -1134,18 +1135,21 @@ class User extends Component {
     }
 
     refresh = () => {
+        console.log(this.state.refresh_token);
+
         var authOptions = {
-            url: 'https://accounts.spotify.com/api/token',
-            headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
-            form: {
+              url: 'https://accounts.spotify.com/api/token',
+              headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
+              form: {
                 grant_type: 'refresh_token',
-                refresh_token: this.state.refresh_token,
-            },
-            json: true
+                refresh_token: this.state.refresh_token
+              },
+              json: true
         };
 
         request.post(authOptions, (error, response, body) => {
             console.log(error);
+            console.log(body.expires_in);
             if (!error && response.statusCode === 200) {
 
                 this.setState({
@@ -1153,6 +1157,7 @@ class User extends Component {
                 });
             }
         });
+
         console.log("This is the new access_token" + this.state.access_token);
     }
 
@@ -2006,12 +2011,12 @@ class User extends Component {
                         {leftSide}
                         {rightSide}
                         {compData}
-                        
+
 
 
                     </Row>
                     <Row>
-                    
+
                     </Row>
                     {/* <Row>
                         <Col>

@@ -24,7 +24,7 @@ class Spotify extends Component {
   }
 
 
- 
+
   /*componentWillMount= () => {
     let url = window.location.href;
     let access_token = '';
@@ -130,12 +130,15 @@ class Spotify extends Component {
           scope: scope,
           redirect_uri: redirect_uri,
           state: this.generateRandomString(16)
-          
+
         });
     } else {
       Router.push({
         pathname: '/user',
-        query: { access_token } //may be unnecessary
+        query: { access_token ,refresh: this.state.refresh_token}
+
+
+         //may be unnecessary
       }, '/user'
       )
     }
@@ -163,7 +166,7 @@ class Spotify extends Component {
                     }
                 `}</style>
             <a className={styles.title}> spotifynd <br></br> friends</a>
-            
+
             <div>
               <button style={{fontFamily: 'Roboto'}} onClick={event => this.makeSpotifyProfileCall(event)} className={styles.button}>
               <i className={styles.iconspotify}></i>{access_token !== '' ? 'Enter' : 'Continue with Spotify'}
