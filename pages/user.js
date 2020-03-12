@@ -645,7 +645,7 @@ class User extends Component {
             console.log(otherCompatibility);
 
 
-            this.setState({ status: 'All done! Choose a user to see details.'})
+            this.setState({ status: "All done! Click on a user's name to see their profile, or click the compatibility score to see more details."})
             resolve(otherCompatibility);
 
         })
@@ -889,6 +889,27 @@ class User extends Component {
                     font-size: 1.25vw;
                     overflow-x: auto;
                 }
+                .profile-link:hover .tooltiptext{
+                    visibility: visible;
+                }
+
+                .profile-link .tooltiptext{
+                    visibility: hidden;
+                    width: 120px;
+                    background-color: black;
+                    color: #fff;
+                    text-align: center;
+                    padding: 5px 0;
+                    border-radius: 6px;
+                    font-size: 10pt;
+                    
+                    /* Position the tooltip text - see examples below! */
+                    position: absolute;
+                    z-index: 1;
+                    // top: -3px;
+                    right: 45%;
+                }
+
                 .usercard{
                   padding-bottom: 30px;
 
@@ -904,9 +925,29 @@ class User extends Component {
                 .percent:hover{
                     color: #1ed760;
                     cursor: pointer;
-
-
                 }
+                
+                .percent:hover .tooltiptext{
+                    visibility: visible;
+                }
+
+                .percent .tooltiptext{
+                    visibility: hidden;
+                    width: 120px;
+                    background-color: black;
+                    color: #fff;
+                    text-align: center;
+                    padding: 5px 0;
+                    border-radius: 6px;
+                    font-size: 10pt;
+                    
+                    /* Position the tooltip text - see examples below! */
+                    position: absolute;
+                    z-index: 1;
+                }
+
+                
+
                 .cardimage-top{
                   object-fit:cover;
                 }
@@ -923,7 +964,8 @@ class User extends Component {
 
                         <div className = 'percent' >
                             {Math.round(i.key)}
-                            </div>
+                            <span className="tooltiptext">View Compatibility Details</span>
+                        </div>
 
                     </Col>
 
@@ -934,6 +976,7 @@ class User extends Component {
                             passHref>
                             <a target="_blank">
                                 <div className="profile-link" style={{color: 'white', overflowY:'hidden', overflowX:'hidden'}}>
+                                    <span className="tooltiptext">View User Profile</span>
                                     {i.value}
                                 </div>
                             </a>
@@ -1363,8 +1406,10 @@ class User extends Component {
             if(!this.state.loading){
                 rightSide = (
                     <Col>
-                        <p style={{color: 'white', fontSize: '50pt'}}>Choose a playlist to find compatible users near you<br/>
-                        <MdKeyboardBackspace style={{color: 'white'}} size={150}/></p>
+                        <p style={{color: 'white', fontSize: '50pt'}}>Choose a playlist to find compatible users near you</p>
+                        <p style={{color: '#dedede', fontSize: '25pt'}}>Your selected playlist will be compared with the favorite playlists of people in your area</p>
+                        {/* <br/>
+                        <MdKeyboardBackspace style={{color: 'white'}} size={150}/></p> */}
                         <p></p>
                     </Col>
                 );
