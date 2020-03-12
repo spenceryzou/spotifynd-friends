@@ -31,7 +31,28 @@ react: library for building user interface
 
 react-dom: library, allows for manipulation of the DOM
 
+react-bootstrap: front-end framework, built for react
+
+react-spinner: allows for a loading component
+
 request: simplifies http call process
+
+firebase: mobile application, development platform
+
+firebase-admin: allows for read and write to realtime database
+
+axios: allows for HTTP requests
+
+@babel/runtime: library that contains runtime helpers
+
+@emotion/core: library for css styles with JavaScript
+
+bootstrap: front-end component library
+
+chart.js: library allowing for different type of charts
+
+chartjs-plugin-labels: allows for chart.js to display percentages
+
 
 ### Installation Steps
 
@@ -46,9 +67,10 @@ Go to https://spotifynd-friends.herokuapp.com/
 ## Functionality
 1. Click the 'Log in' button on the home page
 2. When redirected, log in to your Spotify account
-3. After redirected back to our app, click the 'Click to enter Spotifynd Friends' button
-4. Select the playlist you would like to compare with Spotify's Top Hits from the list that appears on the page
-5. The number of songs you have in common with the Top Hits playlist is now displayed
+3. After redirected back to our app, click the 'Enter' button
+4. Select the playlist you would like to compare with other user's top playlist in the same location as you
+5. The compatability score you have in common with every user in your location is now displayed 
+6. Click on the user in order to check out their social media and top playlist
 
 ## Known Problems
 None at the moment.
