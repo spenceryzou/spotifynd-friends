@@ -12,6 +12,7 @@ import Header from '../components/Header'
 import axios from 'axios';
 import { runInThisContext } from 'vm'
 import { Formik } from 'formik';
+import Footer from '../components/Footer'
 
 var auth = require('firebase/auth');
 var database = require('firebase/database');
@@ -593,6 +594,7 @@ assignPlaylistTracksName = async(items) => {
     }
 
     return (
+      <html>
       <div className = "testclass">
 
       <style jsx>{`
@@ -609,6 +611,12 @@ assignPlaylistTracksName = async(items) => {
               background-color: #121212;
               font-family: Montserrat;
           }
+          .footer {
+            padding-top: 25px;
+            font-family: Montserrat;
+            background-color: #373737;
+            color: white;
+        }
 
 
           `}</style>
@@ -638,7 +646,7 @@ assignPlaylistTracksName = async(items) => {
               </div>
         <div >
 
-        <Container className= "testclasss">
+        <Container className= "testclass">
           <Row>
             <Col>
             <Card className="bg-dark text-white" text="white">
@@ -757,6 +765,9 @@ assignPlaylistTracksName = async(items) => {
         </div>
 
       </div>
+
+          <Footer />
+      </html>
 
     )
   }
