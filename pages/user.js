@@ -1237,6 +1237,7 @@ class User extends Component {
     generateUserCompButtons = () => {
         // let list = this.convertToInt(this.state.listOfUserCompatibilities);
         let list = this.state.listOfUserCompatibilities;
+        // this.state.showCompData = true;
 
         let compButtons = list.map((i, index) =>
         <div className = 'usercard'>
@@ -1463,13 +1464,14 @@ class User extends Component {
     openNav() {
         // document.getElementById("mySidepanel").style.width = "250px";
         this.setState({showPlaylists: true,
-        hideCompData: true})
+        showCompData: false})
     }
 
         /* Set the width of the sidebar to 0 (hide it) */
     closeNav() {
         // document.getElementById("mySidepanel").style.width = "0";
-        this.setState({showPlaylists: false})
+        this.setState({showPlaylists: false,
+        showCompData: true})
     }
 
     render() {
