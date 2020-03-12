@@ -10,7 +10,6 @@ import {Modal} from "react-bootstrap";
 import Image from 'react-bootstrap/Image'
 import Header from '../components/Header'
 import axios from 'axios';
-import Credentials from '../userdata/credentials'
 import { runInThisContext } from 'vm'
 import { Formik } from 'formik';
 
