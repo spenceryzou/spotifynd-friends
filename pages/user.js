@@ -198,39 +198,48 @@ class User extends Component {
         });
     }
     convertToInt= (previousArray) => {
+        console.log(previousArray)
       var arr = new Map();
       for(var i =0;i<previousArray.length;i++){
         arr.set(previousArray[i].key,previousArray[i].value);//set the value as the int
       }
       console.log(arr);
       var intArray = [];
-      for(let value of arr.keys()){
-         intArray.push(parseInt(value));
-       }
+    //   for(let value of arr.keys()){
+    //      intArray.push(parseInt(value));
+    //    }
+
+    console.log("previousArray: " + previousArray)
+    for(var i = 0; i < previousArray.length; i++){
+        console.log("inserting " + previousArray[i].value);
+        intArray.push(parseInt(previousArray[i].key));
+    }
 
 
       console.log(intArray);
-      this.orderUsers(intArray,0,intArray.length-1);
-      console.log(intArray);
-      var sortedString = [];
-      for(var x of intArray){
-        console.log(x);
-        sortedString.unshift(arr.get(x));
-      }
-      console.log(sortedString);
-      var sorted = [];
-      for(var name of sortedString){
-        for(var i=0;i<previousArray.length;i++){
-          if(name == previousArray[i].value){
-            sorted.push(previousArray[i]);
-          }
-        }
-      }
-      console.log(sorted);
+    //   this.orderUsers(intArray,0,intArray.length-1);
+    this.orderUsers(previousArray, 0, previousArray.length-1);
+    return previousArray;
+    //   console.log(intArray);
+    //   var sortedString = [];
+    //   for(var x of intArray){
+    //     console.log(x);
+    //     sortedString.unshift(arr.get(x));
+    //   }
+    //   console.log(sortedString);
+    //   var sorted = [];
+    //   for(var name of sortedString){
+    //     for(var i=0;i<previousArray.length;i++){
+    //       if(name == previousArray[i].value){
+    //         sorted.push(previousArray[i]);
+    //       }
+    //     }
+    //   }
+    //   console.log("sorted: " + sorted);
 
 
 
-      return(sorted);
+    //   return(sorted);
 
     }
     orderUsers = (arr,low,high) => {
@@ -257,7 +266,7 @@ class User extends Component {
 
       for(var j= low; j<= high-1;j++){
         // if current element is smaller than the pivot
-        if(arr[j]<pivot){
+        if(arr[j].key > pivot.key){
           i++;
           //swap arr[i] and arr[j]
           let temp;
@@ -587,7 +596,8 @@ class User extends Component {
                 playlist1Total += imin;
                 if(max < imin){
                     mostCompatibleIndex = i;
-                    max = Math.round(imin);
+                    // max = Math.round(imin);
+                    max = imin;
                 }
                 console.log("playlist1 running total: " + playlist1Total)
             }
@@ -651,9 +661,11 @@ class User extends Component {
 
             var total;
             if (playlist1Total > playlist2Total)
-                total = Math.round(playlist2Total)
+                // total = Math.round(playlist2Total)
+                total = playlist2Total;
             else
-                total = Math.round(playlist1Total)
+                // total = Math.round(playlist1Total)
+                total = playlist1Total;
 
             var otherCompatibility = {
                 danceCount: danceCount,
@@ -1189,9 +1201,10 @@ class User extends Component {
     goToProfile = (i) => {
         console.log(this.state.listOfUsers)
         let access_token = this.state.access_token;
-        let user = this.state.listOfUsers[i];
+        console.log(access_token)
+        let user = this.state.listOfUserCompatibilities[i].value;
         Router.push({
-            pathname: '/profile',
+            pathname: '/settings',
             query: { access_token },
         }, "/profile/" + user
         )
@@ -1244,8 +1257,30 @@ class User extends Component {
     //     })
     // }
 
+    // generateUserCompButtons = () => {
+
+    //     let list = this.convertToInt(this.state.listOfUserCompatibilities);
+
+    //     let compButtons = list.map((i, index) =>
+    //         <li>
+    //             <Row>
+    //                 <Col>
+    //                     {i.value}
+    //                 </Col>
+    //                 <Col>
+    //                     <Button className="button" onClick={() => this.setOtherUsersDetails(index)} size="sm">
+    //                         Details
+    //                     </Button>
+    //                 </Col>
+    //             </Row>
+    //         </li>
+    //     )
+    //     return compButtons;
+    // }
+
     generateUserCompButtons = () => {
-        let list = this.convertToInt(this.state.listOfUserCompatibilities);
+        // let list = this.convertToInt(this.state.listOfUserCompatibilities);
+        let list = this.state.listOfUserCompatibilities;
 
         let compButtons = list.map((i, index) =>
             <div>
@@ -1267,6 +1302,11 @@ class User extends Component {
                                 Details
                             </Button>
                         </Col>
+                        <Col>
+                        <Button className = "button" onClick={() => this.goToProfile(index) }  variant="outline-secondary">
+                            Select User
+                        </Button>
+                        </Col>
                     </Row>
                 </li>
             </div>
@@ -1276,7 +1316,7 @@ class User extends Component {
 
     setOtherUsersDetails = (i) => {
         console.log("setting other users data")
-        let list = this.convertToInt(this.state.listOfUserCompatibilities);
+        let list = this.state.listOfUserCompatibilities;
         let danceNames = list[i].danceNames;
         let energyNames = list[i].energyNames;
         let acousticNames = list[i].acousticNames;
@@ -1415,6 +1455,10 @@ class User extends Component {
         )
     }
 
+    setUserCompList = () => {
+        this.convertToInt(this.state.listOfUserCompatibilities);
+    }
+
     render() {
         let playlists;
         if (typeof (this.state.playlists) != 'undefined') {
@@ -1468,7 +1512,7 @@ class User extends Component {
         let userCompButtons;
         if(this.state.showOtherUsers){
             console.log("SHOWING OTHER USERS")
-
+            this.setUserCompList();
             userCompButtons = this.generateUserCompButtons();
         } else{
             userCompButtons = 'make a comparison'
@@ -1492,8 +1536,8 @@ class User extends Component {
             status = `${this.state.status}`
         } else if (this.state.compatibility > 0) {
             status = ''
-            message = `These playlists are ${this.state.compatibility}% compatible!`
-            message += "\n" + this.state.name[this.state.mostCompatibleIndex] + " by " + this.state.artist[this.state.mostCompatibleIndex] + ` is the most compatible song by ${this.state.max}%.`
+            message = `These playlists are ${Math.round(this.state.compatibility)}% compatible!`
+            message += "\n" + this.state.name[this.state.mostCompatibleIndex] + " by " + this.state.artist[this.state.mostCompatibleIndex] + ` is the most compatible song by ${Math.round(this.state.max)}%.`
         }
 
         let danceList;
