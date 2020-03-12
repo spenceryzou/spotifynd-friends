@@ -60,17 +60,22 @@ chartjs-plugin-labels: allows for chart.js to display percentages
 1. clone our repo using `git clone https://github.com/ucsb-cs48-w20/Spotify.git`
 2. run `npm install` command to install necessary dependencies
 3. use `npm run dev` command to run our app
+4. go to http://localhost:3000
 
 #### Browser
 Go to https://spotifynd-friends.herokuapp.com/
 
 ## Functionality
-1. Click the 'Log in' button on the home page
+1. Click the 'Continue With Spotify' button on the home page
 2. When redirected, log in to your Spotify account
-3. After redirected back to our app, click the 'Enter' button
-4. Select the playlist you would like to compare with other user's top playlist in the same location as you
-5. The compatability score you have in common with every user in your location is now displayed 
-6. Click on the user in order to check out their social media and top playlist
+3. After being redirected back to our app, click the 'Settings' button in the pop up window if it is your first time logging in with our app. Otherwise, you may proceed with step 6.
+4. On the Settings page, select your location, top playlist, and enter your Instagram handle. The top playlist is the playlist that will be associated with your profile when other users compare their playlists with you. The Instagram handle will be displayed on your profile page.
+5. After your settings are selected, click on "Spotifynd Friends" in the upper left corner.
+6. Select one of your playlists in the list on the left to compare it with other users in your area.
+7. A list of users will appear sorted by compatibility scores. If you wish to make comparisons with a different playlist, click on the "hamburger" menu button on the left to bring up your list of playlists again and select a different playlist.
+8. In the list of users, click on the number on a user's card to view your compatibility summary.
+9. Click on a user's name to view their profile.
+10. On the user's profile page, you can play their top playlist, go to their Instagram page via the Instagram logo button, and follow them on Spotify via the follow button. 
 
 ## Known Problems
 None at the moment.
