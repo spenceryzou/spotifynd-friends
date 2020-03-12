@@ -81,27 +81,29 @@ class Profile extends Component {
         let url = window.location.href;
         var res = url.split("/");
 
-
-        // let access_token = this.state.access_token
-        // var options = {
-        //     url: 'https://api.spotify.com/v1/me',
-        //     headers: { 'Authorization': 'Bearer ' + access_token },
-        //     json: true
-        // };
-        // if (access_token != "") {
-        //     // use the access token to access the Spotify Web API
-        //     request.get(options, (error, response, body) => {
-        //         console.log('Access token:' + access_token)
-        //         console.log(body);
-        //         this.setState({ user: body.id })
-        //     });
-        // }
-        // this.getUserPlayer(this.state.user);
-
         this.setState({ user: res[4] })
         this.getUserPlayer(res[4]);
+        this.getURI(res[4]);
     }
 
+    getURI = (user) => {
+        let access_token = this.state.access_token
+        var options = {
+            url: 'https://api.spotify.com/v1/users/' + user,
+            headers: { 'Authorization': 'Bearer ' + access_token },
+            json: true
+        };
+        if (access_token != "") {
+            // use the access token to access the Spotify Web API
+            request.get(options, (error, response, body) => {
+                console.log('Access token:' + access_token)
+                console.log(body);
+                console.log(body.uri);
+                this.setState({ uri: body.uri })
+            });
+        }
+        console.log(this.state.uri);
+    }
 
     getUserPlayer = (user) => {
         var dbRef = firebase.database().ref('users')
@@ -143,7 +145,7 @@ class Profile extends Component {
             return (<div>
             <h1><b>{this.state.user}</b></h1>
                             
-             <a href={this.state.instagramUrl}  target="_blank" >{this.state.hasInstagram} </a> On Instagram </div> )
+             <a href={this.state.instagramUrl}  target="_blank" >{this.state.hasInstagram} </a> on Instagram </div> )
 
         }
 
@@ -170,6 +172,10 @@ class Profile extends Component {
         this.state.hasInstagram = "User hasn't linked their instagram"
         var instagramUser = this.state.instagram
 
+        let uri = this.state.uri;
+        console.log(uri);
+        let followURL = "https://open.spotify.com/follow/1/?uri=" + `${uri}` + "&size=detail&theme=dark";
+        console.log(followURL);
 
         if(instagramUser != ''){
 
@@ -234,21 +240,24 @@ class Profile extends Component {
                   <Container>
                                       
                   <Row>
-                            <Col md="auto" style={{paddingBottom: '20px'}}>
+                            <Col md="auto" style={{}}>
                                 <Image src={this.state.userImage} roundedCircle/>
                             </Col>
                             <Col style={{color: 'white', paddingBottom: '20px'}}>
 
-
+                            <Row>
                                 {this.checkIfInstagramLinked(this.state.instagram)}
-     
-                             
+                            </Row>
+                            <Row>
+                                <iframe src={'https://open.spotify.com/follow/1/?uri=' + `${uri}` + '&size=detail&theme=dark'
+                                } style={{border: 'none', overflow: 'hidden', allowtransparency: 'true', padding: '0px'}}
+                                ></iframe>
+                            </Row>
                                 
                             </Col>
+                            
                         </Row>
-          
-
-
+                
                     <Row>
                       <Col>
                         
@@ -356,3 +365,5 @@ class Profile extends Component {
 
 
 export default Profile;
+
+
