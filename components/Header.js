@@ -12,9 +12,7 @@ const Header = (props) => {
   return(
     <div>
       <style jsx>{`
-        .navLink{
-          color: 'blue';
-        }
+          
       `}</style>
     <head>
     <link
@@ -23,15 +21,17 @@ const Header = (props) => {
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
     crossOrigin="anonymous"
       />
+      <link src="../fonts/circular-light.woff2" rel="stylesheet" />
     </head>
-    <Navbar bg="light" expand="lg">
-    <Navbar.Brand >Spotifynd Friends</Navbar.Brand>
+    <Navbar bg="light" expand="lg" className="navBar">
+    <Navbar.Brand className="mr-auto">
+        <Link href={`/user?access_token=${props.props}`} as='/user' passHref>
+          <Nav.Link className='navLink' style={{color: 'black'}}>Spotifynd Friends</Nav.Link>
+        </Link>
+    </Navbar.Brand>
     <Navbar.Toggle aria-controls="basic-navbar-nav" />
     <Navbar.Collapse id="basic-navbar-nav">
       <Nav className="mr-auto">
-        <Link href={`/user?access_token=${props.props}`} as='/user' passHref>
-          <Nav.Link className='navLink'>User</Nav.Link>
-        </Link>
         <Link href={`/settings?access_token=${props.props}`} as='/settings' passHref>
           <Nav.Link>Settings</Nav.Link>
         </Link>
