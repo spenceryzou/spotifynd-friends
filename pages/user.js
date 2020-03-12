@@ -9,6 +9,7 @@ import Image from 'react-bootstrap/Image'
 import { Doughnut } from 'react-chartjs-2';
 import 'chartjs-plugin-labels';
 import styles from './user.module.css';
+import {MdKeyboardBackspace} from 'react-icons/md'
 
 var auth = require('firebase/auth');
 var database = require('firebase/database');
@@ -1720,7 +1721,9 @@ class User extends Component {
             if(!this.state.loading){
                 rightSide = (
                     <Col>
-                        <p style={{color: 'white', fontSize: '50pt'}}>Choose a playlist to find compatible users near you</p>
+                        <p style={{color: 'white', fontSize: '50pt'}}>Choose a playlist to find compatible users near you<br/>
+                        <MdKeyboardBackspace style={{color: 'white'}} size={150}/></p>
+                        <p></p>
                     </Col>
                 );
             }
