@@ -53,32 +53,24 @@ class Login extends Component{
 
     render(){
         return(
-            <div className = "testclass" aling = 'center' class ='container-fluid'>
+            <div>
             <style jsx>{`
-
-                .body {
+                html {
                     background: linear-gradient(to bottom, #373737 0%, #191414 50%);
-                    font-family: Montserrat;
-
+                    background-size: cover;
+                    background-repeat: no-repeat;
+                    overflow-y: hidden;
                 }
-
-
-
+                html, body {
+                  margin: 0;
+                  height: 100%;
+              }
                 `}</style>
           <head>
-
-              <link
-                rel="stylesheet"
-                href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-                integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-                crossorigin="anonymous"
-              />
-
           </head>
-          <body>
-          <Container className = "testclass">
+          <Container>
+              <div style={{display:"block", width: "35%",marginLeft: "auto", marginRight: "auto", marginTop: "250px"}}>
               <PacmanLoader
-
                   size={100}
                   height={30}
                   width={10}
@@ -86,13 +78,8 @@ class Login extends Component{
                   //size={"150px"} this also works
                   color={"#1DB954"}
                   loading={this.state.loading}
-                  />
-
-
-
+                  /></div>
           </Container>
-
-          </body>
             </div>
         )
     }
