@@ -4,7 +4,6 @@ import User from '../pages/user'
 import styles from '../pages/index.module.css'
 import Header from '../components/Header'
 
-//var firebase = require('firebase/app');
 var querystring = require('querystring');
 var request = require('request')
 var client_id = '2923d79235804ea58633989710346f3d';
@@ -22,45 +21,6 @@ class Spotify extends Component {
     }
 
   }
-
-
- 
-  /*componentWillMount= () => {
-    let url = window.location.href;
-    let access_token = '';
-    let refresh_token = '';
-    if (url.indexOf('code') > -1) {
-      let code = url.split('code=')[1].split("&")[0].trim();
-      var authOptions = {
-        url: 'https://accounts.spotify.com/api/token',
-        form: {
-          code: code,
-          redirect_uri: redirect_uri,
-          grant_type: 'authorization_code'
-        },
-        headers: {
-          'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
-        },
-        json: true
-      };
-
-      request.post(authOptions, (error, response, body) => {
-        if (!error && response.statusCode === 200) {
-          access_token = body.access_token,
-            refresh_token = body.refresh_token;
-          this.setState({
-            access_token: access_token,
-            refresh_token: refresh_token
-          });
-          Router.push({
-            pathname: '/user',
-            query: { access_token } //may be unnecessary
-          }, '/user'
-          )
-        }
-     })
-    }
-  }*/
 
   componentDidMount = () => {
     let url = window.location.href;
@@ -90,20 +50,12 @@ class Spotify extends Component {
 
           access_token = body.access_token,
             refresh_token = body.refresh_token;
+          window.sessionStorage.access_token = access_token;
           this.setState({
             access_token: access_token,
             refresh_token: refresh_token
           });
-          var options = {
-            url: 'https://api.spotify.com/v1/me',
-            headers: { 'Authorization': 'Bearer ' + access_token },
-            json: true
-          };
-
-          // use the access token to access the Spotify Web API
-          request.get(options, function (error, response, body) {
-            console.log(body);
-          });
+          Router.push({pathname: '/user'});
         }
       });
     }
@@ -134,19 +86,14 @@ class Spotify extends Component {
         });
     } else {
       Router.push({
-        pathname: '/user',
-        query: { access_token } //may be unnecessary
+        pathname: '/user'
       }, '/user'
       )
     }
   }
 
   render() {
-    const { access_token } = this.state
-
-    // if(access_token !== ''){
-    //     <User access_token={ this.state.access_token} />
-    // }
+    const { access_token } = this.state;
 
     return (
       <div className="background">

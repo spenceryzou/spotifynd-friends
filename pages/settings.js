@@ -10,6 +10,7 @@ import {Modal} from "react-bootstrap";
 import Image from 'react-bootstrap/Image'
 import Header from '../components/Header'
 import axios from 'axios';
+import Credentials from '../userdata/credentials'
 import { runInThisContext } from 'vm'
 import { Formik } from 'formik';
 
@@ -31,7 +32,7 @@ class Settings extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      access_token: this.props.query.access_token,
+      access_token: '',
       refresh_token: '',
       playlists: [],
       playlistTracks: [],
@@ -102,7 +103,7 @@ class Settings extends Component {
   componentDidMount = () => {
 
     //var userRef = firebase.database().ref("users/" + this.state.user + '/spotify_id')
-    if(!this.state.access_token){
+    if(!window.sessionStorage.access_token){
       Router.push({pathname: '/'})
     } else{
       this.getUserPlaylists();
@@ -162,12 +163,12 @@ class Settings extends Component {
         redirect_uri = 'http://localhost:3000/index'
     }
 
-    let access_token = this.state.access_token
+    let access_token = window.sessionStorage.access_token
 
     if (access_token != "") {
         var options = {
             url: 'https://api.spotify.com/v1/playlists/' + this.state.topPlaylist.id,
-            headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+            headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
             json: true
         };
 
@@ -231,7 +232,7 @@ class Settings extends Component {
     console.log(this.state.topPlaylist)
     var tracksOptions = {
         url: this.state.topPlaylist.tracks.href,
-        headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+        headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
         json: true
     };
 
@@ -280,13 +281,13 @@ assignPlaylistTracksName = async(items) => {
         var trackOptions = {
             method: 'GET',
             url: `https://api.spotify.com/v1/tracks/${id}`,
-            headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+            headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
             json: true
         };
         var audioFeaturesOptions = {
             method: 'GET',
             url: `https://api.spotify.com/v1/audio-features/${id}`,
-            headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+            headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
             json: true
         };
         await axios(audioFeaturesOptions)
@@ -312,7 +313,7 @@ assignPlaylistTracksName = async(items) => {
         var artistOptions = {
             method: 'GET',
             url: `https://api.spotify.com/v1/artists/${this.state.artistID[i]}`,
-            headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+            headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
             json: true
         };
         await axios(artistOptions)
@@ -421,7 +422,7 @@ assignPlaylistTracksName = async(items) => {
   }
 
   getUserPlaylists = () => {
-    let access_token = this.state.access_token
+    let access_token = window.sessionStorage.access_token
     var options = {
       url: 'https://api.spotify.com/v1/me',
       headers: { 'Authorization': 'Bearer ' + access_token },
@@ -461,7 +462,7 @@ assignPlaylistTracksName = async(items) => {
           if (userTopPlaylist != null) {
             var options = {
               url: 'https://api.spotify.com/v1/playlists/'+userTopPlaylist,
-              headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+              headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
               json: true
             };
 
@@ -613,7 +614,7 @@ assignPlaylistTracksName = async(items) => {
 
           `}</style>
 
-        <Header props={this.state.access_token} />
+        <Header props={''} />
         <head>
           <link
             rel="stylesheet"

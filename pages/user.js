@@ -39,12 +39,9 @@ const override = css`
 class User extends Component {
     constructor(props) {
         super(props);
-        if(!this.props.query.access_token){
-            Router.push({pathname: '/'})
-        }
         this.state = {
-            access_token: this.props.query.access_token,
-            refresh_token: '',
+            // access_token: window.sessionStorage.access_token,
+            // refresh_token: '',
             user: '',
             userImage: 'https://www.palmcityyachts.com/wp/wp-content/uploads/palmcityyachts.com/2015/09/default-profile.png',
             location: '',
@@ -357,7 +354,7 @@ class User extends Component {
             redirect_uri = 'http://localhost:3000/index'
         }
 
-        let access_token = this.state.access_token
+        let access_token = window.sessionStorage.access_token;
         var options = {
             url: 'https://api.spotify.com/v1/me',
             headers: { 'Authorization': 'Bearer ' + access_token },
@@ -734,13 +731,13 @@ class User extends Component {
             var trackOptions = {
                 method: 'GET',
                 url: `https://api.spotify.com/v1/tracks/${id}`,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
                 json: true
             };
             var audioFeaturesOptions = {
                 method: 'GET',
                 url: `https://api.spotify.com/v1/audio-features/${id}`,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
                 json: true
             };
             await axios(audioFeaturesOptions)
@@ -766,7 +763,7 @@ class User extends Component {
             var artistOptions = {
                 method: 'GET',
                 url: `https://api.spotify.com/v1/artists/${this.state.artistID[i]}`,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
                 json: true
             };
             await axios(artistOptions)
@@ -783,13 +780,13 @@ class User extends Component {
             var trackOptions = {
                 method: 'GET',
                 url: `https://api.spotify.com/v1/tracks/${id}`,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
                 json: true
             };
             var audioFeaturesOptions = {
                 method: 'GET',
                 url: `https://api.spotify.com/v1/audio-features/${id}`,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
                 json: true
             };
             await axios(audioFeaturesOptions)
@@ -812,7 +809,7 @@ class User extends Component {
             var artistOptions = {
                 method: 'GET',
                 url: `https://api.spotify.com/v1/artists/${this.state.top100artistID[j]}`,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
                 json: true
             };
             await axios(artistOptions)
@@ -1017,7 +1014,7 @@ class User extends Component {
         console.log(this.state.playlists[i])
         var tracksOptions = {
             url: this.state.playlists[i].tracks.href,
-            headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+            headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
             json: true
         };
 
@@ -1073,13 +1070,13 @@ class User extends Component {
             var trackOptions = {
                 method: 'GET',
                 url: `https://api.spotify.com/v1/tracks/${id}`,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
                 json: true
             };
             var audioFeaturesOptions = {
                 method: 'GET',
                 url: `https://api.spotify.com/v1/audio-features/${id}`,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
                 json: true
             };
             await axios(audioFeaturesOptions)
@@ -1105,7 +1102,7 @@ class User extends Component {
             var artistOptions = {
                 method: 'GET',
                 url: `https://api.spotify.com/v1/artists/${this.state.artistID[i]}`,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
                 json: true
             };
             await axios(artistOptions)
@@ -1153,7 +1150,7 @@ class User extends Component {
                 });
             }
         });
-        console.log("This is the new access_token" + this.state.access_token);
+        console.log("This is the new access_token" + window.sessionStorage.access_token);
     }
 
     get100 = () => {
@@ -1163,12 +1160,12 @@ class User extends Component {
             redirect_uri = 'http://localhost:3000/index'
         }
 
-        let access_token = this.state.access_token
+        let access_token = window.sessionStorage.access_token
 
         if (access_token != "") {
             var options = {
                 url: 'https://api.spotify.com/v1/playlists/' + top100,
-                headers: { 'Authorization': 'Bearer ' + this.state.access_token },
+                headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
                 json: true
             };
 
@@ -1200,7 +1197,7 @@ class User extends Component {
     };
 
     goToSettings = () => {
-        let access_token = this.state.access_token;
+        let access_token = window.sessionStorage.access_token;
         Router.push({
             pathname: '/settings',
             query: { access_token }
@@ -1210,7 +1207,7 @@ class User extends Component {
 
     goToProfile = (i) => {
         console.log(this.state.listOfUsers)
-        let access_token = this.state.access_token;
+        let access_token = window.sessionStorage.access_token;
         console.log(access_token)
         let user = this.state.listOfUserCompatibilities[i].value;
         console.log(user)
@@ -1968,7 +1965,7 @@ class User extends Component {
                   />
                   <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet" />
                 </head>
-                <Header props={this.state.access_token} />
+                <Header props={''} />
                 <div>
 
                     {/* <Button onClick= {()=>{this.handleModal()}}> open modal </Button>*/}
