@@ -6,19 +6,19 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import InputGroup from 'react-bootstrap/InputGroup'
 import { FormGroup, ControlLabel, FormControl, Card ,Container, Row, Col} from "react-bootstrap";
+import {Modal} from "react-bootstrap";
 import Image from 'react-bootstrap/Image'
 import Header from '../components/Header'
 import axios from 'axios';
 import { runInThisContext } from 'vm'
 import { Formik } from 'formik';
 
-
-
 var auth = require('firebase/auth');
 var database = require('firebase/database');
 var firebase = require('firebase/app');
 //var admin = require("firebase-admin");
 var redirect_uri;
+
 
 
 var querystring = require('querystring');
@@ -41,6 +41,7 @@ class Settings extends Component {
       location: 'no location set, please set on below',
       image: '',
       display:  null,
+      playlistUpdated: false,
       data: {
                 
         labels: [
@@ -180,6 +181,7 @@ class Settings extends Component {
     }
     this.getPlaylistTracks()
     console.log(this.state.playlisttracknames)
+    this.updatePlaylistStatus(true)
 
 
 
@@ -194,6 +196,7 @@ class Settings extends Component {
     console.log(this.state.image)
     //this.forceUpdate();
   }
+  
 
   getPlaylistTracks = () => {
     this.setState({data: {
@@ -237,8 +240,9 @@ class Settings extends Component {
         console.log(body);
         console.log('this.state.playlists' + this.state.topPlaylist)
         this.assignPlaylistTracksName(body.items);
-        
-    });
+
+      });
+      
 
 }
 
@@ -264,6 +268,8 @@ assignPlaylistTracksName = async(items) => {
     })
     //create arrays with selected playlist attributes
     for (let i = 0; i < this.state.playlisttracknames.length; i++) {
+      
+      
         var id = this.state.playlisttracknames[i].props.children;
         var trackOptions = {
             method: 'GET',
@@ -324,6 +330,8 @@ assignPlaylistTracksName = async(items) => {
         // The write failed...
       } else {
         console.log("Updated trackFeatures: ");
+       
+
       }
     }
   );
@@ -336,6 +344,12 @@ assignPlaylistTracksName = async(items) => {
 
 
 }
+
+
+  updatePlaylistStatus = (value) =>{
+
+    this.state.playlistUpdated = value;
+  }
 
   handleLocationChange = (event) => {
     //this.state.location = event.target.value;
@@ -378,10 +392,33 @@ assignPlaylistTracksName = async(items) => {
     );
   }
 
+  handleModal = () => {
+    this.setState({
+        playlistUpdated: !this.state.playlistUpdated
+    })
+}
 
 
 
 
+modalCheckPlaylist = (checkIfComplete) =>{
+
+
+  return(
+    <div>
+  <Modal show={checkIfComplete}  backdrop="static" keyboard={false} >
+  <Modal.Header > Hi {this.state.user}</Modal.Header>
+  <Modal.Body>
+      Please wait while your playlist is done being processed 
+
+  </Modal.Body>
+</Modal>
+
+</div>
+  )
+
+
+}
 
 
 
@@ -532,6 +569,18 @@ assignPlaylistTracksName = async(items) => {
   }
 
 
+  checkStatusPList = (boolVal) => {
+    if(boolVal == true){
+      {this.updatePlaylistStatus(false)}
+
+      
+    }
+    
+    return this.modalCheckPlaylist(this.state.playlistUpdated)
+
+  }
+
+
   render() {
     let playlists = this.state.playlists;
 
@@ -640,15 +689,35 @@ assignPlaylistTracksName = async(items) => {
                 </Form.Group>
 
                 <Form.Group controlId="exampleForm.ControlSelect2">
+                  
                   <Form.Label class="text-white">Select a new Playlist</Form.Label>
+                  
                   <Form.Control defaultValue={-1}
                     as="select"
+                    
                     onChange={this.handlePlaylistChange}
+                    
+                    
+                    
                     placeholder="select a playlist">
+                        
+                    {this.modalCheckPlaylist(this.state.playlistUpdated)}
+                    
+                    
                     <option disabled value={-1} key={-1}>Select a Playlist</option>
                     {formItems}
+                
+                    
+                  
+                
                   </Form.Control>
+                  
+                  
+                  
+                  
                 </Form.Group>
+
+                
 
                
 
