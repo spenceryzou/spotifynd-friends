@@ -740,10 +740,6 @@ assignPlaylistTracksName = async(items) => {
                   </Form.Control>
 
                   </InputGroup>
-
-
-                  <Button className="btn btn-primary btn-large centerButton"
-                  type="submit">Return Home</Button>
                   </Form.Group>
 
 
