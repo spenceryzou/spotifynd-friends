@@ -50,9 +50,8 @@ class Spotify extends Component {
           scope: scope,
           redirect_uri: redirect_uri,
           state: this.generateRandomString(16)
-          
+
         });
-    } 
   }
 
   render() {
@@ -73,7 +72,7 @@ class Spotify extends Component {
                     }
                 `}</style>
             <a className={styles.title}> spotifynd <br></br> friends</a>
-            
+
             <div>
               <button style={{fontFamily: 'Roboto'}} onClick={event => this.makeSpotifyProfileCall(event)} className={styles.button}>
               <i className={styles.iconspotify}></i>{access_token !== '' ? 'Enter' : 'Continue with Spotify'}

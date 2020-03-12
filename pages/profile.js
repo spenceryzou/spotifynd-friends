@@ -10,6 +10,7 @@ import DropdownButton from 'react-bootstrap/DropdownButton'
 import Image from 'react-bootstrap/Image'
 import { Doughnut } from 'react-chartjs-2';
 import 'chartjs-plugin-labels'
+import Footer from '../components/Footer'
 
 var auth = require('firebase/auth');
 var database = require('firebase/database');
@@ -81,27 +82,29 @@ class Profile extends Component {
         let url = window.location.href;
         var res = url.split("/");
 
-
-        // let access_token = this.state.access_token
-        // var options = {
-        //     url: 'https://api.spotify.com/v1/me',
-        //     headers: { 'Authorization': 'Bearer ' + access_token },
-        //     json: true
-        // };
-        // if (access_token != "") {
-        //     // use the access token to access the Spotify Web API
-        //     request.get(options, (error, response, body) => {
-        //         console.log('Access token:' + access_token)
-        //         console.log(body);
-        //         this.setState({ user: body.id })
-        //     });
-        // }
-        // this.getUserPlayer(this.state.user);
-
         this.setState({ user: res[4] })
         this.getUserPlayer(res[4]);
+        this.getURI(res[4]);
     }
 
+    getURI = (user) => {
+        let access_token = this.state.access_token
+        var options = {
+            url: 'https://api.spotify.com/v1/users/' + user,
+            headers: { 'Authorization': 'Bearer ' + access_token },
+            json: true
+        };
+        if (access_token != "") {
+            // use the access token to access the Spotify Web API
+            request.get(options, (error, response, body) => {
+                console.log('Access token:' + access_token)
+                console.log(body);
+                console.log(body.uri);
+                this.setState({ uri: body.uri })
+            });
+        }
+        console.log(this.state.uri);
+    }
 
     getUserPlayer = (user) => {
         var dbRef = firebase.database().ref('users')
@@ -143,7 +146,7 @@ class Profile extends Component {
             return (<div>
             <h1><b>{this.state.user}</b></h1>
                             
-             <a href={this.state.instagramUrl}  target="_blank" >{this.state.hasInstagram} </a> On Instagram </div> )
+             <a href={this.state.instagramUrl}  target="_blank" >{this.state.hasInstagram} </a> on Instagram </div> )
 
         }
 
@@ -170,6 +173,10 @@ class Profile extends Component {
         this.state.hasInstagram = "User hasn't linked their instagram"
         var instagramUser = this.state.instagram
 
+        let uri = this.state.uri;
+        console.log(uri);
+        let followURL = "https://open.spotify.com/follow/1/?uri=" + `${uri}` + "&size=detail&theme=dark";
+        console.log(followURL);
 
         if(instagramUser != ''){
 
@@ -234,21 +241,24 @@ class Profile extends Component {
                   <Container>
                                       
                   <Row>
-                            <Col md="auto" style={{paddingBottom: '20px'}}>
+                            <Col md="auto" style={{}}>
                                 <Image src={this.state.userImage} roundedCircle/>
                             </Col>
                             <Col style={{color: 'white', paddingBottom: '20px'}}>
 
-
+                            <Row>
                                 {this.checkIfInstagramLinked(this.state.instagram)}
-     
-                             
+                            </Row>
+                            <Row>
+                                <iframe src={'https://open.spotify.com/follow/1/?uri=' + `${uri}` + '&size=detail&theme=dark'
+                                } style={{border: 'none', overflow: 'hidden', allowtransparency: 'true', padding: '0px'}}
+                                ></iframe>
+                            </Row>
                                 
                             </Col>
+                            
                         </Row>
-          
-
-
+                
                     <Row>
                       <Col>
                         
@@ -282,72 +292,7 @@ class Profile extends Component {
                       {/* </div> */}
                   {/* </footer> */} 
 
-                  <footer className="footer">
-
-                    <div class="container-fluid text-center text-md-left">
-                        
-
-                        <div class="row">
-
-                            <div class="col-md-6 mt-md-0 mt-3">
-
-                                <h5 class="text-uppercase">Footer Content</h5>
-                                <p>Here you can use rows and columns to organize your footer content.</p>
-
-                            </div>
-
-                            <hr class="clearfix w-100 d-md-none pb-3"></hr>
-
-                            <div class="col-md-3 mb-md-0 mb-3">
-
-                                <h5 class="text-uppercase">Links</h5>
-
-                                <ul class="list-unstyled">
-                                <li>
-                                    <a href="#!">Link 1</a>
-                                </li>
-                                <li>
-                                    <a href="#!">Link 2</a>
-                                </li>
-                                <li>
-                                    <a href="#!">Link 3</a>
-                                </li>
-                                <li>
-                                    <a href="#!">Link 4</a>
-                                </li>
-                                </ul>
-
-                            </div>
-
-                            <div class="col-md-3 mb-md-0 mb-3">
-
-                                <h5 class="text-uppercase">Links</h5>
-
-                                <ul class="list-unstyled">
-                                <li>
-                                    <a href="#!">Link 1</a>
-                                </li>
-                                <li>
-                                    <a href="#!">Link 2</a>
-                                </li>
-                                <li>
-                                    <a href="#!">Link 3</a>
-                                </li>
-                                <li>
-                                    <a href="#!">Link 4</a>
-                                </li>
-                                </ul>
-
-                            </div>
-                
-                        </div>
-
-                    </div>
-                    <div class="footer-copyright text-center py-3">© 2020 Copyright:
-                        <a href="https://mdbootstrap.com/"> MDBootstrap.com</a>
-                    </div>
-
-                    </footer>
+                  <Footer />
         </html>
         )
 
@@ -356,3 +301,5 @@ class Profile extends Component {
 
 
 export default Profile;
+
+
