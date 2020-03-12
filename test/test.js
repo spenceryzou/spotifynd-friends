@@ -62,6 +62,18 @@ describe('<User />', () => {
     // afterEach(() => {
     //     componentDidMountStub.restore();
     // });
+
+    it('assignPlaylistTracksNames returns no playlists to display when items is empty', () => {
+        const wrapper = mount(comp);
+        const instance = wrapper.instance();
+        let items = [];
+        instance.assignPlaylistTracksName(items);
+        let state = wrapper.state().playlisttracknames;
+        console.log(state)
+        expect(wrapper.state().playlisttracknames.equal(<p>No playlists to display</p>));
+    })
+
+
     it('convertToInt returns array of same length as argument', () => {
         const wrapper = shallow(comp);
         const instance = wrapper.instance();
