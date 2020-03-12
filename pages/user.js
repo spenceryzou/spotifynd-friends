@@ -933,7 +933,7 @@ class User extends Component {
                             query: { access_token: access_token, user: i.value}} }
                             passHref>
                             <a target="_blank">
-                                <div className="profile-link" style={{color: 'white'}}>
+                                <div className="profile-link" style={{color: 'white', overflowY:'hidden', overflowX:'hidden'}}>
                                     {i.value}
                                 </div>
                             </a>
