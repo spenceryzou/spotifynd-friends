@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
+import Link from 'next/link'
 import { css } from "@emotion/core"
 import ScaleLoader from "react-spinners/ScaleLoader"
 import Header from '../components/Header'
@@ -9,6 +10,8 @@ import Image from 'react-bootstrap/Image'
 import { Doughnut } from 'react-chartjs-2';
 import 'chartjs-plugin-labels';
 import styles from './user.module.css';
+import {MdKeyboardBackspace} from 'react-icons/md'
+import Profile from './profile'
 
 var auth = require('firebase/auth');
 var database = require('firebase/database');
@@ -35,6 +38,7 @@ class User extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            access_token: '',
             user: '',
             userImage: 'https://www.palmcityyachts.com/wp/wp-content/uploads/palmcityyachts.com/2015/09/default-profile.png',
             location: '',
@@ -320,6 +324,7 @@ class User extends Component {
         }
 
         let access_token = window.sessionStorage.access_token;
+        this.setState({access_token})
         var options = {
             url: 'https://api.spotify.com/v1/me',
             headers: { 'Authorization': 'Bearer ' + access_token },
@@ -1163,6 +1168,17 @@ class User extends Component {
     }
 
     goToProfile = (i) => {
+        // let profile = (
+        //     <div className="modal">
+        //         <div className="modal_content">
+        //         <span className="close" onClick={this.handleClick}>&times;    </span>
+        //         <p>I'm A Pop Up!!!</p>
+        //         </div>
+        //     </div>
+        // );
+
+        // this.setState({profile: profile})
+
         console.log(this.state.listOfUsers)
         let access_token = window.sessionStorage.access_token;
         console.log(access_token)
@@ -1170,7 +1186,7 @@ class User extends Component {
         console.log(user)
         Router.push({
             pathname: '/profile',
-            query: { access_token },
+            query: { access_token, user },
         }, "/profile/" + user
         )
     }
@@ -1184,6 +1200,8 @@ class User extends Component {
     generateUserCompButtons = () => {
         // let list = this.convertToInt(this.state.listOfUserCompatibilities);
         let list = this.state.listOfUserCompatibilities;
+        // this.state.showCompData = true;
+        let access_token = this.state.access_token;
 
         let compButtons = list.map((i, index) =>
         <div className = 'usercard'>
@@ -1238,11 +1256,17 @@ class User extends Component {
 
                     </Col>
 
-                    <Col onClick={() => this.goToProfile(index) }  style={{fontSize: '1.1vw', paddingTop: '20px', whiteSpace: 'nowrap', overflowX: 'auto'}}>
-                        <div className="profile-link">
-                            {i.value}
-
-                        </div>
+                    <Col style={{fontSize: '1.1vw', paddingTop: '20px', whiteSpace: 'nowrap', overflowX: 'auto'}}>
+                        <Link href={{
+                            pathname: '/profile',
+                            query: { access_token: access_token, user: i.value}} }
+                            passHref>
+                            <a target="_blank">
+                                <div className="profile-link">
+                                    {i.value}
+                                </div>
+                            </a>
+                        </Link>
                         <div className = "usercardphoto">
                         <Image src={list[index].image} roundedCircle/>
                         </div>
@@ -1409,13 +1433,15 @@ class User extends Component {
 
     openNav() {
         // document.getElementById("mySidepanel").style.width = "250px";
-        this.setState({showPlaylists: true})
+        this.setState({showPlaylists: true,
+        showCompData: false})
     }
 
         /* Set the width of the sidebar to 0 (hide it) */
     closeNav() {
         // document.getElementById("mySidepanel").style.width = "0";
-        this.setState({showPlaylists: false})
+        this.setState({showPlaylists: false,
+        showCompData: true})
     }
 
     render() {
@@ -1668,7 +1694,9 @@ class User extends Component {
             if(!this.state.loading){
                 rightSide = (
                     <Col>
-                        <p style={{color: 'white', fontSize: '50pt'}}>Choose a playlist to find compatible users near you</p>
+                        <p style={{color: 'white', fontSize: '50pt'}}>Choose a playlist to find compatible users near you<br/>
+                        <MdKeyboardBackspace style={{color: 'white'}} size={150}/></p>
+                        <p></p>
                     </Col>
                 );
             }
@@ -1793,92 +1821,191 @@ class User extends Component {
 
         let compData;
         if(this.state.showCompData){
-            compData = (
-                <Col style={{width: '30vw', color: 'white'}}>
-                    <div className="sweet-loading">
-                        <ScaleLoader
-                            css={override}
-                            size={5}
-                            height={30}
-                            width={10}
-                            radius={5}
-                            //size={"150px"} this also works
-                            color={"#1DB954"}
-                            loading={this.state.loading}
-                            />
-                        </div>
-                        {/* <Col> */}
-                        <Row style={{textAlign: 'center'}}>
-                            <div style={{textAlign: 'center'}}>
-                                {status}
+            if(!this.state.hideCompData){
+                compData = (
+                    <Col style={{width: '30vw', color: 'white'}}>
+                        <div className="sweet-loading">
+                            <ScaleLoader
+                                css={override}
+                                size={5}
+                                height={30}
+                                width={10}
+                                radius={5}
+                                //size={"150px"} this also works
+                                color={"#1DB954"}
+                                loading={this.state.loading}
+                                />
                             </div>
-                            {message}
-                        </Row>
-                        {/* </Col>
-                        <Col> */}
-                        <Row style={{padding: '30px'}}>
-                            <Doughnut data={this.state.data}
-                                width={300}
-                                height={300}
-                                options={{
-                                    maintainAspectRatio: false,
-                                    plugins: {
-                                                labels: { render: 'label',
-                                                    fontColor: 'white'}
-                                    },
-                                    legend: {
-                                        display: false
-                                    }
-                                }}
-                                getElementsAtEvent={elems =>{
-                                    if(elems.length != 0){
-                                        if(elems[0]._index == 0){
-                                            console.log(elems[0]._index);
-                                            this.state.showDance = true;
-                                            this.state.showEnergy = false;
-                                            this.state.showAcoustic = false;
-                                            this.state.showLive = false;
-                                            this.state.showValence = false;
-                                            console.log('showDance: ' + this.state.showDance);
-                                            this.forceUpdate();
-                                        } else if(elems[0]._index == 1){
-                                            this.state.showDance = false;
-                                            this.state.showEnergy = true;
-                                            this.state.showAcoustic = false;
-                                            this.state.showLive = false;
-                                            this.state.showValence = false;
-                                            this.forceUpdate();
-                                        } else if(elems[0]._index == 2){
-                                            this.state.showDance = false;
-                                            this.state.showEnergy = false;
-                                            this.state.showAcoustic = true;
-                                            this.state.showLive = false;
-                                            this.state.showValence = false;
-                                            this.forceUpdate();
-                                        } else if(elems[0]._index == 3){
-                                            this.state.showDance = false;
-                                            this.state.showEnergy = false;
-                                            this.state.showAcoustic = false;
-                                            this.state.showLive = true;
-                                            this.state.showValence = false;
-                                            this.forceUpdate();
-                                        } else if(elems[0]._index == 4){
-                                            this.state.showDance = false;
-                                            this.state.showEnergy = false;
-                                            this.state.showAcoustic = false;
-                                            this.state.showLive = false;
-                                            this.state.showValence = true;
-                                            this.forceUpdate();
+                            {/* <Col> */}
+                            <Row style={{textAlign: 'center'}}>
+                                <div style={{textAlign: 'center'}}>
+                                    {status}
+                                </div>
+                                {message}
+                            </Row>
+                            {/* </Col>
+                            <Col> */}
+                            <Row style={{padding: '30px'}}>
+                                <Doughnut data={this.state.data}
+                                    width={300}
+                                    height={300}
+                                    options={{
+                                        maintainAspectRatio: false,
+                                        plugins: {
+                                                    labels: { render: 'label',
+                                                        fontColor: 'white'}
+                                        },
+                                        legend: {
+                                            display: false
                                         }
-                                    }
-                                }}
-                            />
+                                    }}
+                                    getElementsAtEvent={elems =>{
+                                        if(elems.length != 0){
+                                            if(elems[0]._index == 0){
+                                                console.log(elems[0]._index);
+                                                this.state.showDance = true;
+                                                this.state.showEnergy = false;
+                                                this.state.showAcoustic = false;
+                                                this.state.showLive = false;
+                                                this.state.showValence = false;
+                                                console.log('showDance: ' + this.state.showDance);
+                                                this.forceUpdate();
+                                            } else if(elems[0]._index == 1){
+                                                this.state.showDance = false;
+                                                this.state.showEnergy = true;
+                                                this.state.showAcoustic = false;
+                                                this.state.showLive = false;
+                                                this.state.showValence = false;
+                                                this.forceUpdate();
+                                            } else if(elems[0]._index == 2){
+                                                this.state.showDance = false;
+                                                this.state.showEnergy = false;
+                                                this.state.showAcoustic = true;
+                                                this.state.showLive = false;
+                                                this.state.showValence = false;
+                                                this.forceUpdate();
+                                            } else if(elems[0]._index == 3){
+                                                this.state.showDance = false;
+                                                this.state.showEnergy = false;
+                                                this.state.showAcoustic = false;
+                                                this.state.showLive = true;
+                                                this.state.showValence = false;
+                                                this.forceUpdate();
+                                            } else if(elems[0]._index == 4){
+                                                this.state.showDance = false;
+                                                this.state.showEnergy = false;
+                                                this.state.showAcoustic = false;
+                                                this.state.showLive = false;
+                                                this.state.showValence = true;
+                                                this.forceUpdate();
+                                            }
+                                        }
+                                    }}
+                                />
+                            </Row>
+                        <Row style={{color: 'white', paddingTop: '35px', paddingLeft: '100px'}}>
+                            {visibleList}
                         </Row>
-                    <Row style={{color: 'white', paddingTop: '35px', paddingLeft: '100px'}}>
-                        {visibleList}
-                    </Row>
-                </Col>
-            );
+                    </Col>
+            
+                );
+            } else {
+                console.log("hiding chart")
+                compData = (
+                <div>
+                    <style jsx>{`
+                        .comp-data{
+                            transition: '0.5s'
+                            x-index: '1200px'
+                        } 
+                    `}</style>
+                    <Col style={{width: '30vw', color: 'white'}} className="comp-data">
+                        <div className="sweet-loading">
+                            <ScaleLoader
+                                css={override}
+                                size={5}
+                                height={30}
+                                width={10}
+                                radius={5}
+                                //size={"150px"} this also works
+                                color={"#1DB954"}
+                                loading={this.state.loading}
+                                />
+                            </div>
+                            {/* <Col> */}
+                            <Row style={{textAlign: 'center'}}>
+                                <div style={{textAlign: 'center'}}>
+                                    {status}
+                                </div>
+                                {message}
+                            </Row>
+                            {/* </Col>
+                            <Col> */}
+                            <Row style={{padding: '30px'}}>
+                                <Doughnut data={this.state.data}
+                                    width={300}
+                                    height={300}
+                                    options={{
+                                        maintainAspectRatio: false,
+                                        plugins: {
+                                                    labels: { render: 'label',
+                                                        fontColor: 'white'}
+                                        },
+                                        legend: {
+                                            display: false
+                                        }
+                                    }}
+                                    getElementsAtEvent={elems =>{
+                                        if(elems.length != 0){
+                                            if(elems[0]._index == 0){
+                                                console.log(elems[0]._index);
+                                                this.state.showDance = true;
+                                                this.state.showEnergy = false;
+                                                this.state.showAcoustic = false;
+                                                this.state.showLive = false;
+                                                this.state.showValence = false;
+                                                console.log('showDance: ' + this.state.showDance);
+                                                this.forceUpdate();
+                                            } else if(elems[0]._index == 1){
+                                                this.state.showDance = false;
+                                                this.state.showEnergy = true;
+                                                this.state.showAcoustic = false;
+                                                this.state.showLive = false;
+                                                this.state.showValence = false;
+                                                this.forceUpdate();
+                                            } else if(elems[0]._index == 2){
+                                                this.state.showDance = false;
+                                                this.state.showEnergy = false;
+                                                this.state.showAcoustic = true;
+                                                this.state.showLive = false;
+                                                this.state.showValence = false;
+                                                this.forceUpdate();
+                                            } else if(elems[0]._index == 3){
+                                                this.state.showDance = false;
+                                                this.state.showEnergy = false;
+                                                this.state.showAcoustic = false;
+                                                this.state.showLive = true;
+                                                this.state.showValence = false;
+                                                this.forceUpdate();
+                                            } else if(elems[0]._index == 4){
+                                                this.state.showDance = false;
+                                                this.state.showEnergy = false;
+                                                this.state.showAcoustic = false;
+                                                this.state.showLive = false;
+                                                this.state.showValence = true;
+                                                this.forceUpdate();
+                                            }
+                                        }
+                                    }}
+                                />
+                            </Row>
+                        <Row style={{color: 'white', paddingTop: '35px', paddingLeft: '100px'}}>
+                            {visibleList}
+                        </Row>
+                    </Col>
+                </div>
+                );
+            }  
         } else if(this.state.loading){
             compData = (
                 <Col style={{width: '30vw', color: 'white'}}>

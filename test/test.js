@@ -66,6 +66,7 @@ describe('<Spotify />', () => {
     //     componentDidMountStub.restore();
     // });
 
+
     it('assignPlaylistTracksNames returns no playlists to display when items is empty', () => {
         const wrapper = mount(comp);
         const instance = wrapper.instance();
@@ -98,6 +99,7 @@ describe('<Spotify />', () => {
     // })
 })*/
 
+
 // describe('<User />', () => {
 //     let props = { query: { access_token: "" }}
 //     var comp = <User {...props} />;
@@ -114,6 +116,7 @@ describe('<Spotify />', () => {
 //         });
 //         describe('select button functional test for user.js', () => {
 //             it('functional test: produces correct compatibility score given demo playlists', async () => {
+
 //                 sinon.stub(component, 'getUserPlaylists').callsFake(function fakeFn() {
 //                     wrapper.setState({
 //                         playlists: [
@@ -190,6 +193,7 @@ describe('<Spotify />', () => {
 //                 })
 //             });
 //         })
+
 //     })
 
 

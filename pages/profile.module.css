@@ -1,0 +1,92 @@
+@font-face {
+    font-family: 'fontello';
+    src: url('../fontello/font/fontello.eot?33374067');
+    src: url('../fontello/font/fontello.eot?33374067#iefix') format('embedded-opentype'),
+         url('../fontello/font/fontello.woff2?33374067') format('woff2'),
+         url('../fontello/font/fontello.woff?33374067') format('woff'),
+         url('../fontello/font/fontello.ttf?33374067') format('truetype'),
+         url('../fontello/font/fontello.svg?33374067#fontello') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+  /* Chrome hack: SVG is rendered more smooth in Windozze. 100% magic, uncomment if you need it. */
+  /* Note, that will break hinting! In other OS-es font will be not as sharp as it could be */
+  /*
+  @media screen and (-webkit-min-device-pixel-ratio:0) {
+    @font-face {
+      font-family: 'fontello';
+      src: url('../font/fontello.svg?33374067#fontello') format('svg');
+    }
+  }
+  */
+   
+   .iconinstagram:before {
+    font-family: "fontello";
+    font-style: normal;
+    font-weight: normal;
+    speak: none;
+   
+    display: inline-block;
+    text-decoration: inherit;
+    width: 1em;
+    margin-right: .2em;
+    text-align: center;
+    /* opacity: .8; */
+   
+    /* For safety - reset parent styles, that can break glyph codes*/
+    font-variant: normal;
+    text-transform: none;
+   
+    /* fix buttons height, for twitter bootstrap */
+    line-height: 1em;
+   
+    /* Animation center compensation - margins should be symmetric */
+    /* remove if not needed */
+    margin-left: .2em;
+   
+    /* you can be more comfortable with increased icons size */
+    /* font-size: 120%; */
+   
+    /* Font smoothing. That was taken from TWBS */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+   
+    /* Uncomment for 3D effect */
+    /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+  }
+  .header{
+
+    font-family: "circular";
+  }
+  .button {
+    display: block;
+    color: white;
+    cursor: pointer;
+    line-height: 48px;
+    font-size: 14px;
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
+    text-align: center;
+    border-radius: 45px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: white;
+    border-image: initial;
+    background-color: rgba(255, 255, 255, 0);
+    outline: 0px;
+    padding: 20px;
+    font-size: 14px;
+    line-height: 1;
+    padding: 16px 48px 18px;
+    transition-property: background-color,border-color,color,box-shadow,filter,transform;
+    transition-duration: .3s;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.button:hover{
+    background-color: white;
+    box-shadow: 0px 15px 20px rgba(61, 61, 61, 0.4);
+    color: black;
+}
+  .iconinstagram:before { content: '\f16d'; } /* '' */
