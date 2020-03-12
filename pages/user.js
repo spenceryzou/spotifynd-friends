@@ -1718,8 +1718,12 @@ class User extends Component {
                 toggle = (
                     <Col md="auto">
                         <div id="mySidepanel" className="sidepanel" style={{width: '20vw'}}>
-                            <a className="closebtn" onClick={() => this.closeNav()} style={{color: 'white'}}>&times;</a>
-                            {playlists}
+                            <Row>
+                                <a className="closebtn" onClick={() => this.closeNav()} style={{color: 'white'}}>&times;</a>
+                            </Row>
+                            <Row style={{paddingTop: '20px', paddingRight: '20px'}}>
+                                <ul>{playlists}</ul>
+                            </Row>
                         </div>
                     </Col>
                 );
@@ -1784,8 +1788,8 @@ class User extends Component {
                             left:-10px;
                             bottom:-10px;
                             font-size: 36px;
-                            margin-left: 50px;
-                            margin-right: 15px;
+                            margin-right: 15%;
+                            margin-left: 80%;
                             margin-top: 5px;
                             text-align: right;
                             cursor: pointer;
