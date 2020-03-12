@@ -625,7 +625,7 @@ assignPlaylistTracksName = async(items) => {
         </head>
         <div>
 
-              <Modal show={this.state.playlistUpdated}  backdrop="static" keyboard={true} >
+              <Modal show={this.state.playlistUpdated}  backdrop="static" keyboard={false} >
               <Modal.Header > Hi {this.state.user}</Modal.Header>
               <Modal.Body>
                   Please wait while your playlist is done being processed
