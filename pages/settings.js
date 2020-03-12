@@ -4,11 +4,14 @@ import Dropdown from 'react-bootstrap/Dropdown'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import InputGroup from 'react-bootstrap/InputGroup'
 import { FormGroup, ControlLabel, FormControl, Card ,Container, Row, Col} from "react-bootstrap";
 import Image from 'react-bootstrap/Image'
 import Header from '../components/Header'
 import axios from 'axios';
 import { runInThisContext } from 'vm'
+import { Formik } from 'formik';
+
 
 
 var auth = require('firebase/auth');
@@ -34,6 +37,7 @@ class Settings extends Component {
       playlistTracks: [],
       playlisttracknames: [],
       topPlaylist: null,
+      instagram: '',
       location: 'no location set, please set on below',
       image: '',
       display:  null,
@@ -101,7 +105,13 @@ class Settings extends Component {
     } else{
       this.getUserPlaylists();
     }
+
+    
   }
+
+
+
+
 
   
 
@@ -305,7 +315,7 @@ assignPlaylistTracksName = async(items) => {
     firebase.database().ref('users/' + this.state.user).update({
       'trackFeatures': this.state.trackFeatures,
       'genres': this.state.genres,
-      'artistID': this.state.artistID,
+      //'artistID': this.state.artistID,
       'name': this.state.name,
       'artist': this.state.artist,
   
@@ -338,6 +348,50 @@ assignPlaylistTracksName = async(items) => {
     console.log("Location" + this.state.location)
     //this.forceUpdate();
   }
+
+
+  
+  handleInstagramChange = (event) => {
+    //this.state.location = event.target.value;
+    console.log(event.target.value)
+    this.setState({
+      instagram: event.target.value
+    })
+    this.writeUserInstagram(this.state.user, event.target.value)
+
+    console.log("Instagram" + this.state.instagram)
+    //this.forceUpdate();
+  }
+
+
+  writeUserInstagram = (userid, userInstagram) => {
+    firebase.database().ref('users/' + this.state.user).update({
+        'instagram': userInstagram,
+
+      }, function (error) {
+        if (error) {
+          // The write failed...
+        } else {
+          console.log("Updated Instagram: " + userInstagram);
+        }
+      }
+    );
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   setTopPlaylist = (data) => {
     console.log("in test")
@@ -372,11 +426,20 @@ assignPlaylistTracksName = async(items) => {
         if (snapshot.exists()) {
           const userLocation = snapshot.val().location;
           const userTopPlaylist = snapshot.val().topPlaylist;
+          const userInstagram = snapshot.val().instagram;
           console.log("exists!", userLocation);
           if (userLocation != null) {
             this.state.location = userLocation
             console.log(this.state.location)
           }
+          if(userInstagram != null){
+            this.state.instagram = userInstagram
+            console.log(this.state.instagram)
+
+          }
+          
+
+
           if (userTopPlaylist != null) {
             var options = {
               url: 'https://api.spotify.com/v1/playlists/'+userTopPlaylist,
@@ -472,6 +535,11 @@ assignPlaylistTracksName = async(items) => {
   render() {
     let playlists = this.state.playlists;
 
+    // const schema = yup.object({
+    //   instagram: yup.string().required(),
+    
+    // });
+
     let locations = ["Bay Area", "Orange County", "Santa Barbara", "Other"];
     let items2 = locations.map((i) =>
       <option
@@ -556,7 +624,10 @@ assignPlaylistTracksName = async(items) => {
           <Row >
 
           <Col>
-              <Form  >
+              <Form >
+                
+
+
                 <Form.Group controlId="exampleForm.ControlSelect1">
                   <Form.Label class="text-white"  >Set a new Location</Form.Label>
                   <Form.Control defaultValue={-1}
@@ -578,6 +649,48 @@ assignPlaylistTracksName = async(items) => {
                     {formItems}
                   </Form.Control>
                 </Form.Group>
+
+               
+
+                    
+                  <Form.Group role="form">
+                  <Form.Label class="text-white">Enter Instagram Username</Form.Label>
+
+                  <InputGroup className="mb-3">
+                <InputGroup.Prepend>
+              <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
+            </InputGroup.Prepend>
+
+                  
+                  <Form.Control  className="form-control"
+                  defaultValue={this.state.instagram = null ? -1 : this.state.instagram}
+                  as ="textarea"
+                  rows = "1"
+                  onChange ={this.handleInstagramChange}
+                  placeholder="Username" >
+                  </Form.Control>
+
+                  </InputGroup>
+
+
+                  <Button className="btn btn-primary btn-large centerButton" 
+                  type="submit">Return Home</Button>
+                  </Form.Group>
+                
+
+
+
+
+    
+                   
+
+
+                
+
+
+
+
+
               </Form>
               </Col>
           </Row>

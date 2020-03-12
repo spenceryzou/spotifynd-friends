@@ -1734,7 +1734,6 @@ class User extends Component {
                         <Card.Header>Playlists: </Card.Header>
                             <div className="overflow-auto" style={{  maxHeight:"480px" }}>
                         <Card.Body>
-                          {/* <Card.Title>Playlists:</Card.Title> */}
                           <Card.Text>
 
 
@@ -1749,6 +1748,7 @@ class User extends Component {
 
 
                       </Col>
+                      
                       <Col>
                         <Card bg="dark" style={{ height: '550px' }} text="white" >
                         <Card.Header>Compatible Users:</Card.Header>
@@ -1763,6 +1763,7 @@ class User extends Component {
                             </div>
                         </Card>
                       </Col>
+
                     </Row>
                     <Row>
                     <Col>
