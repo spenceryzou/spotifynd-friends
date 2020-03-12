@@ -74,7 +74,7 @@ describe('<User />', () => {
         instance.assignPlaylistTracksName(items);
         let state = wrapper.state().playlisttracknames;
         console.log(state)
-        expect(wrapper.state().playlisttracknames.equal(<p>No playlists to display</p>));
+        expect(wrapper.state().playlisttracknames.props.children).equal('No playlists to display');
     })
 
 
