@@ -31,15 +31,28 @@ react: library for building user interface
 
 react-dom: library, allows for manipulation of the DOM
 
-request: simplifies http call process
-
 react-bootstrap: front-end framework, built for react
 
 react-spinner: allows for a loading component
 
+request: simplifies http call process
+
 firebase: mobile application, development platform
 
 firebase-admin: allows for read and write to realtime database
+
+axios: allows for HTTP requests
+
+@babel/runtime:
+
+@emotion/core:
+
+bootstrap:
+
+chart.js: allows 
+
+chartjs-plugin-labels:
+
 
 ### Installation Steps
 
