@@ -124,9 +124,8 @@ class Profile extends Component {
 
             return (<div>
             <h1><b>{this.state.user}</b></h1>
-     
-                                     
-             <a href={this.state.instagramUrl}  target="_blank" >{this.state.hasInstagram}</a> </div> )
+                            
+             <a href={this.state.instagramUrl}  target="_blank" >{this.state.hasInstagram} </a> On Instagram </div> )
 
         }
 
@@ -215,10 +214,7 @@ class Profile extends Component {
                 <div>
                     
                   <Container>
-                      
-                  
-
-                
+                                      
                   <Row>
                             <Col md="auto" style={{paddingBottom: '20px'}}>
                                 <Image src={this.state.userImage} roundedCircle/>
