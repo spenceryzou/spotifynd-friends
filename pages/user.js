@@ -184,10 +184,14 @@ class User extends Component {
         dbRef.orderByValue().startAt(0).on("child_added", snapshot => {
             console.log('first');
             if(snapshot.exists() && snapshot.key == this.state.user){
-                this.setState({location: snapshot.child("location").val()})
+                this.setState({
+                    location: snapshot.child("location").val(),
+                    userImage: snapshot.child("image").val()
+                })
                 // console.log(this.state.location)
                 myLocation = snapshot.child("location").val();
                 console.log(myLocation);
+                console.log(this.state.userImage);
             }
         });
 
@@ -505,6 +509,7 @@ class User extends Component {
             var acousticNames = [];
             var liveNames = [];
             var valenceNames = [];
+            var image = ''
 
             var dbRef = firebase.database().ref('users')
 
@@ -514,6 +519,7 @@ class User extends Component {
                     otherTrackFeatures = snapshot.child("trackFeatures").val();
                     otherArtistID = snapshot.child("artistID").val();
                     otherGenres = snapshot.child("genres").val();
+                    image = snapshot.child("image").val();
                 }
             });
 
@@ -693,7 +699,8 @@ class User extends Component {
                 key: total,
                 value: key,
                 mostCompatibleIndex: mostCompatibleIndex,
-                max: max
+                max: max,
+                image: image
             };
 
             console.log(otherCompatibility);
@@ -1291,7 +1298,7 @@ class User extends Component {
 
                         </div>
                         <div className = "usercardphoto">
-                        <Image src={this.state.userImage} roundedCircle/>
+                        <Image src={list[index].image} roundedCircle/>
                         </div>
 
                     </Col>

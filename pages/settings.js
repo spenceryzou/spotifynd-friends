@@ -41,6 +41,7 @@ class Settings extends Component {
       instagram: '',
       location: 'no location set, please set on below',
       image: '',
+      userImage: '',
       display:  null,
       playlistUpdated: false,
       percentage:0,
@@ -109,14 +110,7 @@ class Settings extends Component {
       this.getUserPlaylists();
     }
 
-
   }
-
-
-
-
-
-
 
   writeUserLocation = (userid, userlocation) => {
     firebase.database().ref('users/' + this.state.user).update({
@@ -127,6 +121,20 @@ class Settings extends Component {
           // The write failed...
         } else {
           console.log("Updated location: " + userlocation);
+        }
+      }
+    );
+  }
+
+  writeUserImage = (userid, userImage) => {
+    firebase.database().ref('users/' + this.state.user).update({
+        'image': userImage,
+        
+      }, function (error) {
+        if (error) {
+          // The write failed...
+        } else {
+          console.log("Updated location: " + userImage);
         }
       }
     );
@@ -434,6 +442,12 @@ assignPlaylistTracksName = async(items) => {
       console.log('Access token:' + access_token)
       console.log(body);
       this.setState({ user: body.id })
+      if(body.images.length != 0){
+        this.setState({ userImage: body.images[0].url});
+        this.writeUserImage(body.id, body.images[0].url);
+      } else{
+        this.writeUserImage(body.id, 'https://www.palmcityyachts.com/wp/wp-content/uploads/palmcityyachts.com/2015/09/default-profile.png');
+      }
       console.log('user: ' + this.state.user)
 
       var dbRef = firebase.database().ref('users')
@@ -692,18 +706,10 @@ assignPlaylistTracksName = async(items) => {
 
                     onChange={this.handlePlaylistChange}
 
-
-
                     placeholder="select a playlist">
-
-
-
 
                     <option disabled value={-1} key={-1}>Select a Playlist</option>
                     {formItems}
-
-
-
 
                   </Form.Control>
 
