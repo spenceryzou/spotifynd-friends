@@ -951,7 +951,7 @@ class User extends Component {
 
 
         </div>
-        )
+        )//return
         return compButtons;
     }
 
