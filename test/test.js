@@ -7,6 +7,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Spotify from '../pages/index.js';
 import User from '../pages/user.js';
+
 var request = require('request')
 var axios = require('axios')
 const playlists = require('./fixtures/playlists.json');
@@ -26,6 +27,7 @@ describe('<Spotify />', () => {
         expect(wrapper.render().text()).to.contain('Enter');
     })
 });
+
 
 
 describe('<User />', () => {
@@ -94,20 +96,19 @@ describe('<User />', () => {
                 component.componentDidMount();
                 sinon.stub(component, 'comparePlaylists').callsFake(async function fakeFn1() {
                     console.log("clicked button")
-                    wrapper.setState({trackFeatures: playlists.playlist1.success.body.trackFeatures,
-                                      artistID: playlists.playlist1.success.body.artistID,
-                                      artist: playlists.playlist1.success.body.artist, 
-                                      name: playlists.playlist1.success.body.name,
-                                      genres: playlists.playlist1.success.body.genres,
-                                      top100trackFeatures: playlists.playlist2.success.body.trackFeatures,
-                                      top100artistID: playlists.playlist2.success.body.artistID,
-                                      top100artist: playlists.playlist2.success.body.artist,
-                                      top100name: playlists.playlist2.success.body.name,
-                                      top100genres: playlists.playlist2.success.body.genres
+                    wrapper.setState({      
+                        trackFeatures: playlists.playlist1.success.body.trackFeatures,
+                        artistID: playlists.playlist1.success.body.artistID,
+                        genres: playlists.playlist1.success.body.genres,
+                        playlisttracknames: playlists.playlist1.success.body.name,
+                        otherTrackFeatures: playlists.playlist2.success.body.trackFeatures,
+                        otherArtistID: playlists.playlist2.success.body.artistID,
+                        otherGenres: playlists.playlist2.success.body.genres,
+                        otherLength: 3
                                     })
                     wrapper.setState({status: "Calculating score"})
-                    var key = 'null'
-                    let compatibility = component.calculateScore(key)
+                    var key = ' '
+                    let compatibility = component.calculateUserScore(key)
                         wrapper.setState({compatibility: compatibility,
                             loading: false});
                     console.log(wrapper.state().compatibility)
@@ -121,5 +122,58 @@ describe('<User />', () => {
             });
         })
     })
+
+
+// describe('<User />', () => {
+//     let props = { query: { access_token: "" }}
+//     var comp = <User {...props} />;
+//     describe('when stubbed', () => {
+//         const wrapper = mount(comp);
+//         const component = wrapper.instance()
+//         let callback;
+//         beforeEach(() => {
+//             callback = sinon.stub(request, 'get')
+//             callback.onCall(0).yields(null, { statusCode: 200 },{href: "https://api.spotify.com/v1/playlists/2wqFuQ1MKD050WqGKbnv70/tracks?offset=0&limit=100", items: [{ track: { id: '0nbXyq5TXYPCO7pr3N8S4I' } }, { track: { id: '6RRNNciQGZEXnqk8SQ9yv5' } }, { track: { id: '14LnbVqMEasGX48zJsPrvG' } }], limit: 100, next: null, offset: 0})
+//         });
+//         afterEach(() => {
+//             callback.restore();
+//         });
+//         describe('select button functional test for user.js', () => {
+//             it('functional test: produces correct compatibility score given demo playlists', async () => {
+        
+              
+//                 component.componentDidMount();
+//                 sinon.stub(component, 'compareWithOtherUser').callsFake(async function fakeFn1() {
+//                     console.log("clicked button")
+//                     wrapper.setState({
+                                      
+//                                       trackFeatures: playlists.playlist1.success.body.trackFeatures,
+//                                       artistID: playlists.playlist1.success.body.artistID,
+//                                       genres: playlists.playlist1.success.body.genres,
+//                                       playlisttracknames: playlists.playlist1.success.body.name,
+//                                       otherTrackFeatures: playlists.playlist2.success.body.trackFeatures,
+//                                       otherArtistID: playlists.playlist2.success.body.artistID,
+//                                       otherGenres: playlists.playlist2.success.body.genres,
+//                                       otherLength: 3
+                                      
+//                                     })
+//                     wrapper.setState({status: "Calculating score"})
+//                     var key = 'null'
+//                     let compatibility =  component.calculateUserScore(key)
+//                         wrapper.setState({listOfUserCompatibilities: this.state.listOfUserCompatibilities.concat(compatibility),
+//                             loading: false});
+//                             expect(wrapper.state().listOfUserCompatibilities).to.equal(64);
+
+//                     console.log(wrapper.state().compatibility)
+//                 })
+//                 // wrapper.find('.click').prop('onClick')()               
+//                 // let listOfUserCompatibilities = await Promise.resolve(wrapper.state().listOfUserCompatibilities)
+//                 // wrapper.setState({listOfUserCompatibilities: listOfUserCompatibilities})
+//                 //expect(wrapper.state().listOfUserCompatibilities).to.equal(64);
+//                 //expect(wrapper.render().text()).to.contain('64');
+//                 })
+//             });
+//        })
+//     })
 
 
