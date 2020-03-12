@@ -58,6 +58,9 @@ describe('<User />', () => {
         User.prototype.componentDidMount = () => {
 
         }
+        User.prototype.get100 = () => {
+            
+        }
     });
     // afterEach(() => {
     //     componentDidMountStub.restore();
