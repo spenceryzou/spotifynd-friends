@@ -52,6 +52,7 @@ class Spotify extends Component {
           state: this.generateRandomString(16)
 
         });
+    }
   }
 
   render() {
