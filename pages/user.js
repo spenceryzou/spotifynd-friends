@@ -134,9 +134,6 @@ class User extends Component {
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig)
         }
-        console.log(firebase)
-
-
     }
     getData = () => ({
         labels: [
