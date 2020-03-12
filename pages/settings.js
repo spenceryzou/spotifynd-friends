@@ -43,7 +43,7 @@ class Settings extends Component {
       display:  null,
       playlistUpdated: false,
       data: {
-                
+
         labels: [
             'Dancibility',
             'Energy',
@@ -75,7 +75,7 @@ class Settings extends Component {
     artistID: [],
     name: [],
     artist: [],
-      
+
     }
     const firebaseConfig = {
       apiKey: "AIzaSyCBmjWVAetSGAQ2E7uE0oh5_lG--ogkWbc",
@@ -107,14 +107,14 @@ class Settings extends Component {
       this.getUserPlaylists();
     }
 
-    
+
   }
 
 
 
 
 
-  
+
 
   writeUserLocation = (userid, userlocation) => {
     firebase.database().ref('users/' + this.state.user).update({
@@ -149,6 +149,7 @@ class Settings extends Component {
   }
 
   handlePlaylistChange = async(event) => {
+
     let playlist = this.state.playlists.find(p => p.name === event.target.value)
     console.log("value: " + event.target.value)
     console.log("playlist: " + playlist.name)
@@ -181,7 +182,7 @@ class Settings extends Component {
     }
     this.getPlaylistTracks()
     console.log(this.state.playlisttracknames)
-    this.updatePlaylistStatus(true)
+    this.updatePlaylistStatus();
 
 
 
@@ -196,7 +197,7 @@ class Settings extends Component {
     console.log(this.state.image)
     //this.forceUpdate();
   }
-  
+
 
   getPlaylistTracks = () => {
     this.setState({data: {
@@ -242,7 +243,7 @@ class Settings extends Component {
         this.assignPlaylistTracksName(body.items);
 
       });
-      
+
 
 }
 
@@ -264,12 +265,12 @@ assignPlaylistTracksName = async(items) => {
         artistID: [],
         name: [],
         artist: []
-        
+
     })
     //create arrays with selected playlist attributes
     for (let i = 0; i < this.state.playlisttracknames.length; i++) {
-      
-      
+
+
         var id = this.state.playlisttracknames[i].props.children;
         var trackOptions = {
             method: 'GET',
@@ -288,7 +289,7 @@ assignPlaylistTracksName = async(items) => {
                 this.setState({ trackFeatures: [...this.state.trackFeatures, body.data] })
                 console.log(this.state.trackFeatures);
             });
-  
+
         await axios(trackOptions)
             .then((body) => {
                 if (body.data.artists != 0) {
@@ -324,16 +325,20 @@ assignPlaylistTracksName = async(items) => {
       //'artistID': this.state.artistID,
       'name': this.state.name,
       'artist': this.state.artist,
-  
-    }, function (error) {
+
+    }, (error) => {
       if (error) {
         // The write failed...
       } else {
         console.log("Updated trackFeatures: ");
-       
+        this.handleModal();
+        // this.setState({
+        //   playlistUpdated: false
+        // })
 
       }
     }
+
   );
 
 
@@ -346,9 +351,11 @@ assignPlaylistTracksName = async(items) => {
 }
 
 
-  updatePlaylistStatus = (value) =>{
+  updatePlaylistStatus = () =>{
+    this.setState({
+      playlistUpdated: !this.state.updatePlaylistStatus
+    })
 
-    this.state.playlistUpdated = value;
   }
 
   handleLocationChange = (event) => {
@@ -364,7 +371,7 @@ assignPlaylistTracksName = async(items) => {
   }
 
 
-  
+
   handleInstagramChange = (event) => {
     //this.state.location = event.target.value;
     console.log(event.target.value)
@@ -391,37 +398,6 @@ assignPlaylistTracksName = async(items) => {
       }
     );
   }
-
-  handleModal = () => {
-    this.setState({
-        playlistUpdated: !this.state.playlistUpdated
-    })
-}
-
-
-
-
-modalCheckPlaylist = (checkIfComplete) =>{
-
-
-  return(
-    <div>
-  <Modal show={checkIfComplete}  backdrop="static" keyboard={false} >
-  <Modal.Header > Hi {this.state.user}</Modal.Header>
-  <Modal.Body>
-      Please wait while your playlist is done being processed 
-
-  </Modal.Body>
-</Modal>
-
-</div>
-  )
-
-
-}
-
-
-
 
 
 
@@ -474,7 +450,7 @@ modalCheckPlaylist = (checkIfComplete) =>{
             console.log(this.state.instagram)
 
           }
-          
+
 
 
           if (userTopPlaylist != null) {
@@ -569,16 +545,13 @@ modalCheckPlaylist = (checkIfComplete) =>{
   }
 
 
-  checkStatusPList = (boolVal) => {
-    if(boolVal == true){
-      {this.updatePlaylistStatus(false)}
 
-      
-    }
-    
-    return this.modalCheckPlaylist(this.state.playlistUpdated)
-
+  handleModal = () => {
+    this.setState({
+        playlistUpdated: !this.state.playlistUpdated
+    })
   }
+
 
 
   render() {
@@ -586,7 +559,7 @@ modalCheckPlaylist = (checkIfComplete) =>{
 
     // const schema = yup.object({
     //   instagram: yup.string().required(),
-    
+
     // });
 
     let locations = ["Bay Area", "Orange County", "Santa Barbara", "Other"];
@@ -650,7 +623,19 @@ modalCheckPlaylist = (checkIfComplete) =>{
           <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet" />
 
         </head>
+        <div>
+
+              <Modal show={this.state.playlistUpdated}  backdrop="static" keyboard={true} >
+              <Modal.Header > Hi {this.state.user}</Modal.Header>
+              <Modal.Body>
+                  Please wait while your playlist is done being processed
+
+              </Modal.Body>
+            </Modal>
+
+              </div>
         <div >
+
         <Container className= "testclasss">
           <Row>
             <Col>
@@ -674,7 +659,7 @@ modalCheckPlaylist = (checkIfComplete) =>{
 
           <Col>
               <Form >
-                
+
 
 
                 <Form.Group controlId="exampleForm.ControlSelect1">
@@ -689,39 +674,39 @@ modalCheckPlaylist = (checkIfComplete) =>{
                 </Form.Group>
 
                 <Form.Group controlId="exampleForm.ControlSelect2">
-                  
+
                   <Form.Label class="text-white">Select a new Playlist</Form.Label>
-                  
+
                   <Form.Control defaultValue={-1}
                     as="select"
-                    
+
                     onChange={this.handlePlaylistChange}
-                    
-                    
-                    
+
+
+
                     placeholder="select a playlist">
-                        
-                    {this.modalCheckPlaylist(this.state.playlistUpdated)}
-                    
-                    
+
+
+
+
                     <option disabled value={-1} key={-1}>Select a Playlist</option>
                     {formItems}
-                
-                    
-                  
-                
+
+
+
+
                   </Form.Control>
-                  
-                  
-                  
-                  
+
+
+
+
                 </Form.Group>
 
-                
 
-               
 
-                    
+
+
+
                   <Form.Group role="form">
                   <Form.Label class="text-white">Enter Instagram Username</Form.Label>
 
@@ -730,7 +715,7 @@ modalCheckPlaylist = (checkIfComplete) =>{
               <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
             </InputGroup.Prepend>
 
-                  
+
                   <Form.Control  className="form-control"
                   defaultValue={this.state.instagram = null ? -1 : this.state.instagram}
                   as ="textarea"
@@ -742,19 +727,19 @@ modalCheckPlaylist = (checkIfComplete) =>{
                   </InputGroup>
 
 
-                  <Button className="btn btn-primary btn-large centerButton" 
+                  <Button className="btn btn-primary btn-large centerButton"
                   type="submit">Return Home</Button>
                   </Form.Group>
-                
 
 
 
 
-    
-                   
 
 
-                
+
+
+
+
 
 
 
