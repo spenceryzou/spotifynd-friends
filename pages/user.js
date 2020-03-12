@@ -6,7 +6,8 @@ import Header from '../components/Header'
 import {Modal,Button, Container, Row, Col, Card} from "react-bootstrap";
 import Image from 'react-bootstrap/Image'
 import { Doughnut } from 'react-chartjs-2';
-import 'chartjs-plugin-labels'
+import 'chartjs-plugin-labels';
+import styles from './user.module.css';
 
 var auth = require('firebase/auth');
 var database = require('firebase/database');
@@ -22,6 +23,12 @@ var client_secret = 'd4813d196edf4940b58ba0aeedbf9ebc';
 var redirect_uri = 'https://spotifynd-friends.herokuapp.com/';
 var scope = 'user-read-private user-read-email playlist-read-private';
 var top100 = '5tNkbVArsyCoI4NeO4QpCx';
+
+/*const clickLink = {
+    cursor: 'pointer',
+    color: 'white',
+    hover: {color: 'green'}
+  };*/
 
 const override = css`
   display: block;
@@ -798,9 +805,13 @@ class User extends Component {
             status = ''
             message = `These playlists are ${this.state.compatibility}% compatible!`
             message += "\n" + this.state.name[this.state.mostCompatibleIndex] + " by " + this.state.artist[this.state.mostCompatibleIndex] + ` is the most compatible song by ${this.state.max}%.`
-                details = <Button onClick={() => this.setState({data: this.getData()})} variant="success">
+                /*details = <Button onClick={() => this.setState({data: this.getData()})} variant="success">
                     Details
-                </Button>
+                </Button>*/
+                details =
+                <a className = {styles.clickLink} onClick={() => this.setState({data: this.getData()})}>
+                Details
+                </a>
         }
 
 
