@@ -303,9 +303,7 @@ class User extends Component {
 
 
     componentDidMount = () => {
-        
         this.getUserPlaylists();
-        this.get100();
     }
 
 
@@ -935,7 +933,7 @@ class User extends Component {
                             query: { access_token: access_token, user: i.value}} }
                             passHref>
                             <a target="_blank">
-                                <div className="profile-link">
+                                <div className="profile-link" style={{color: 'white'}}>
                                     {i.value}
                                 </div>
                             </a>
