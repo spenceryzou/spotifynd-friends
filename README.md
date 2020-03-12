@@ -43,15 +43,15 @@ firebase-admin: allows for read and write to realtime database
 
 axios: allows for HTTP requests
 
-@babel/runtime:
+@babel/runtime: library that contains runtime helpers
 
-@emotion/core:
+@emotion/core: library for css styles with JavaScript
 
-bootstrap:
+bootstrap: front-end component library
 
-chart.js: allows 
+chart.js: library allowing for different type of charts
 
-chartjs-plugin-labels:
+chartjs-plugin-labels: allows for chart.js to display percentages
 
 
 ### Installation Steps
