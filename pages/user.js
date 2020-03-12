@@ -1025,7 +1025,7 @@ class User extends Component {
             //TAKING OUT TOP 50 TEST
             //this.comparePlaylists();
 
-
+            this.closeNav();
             this.getSelectedPlaylist();
 
         });
@@ -1119,7 +1119,9 @@ class User extends Component {
 
         this.setState({
             showOtherUsers: true,
-            beforeSelection: false
+            beforeSelection: false,
+            showPlaylists: false,
+            showCompData: true
         })
 
     }
@@ -1234,7 +1236,8 @@ class User extends Component {
                 }
                 .profile-link{
                   text-align: center;
-
+                    font-size: 1.25vw;
+                    overflow-x: auto;
                 }
                 .usercard{
                   padding-bottom: 30px;
@@ -1274,7 +1277,7 @@ class User extends Component {
 
                     </Col>
 
-                    <Col onClick={() => this.goToProfile(index) } style={{fontSize: 'medium', paddingTop: '20px'}}>
+                    <Col onClick={() => this.goToProfile(index) }  style={{fontSize: '1.1vw', paddingTop: '20px', whiteSpace: 'nowrap', overflowX: 'auto'}}>
                         <div className="profile-link">
                             {i.value}
 
@@ -1377,8 +1380,8 @@ class User extends Component {
                 </Col>
                 <Col>
                     <Doughnut data={this.state.data}
-                        width={500}
-                        height={500}
+                        width={300}
+                        height={300}
                         options={{
                             maintainAspectRatio: false,
                             plugins: {
@@ -1517,11 +1520,11 @@ class User extends Component {
 
         }
 
-        let userDetailsChart;
-        if(this.state.showChart){
-            console.log("generating chart");
-            userDetailsChart = this.generateUserChart();
-        }
+        // let userDetailsChart;
+        // if(this.state.showChart){
+        //     console.log("generating chart");
+        //     userDetailsChart = this.generateUserChart();
+        // }
 
 
         this.assigntop100tracknames();
@@ -1531,7 +1534,12 @@ class User extends Component {
         if (this.state.compatibility < 0) {
             message = ''
         } else if ((this.state.compatibility) == 'generating') {
-            message = `Generating compatibility. Status:`
+            if(this.state.loading){
+                // message = `Generating compatibility. Status:`
+                message = '';
+            } else{
+                message = '';
+            }
             status = `${this.state.status}`
         } else if (this.state.compatibility > 0) {
             status = ''
@@ -1686,11 +1694,13 @@ class User extends Component {
                 </Card>
                 </Col>
             );
-            rightSide = (
-                <Col>
-                    <p style={{color: 'white', fontSize: '50pt'}}>Choose a playlist to find compatible users near you</p>
-                </Col>
-            );
+            if(!this.state.loading){
+                rightSide = (
+                    <Col>
+                        <p style={{color: 'white', fontSize: '50pt'}}>Choose a playlist to find compatible users near you</p>
+                    </Col>
+                );
+            }
         } else{
             let toggle;
             if(this.state.showPlaylists){
@@ -1791,7 +1801,7 @@ class User extends Component {
             );
             rightSide = (
                 <Col>
-                    <Card bg="dark" style={{ height: '550px' }} text="white" >
+                    <Card bg="dark" style={{ height: '550px', width: '35vw' }} text="white" >
                     <Card.Header>Compatible Users:</Card.Header>
                     <div className="overflow-auto" style={{  maxHeight:"480px" }}>
 
@@ -1805,6 +1815,116 @@ class User extends Component {
                 </Col>
             );
         }
+
+        let compData;
+        if(this.state.showCompData){
+            compData = (
+                <Col style={{width: '30vw', color: 'white'}}>
+                    <div className="sweet-loading">
+                        <ScaleLoader
+                            css={override}
+                            size={5}
+                            height={30}
+                            width={10}
+                            radius={5}
+                            //size={"150px"} this also works
+                            color={"#1DB954"}
+                            loading={this.state.loading}
+                            />
+                        </div>
+                        {/* <Col> */}
+                        <Row>
+                            {status}
+                            {message}
+                        </Row>
+                        {/* </Col>
+                        <Col> */}
+                        <Row style={{padding: '30px'}}>
+                            <Doughnut data={this.state.data}
+                                width={300}
+                                height={300}
+                                options={{
+                                    maintainAspectRatio: false,
+                                    plugins: {
+                                                labels: { render: 'label',
+                                                    fontColor: 'white'}
+                                    },
+                                    legend: {
+                                        display: false
+                                    }
+                                }}
+                                getElementsAtEvent={elems =>{
+                                    if(elems.length != 0){
+                                        if(elems[0]._index == 0){
+                                            console.log(elems[0]._index);
+                                            this.state.showDance = true;
+                                            this.state.showEnergy = false;
+                                            this.state.showAcoustic = false;
+                                            this.state.showLive = false;
+                                            this.state.showValence = false;
+                                            console.log('showDance: ' + this.state.showDance);
+                                            this.forceUpdate();
+                                        } else if(elems[0]._index == 1){
+                                            this.state.showDance = false;
+                                            this.state.showEnergy = true;
+                                            this.state.showAcoustic = false;
+                                            this.state.showLive = false;
+                                            this.state.showValence = false;
+                                            this.forceUpdate();
+                                        } else if(elems[0]._index == 2){
+                                            this.state.showDance = false;
+                                            this.state.showEnergy = false;
+                                            this.state.showAcoustic = true;
+                                            this.state.showLive = false;
+                                            this.state.showValence = false;
+                                            this.forceUpdate();
+                                        } else if(elems[0]._index == 3){
+                                            this.state.showDance = false;
+                                            this.state.showEnergy = false;
+                                            this.state.showAcoustic = false;
+                                            this.state.showLive = true;
+                                            this.state.showValence = false;
+                                            this.forceUpdate();
+                                        } else if(elems[0]._index == 4){
+                                            this.state.showDance = false;
+                                            this.state.showEnergy = false;
+                                            this.state.showAcoustic = false;
+                                            this.state.showLive = false;
+                                            this.state.showValence = true;
+                                            this.forceUpdate();
+                                        }
+                                    }
+                                }}
+                            />
+                        </Row>
+                    <Row style={{color: 'white', paddingTop: '35px', paddingLeft: '100px'}}>
+                        {visibleList}
+                    </Row>
+                </Col>
+            );
+        } else if(this.state.loading){
+            compData = (
+                <Col style={{width: '30vw', color: 'white'}}>
+                    <div className="sweet-loading">
+                        <ScaleLoader
+                            css={override}
+                            size={5}
+                            height={30}
+                            width={10}
+                            radius={5}
+                            //size={"150px"} this also works
+                            color={"#1DB954"}
+                            loading={this.state.loading}
+                            />
+                    </div>
+                    <Row>
+                        {status}
+                        {message}
+                    </Row>
+                </Col>
+            );
+        }
+
         return (
             <html>
                 <div className="testclass">
@@ -1876,33 +1996,17 @@ class User extends Component {
                             </Col>
                         </Row>
                     <Row>
-                      {leftSide}
-                      {rightSide}
-
+                        {leftSide}
+                        {rightSide}
+                        {compData}
+                        
 
 
                     </Row>
                     <Row>
-                    <Col>
-                      <div className="sweet-loading">
-                        <ScaleLoader
-                            css={override}
-                            size={5}
-                            height={30}
-                            width={10}
-                            radius={5}
-                            //size={"150px"} this also works
-                            color={"#1DB954"}
-                            loading={this.state.loading}
-                            />
-                        </div>
-                        <div style={{paddingTop: '20px', color: 'white'}}>
-                            <p>{message}</p>
-                            <p>{status}</p>
-                        </div>
-                      </Col>
+                    
                     </Row>
-                    <Row>
+                    {/* <Row>
                         <Col>
                             <div style={{paddingTop: '150px!important'}}>
                                 <Doughnut data={this.state.data}
@@ -1966,7 +2070,7 @@ class User extends Component {
                         <Col style={{color: 'white', paddingTop: '35px', paddingLeft: '100px'}}>
                             {visibleList}
                         </Col>
-                    </Row>
+                    </Row> */}
                     {/* <Row>
                         {userDetailsChart}
                     </Row> */}

@@ -80,6 +80,24 @@ class Profile extends Component {
     componentDidMount = () => {
         let url = window.location.href;
         var res = url.split("/");
+
+
+        // let access_token = this.state.access_token
+        // var options = {
+        //     url: 'https://api.spotify.com/v1/me',
+        //     headers: { 'Authorization': 'Bearer ' + access_token },
+        //     json: true
+        // };
+        // if (access_token != "") {
+        //     // use the access token to access the Spotify Web API
+        //     request.get(options, (error, response, body) => {
+        //         console.log('Access token:' + access_token)
+        //         console.log(body);
+        //         this.setState({ user: body.id })
+        //     });
+        // }
+        // this.getUserPlayer(this.state.user);
+
         this.setState({ user: res[4] })
         this.getUserPlayer(res[4]);
     }
