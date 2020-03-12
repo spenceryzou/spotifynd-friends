@@ -3,6 +3,7 @@ import Router from 'next/router'
 import { css } from "@emotion/core"
 import ScaleLoader from "react-spinners/ScaleLoader"
 import Header from '../components/Header'
+import Footer from '../components/Footer'
 import {Modal,Button, Container, Row, Col, Card, Carousel} from "react-bootstrap";
 import Image from 'react-bootstrap/Image'
 import { Doughnut } from 'react-chartjs-2';
@@ -183,10 +184,14 @@ class User extends Component {
         dbRef.orderByValue().startAt(0).on("child_added", snapshot => {
             console.log('first');
             if(snapshot.exists() && snapshot.key == this.state.user){
-                this.setState({location: snapshot.child("location").val()})
+                this.setState({
+                    location: snapshot.child("location").val(),
+                    userImage: snapshot.child("image").val()
+                })
                 // console.log(this.state.location)
                 myLocation = snapshot.child("location").val();
                 console.log(myLocation);
+                console.log(this.state.userImage);
             }
         });
 
@@ -504,6 +509,7 @@ class User extends Component {
             var acousticNames = [];
             var liveNames = [];
             var valenceNames = [];
+            var image = ''
 
             var dbRef = firebase.database().ref('users')
 
@@ -513,6 +519,7 @@ class User extends Component {
                     otherTrackFeatures = snapshot.child("trackFeatures").val();
                     otherArtistID = snapshot.child("artistID").val();
                     otherGenres = snapshot.child("genres").val();
+                    image = snapshot.child("image").val();
                 }
             });
 
@@ -692,7 +699,8 @@ class User extends Component {
                 key: total,
                 value: key,
                 mostCompatibleIndex: mostCompatibleIndex,
-                max: max
+                max: max,
+                image: image
             };
 
             console.log(otherCompatibility);
@@ -1290,7 +1298,7 @@ class User extends Component {
 
                         </div>
                         <div className = "usercardphoto">
-                        <Image src={this.state.userImage} roundedCircle/>
+                        <Image src={list[index].image} roundedCircle/>
                         </div>
 
                     </Col>
@@ -1381,8 +1389,10 @@ class User extends Component {
         // + ` is the most compatible song by ${this.state.max}%.`
         return (
             <Row>
-                <Col>
-                    {status}
+                <Col style={{textAlign: 'center'}}>
+                    <div style={{textAlign: 'center'}}>
+                        {status}
+                    </div>
                     {message}
                 </Col>
                 <Col>
@@ -1504,7 +1514,15 @@ class User extends Component {
                     </div>
                 )
             } else {
-                playlists = <p>No user to choose from</p>
+                playlists = (
+                <div>
+                    <p>No users to compare with...</p>
+                    <p>Please go to Settings to change location or top playlist</p>
+                    <Button onClick= {()=>{this.goToSettings()}} variant="light">
+                          Settings
+                    </Button>
+                </div>
+                )
             }
         }
 
@@ -1715,8 +1733,12 @@ class User extends Component {
                 toggle = (
                     <Col md="auto">
                         <div id="mySidepanel" className="sidepanel" style={{width: '20vw'}}>
-                            <a className="closebtn" onClick={() => this.closeNav()} style={{color: 'white'}}>&times;</a>
-                            {playlists}
+                            <Row>
+                                <a className="closebtn" onClick={() => this.closeNav()} style={{color: 'white'}}>&times;</a>
+                            </Row>
+                            <Row style={{paddingTop: '20px', paddingRight: '20px'}}>
+                                <ul>{playlists}</ul>
+                            </Row>
                         </div>
                     </Col>
                 );
@@ -1781,8 +1803,8 @@ class User extends Component {
                             left:-10px;
                             bottom:-10px;
                             font-size: 36px;
-                            margin-left: 50px;
-                            margin-right: 15px;
+                            margin-right: 15%;
+                            margin-left: 80%;
                             margin-top: 5px;
                             text-align: right;
                             cursor: pointer;
@@ -1840,8 +1862,10 @@ class User extends Component {
                             />
                         </div>
                         {/* <Col> */}
-                        <Row>
-                            {status}
+                        <Row style={{textAlign: 'center'}}>
+                            <div style={{textAlign: 'center'}}>
+                                {status}
+                            </div>
                             {message}
                         </Row>
                         {/* </Col>
@@ -1924,8 +1948,10 @@ class User extends Component {
                             loading={this.state.loading}
                             />
                     </div>
-                    <Row>
-                        {status}
+                    <Row style={{textAlign: 'center'}}>
+                        <div style={{textAlign: 'center'}}>
+                            {status}
+                        </div>
                         {message}
                     </Row>
                 </Col>
@@ -2096,72 +2122,7 @@ class User extends Component {
                         </Col> */}
                       {/* </div> */}
                   {/* </footer> */}
-
-                  <footer className="footer">
-
-                    <div class="container-fluid text-center text-md-left">
-
-                        <div class="row">
-
-                            <div class="col-md-6 mt-md-0 mt-3">
-
-                                <h5 class="text-uppercase">Footer Content</h5>
-                                <p>Here you can use rows and columns to organize your footer content.</p>
-
-                            </div>
-
-                            <hr class="clearfix w-100 d-md-none pb-3"></hr>
-
-                            <div class="col-md-3 mb-md-0 mb-3">
-
-                                <h5 class="text-uppercase">Links</h5>
-
-                                <ul class="list-unstyled">
-                                <li>
-                                    <a href="#!">Link 1</a>
-                                </li>
-                                <li>
-                                    <a href="#!">Link 2</a>
-                                </li>
-                                <li>
-                                    <a href="#!">Link 3</a>
-                                </li>
-                                <li>
-                                    <a href="#!">Link 4</a>
-                                </li>
-                                </ul>
-
-                            </div>
-
-                            <div class="col-md-3 mb-md-0 mb-3">
-
-                                <h5 class="text-uppercase">Links</h5>
-
-                                <ul class="list-unstyled">
-                                <li>
-                                    <a href="#!">Link 1</a>
-                                </li>
-                                <li>
-                                    <a href="#!">Link 2</a>
-                                </li>
-                                <li>
-                                    <a href="#!">Link 3</a>
-                                </li>
-                                <li>
-                                    <a href="#!">Link 4</a>
-                                </li>
-                                </ul>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-                    <div class="footer-copyright text-center py-3">© 2020 Copyright:
-                        <a href="https://mdbootstrap.com/"> MDBootstrap.com</a>
-                    </div>
-
-                    </footer>
+                  <Footer />
         </html>
         )
     }
