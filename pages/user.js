@@ -1391,6 +1391,7 @@ class User extends Component {
                     <Col md="auto">
                         <button className="openbtn" onClick={() => this.openNav()}>
                             &#9776;
+                            <span className="tooltiptext">Playlists</span>
                         </button>
                     </Col>
                 );
@@ -1465,6 +1466,24 @@ class User extends Component {
 
                         .openbtn:hover {
                             background-color: #444;
+                        }
+
+                        .openbtn:hover .tooltiptext{
+                            visibility: visible;
+                        }
+
+                        .openbtn .tooltiptext{
+                            visibility: hidden;
+                            width: 120px;
+                            background-color: black;
+                            color: #fff;
+                            text-align: center;
+                            padding: 5px 0;
+                            border-radius: 6px;
+                            
+                            /* Position the tooltip text - see examples below! */
+                            position: absolute;
+                            z-index: 1;
                         }
                     `}
                     </style>
