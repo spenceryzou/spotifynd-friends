@@ -42,7 +42,7 @@ class Settings extends Component {
       image: '',
       display:  null,
       playlistUpdated: false,
-      percentage:'',
+      percentage:0,
       data: {
 
         labels: [
@@ -270,6 +270,7 @@ assignPlaylistTracksName = async(items) => {
     })
     //create arrays with selected playlist attributes
     var plstL = this.state.playlisttracknames.length - 1;
+    this.state.percentage = 0;
     for (let i = 0; i < this.state.playlisttracknames.length; i++) {
       this.state.percentage = (i/plstL)*100
       this.state.percentage = this.state.percentage.toFixed(1)
@@ -561,10 +562,6 @@ assignPlaylistTracksName = async(items) => {
   render() {
     let playlists = this.state.playlists;
 
-    // const schema = yup.object({
-    //   instagram: yup.string().required(),
-
-    // });
 
     let locations = ["Bay Area", "Orange County", "Santa Barbara", "Other"];
     let items2 = locations.map((i) =>
