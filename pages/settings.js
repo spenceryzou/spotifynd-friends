@@ -42,6 +42,7 @@ class Settings extends Component {
       image: '',
       display:  null,
       playlistUpdated: false,
+      percentage:'',
       data: {
 
         labels: [
@@ -268,7 +269,10 @@ assignPlaylistTracksName = async(items) => {
 
     })
     //create arrays with selected playlist attributes
+    var plstL = this.state.playlisttracknames.length - 1;
     for (let i = 0; i < this.state.playlisttracknames.length; i++) {
+      this.state.percentage = (i/plstL)*100
+      this.state.percentage = this.state.percentage.toFixed(1)
 
 
         var id = this.state.playlisttracknames[i].props.children;
@@ -629,6 +633,7 @@ assignPlaylistTracksName = async(items) => {
               <Modal.Header > Hi {this.state.user}</Modal.Header>
               <Modal.Body>
                   Please wait while your playlist is done being processed
+                  <p>{this.state.percentage}% Done</p>
 
               </Modal.Body>
             </Modal>
