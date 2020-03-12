@@ -3,7 +3,7 @@ import Router from 'next/router'
 import { css } from "@emotion/core"
 import ScaleLoader from "react-spinners/ScaleLoader"
 import Header from '../components/Header'
-import {Modal,Button, Container, Row, Col, Card} from "react-bootstrap";
+import {Modal,Button, Container, Row, Col, Card, Carousel} from "react-bootstrap";
 import Image from 'react-bootstrap/Image'
 import { Doughnut } from 'react-chartjs-2';
 import 'chartjs-plugin-labels';
@@ -92,6 +92,8 @@ class User extends Component {
             show: false,
             showOtherUsers: false,
             showChart: false,
+            beforeSelection: true,
+            showPlaylists: true,
             data: {
 
                 labels: [
@@ -1030,7 +1032,7 @@ class User extends Component {
             //TAKING OUT TOP 50 TEST
             //this.comparePlaylists();
 
-
+            this.closeNav();
             this.getSelectedPlaylist();
 
         });
@@ -1122,13 +1124,14 @@ class User extends Component {
             this.compareWithOtherUser(this.state.listOfUsers[i]);
         }
 
-
         this.setState({
-            showOtherUsers: true
+            showOtherUsers: true,
+            beforeSelection: false,
+            showPlaylists: false,
+            showCompData: true
         })
 
     }
-
 
     refresh = () => {
         var authOptions = {
@@ -1184,8 +1187,6 @@ class User extends Component {
         }
     }
 
-
-
     assigntop100tracknames = () => {
         if (typeof (this.state.playlistTracks) != 'undefined') {
             if (this.state.playlistTracks != 0) {
@@ -1226,95 +1227,81 @@ class User extends Component {
         })
     }
 
-    // setUserData = (ind) => {
-    //     let compList = this.state.listOfUserCompatabilities;
-    //     let danceCount = compList[ind].danceCount;
-    //     let energyCount = compList[ind].energyCount;
-    //     let acousticCount = compList[ind].acousticCount;
-    //     let liveCount = compList[ind].liveCount;
-    //     let valenceCount = compList[ind].valenceCount;
-    //     this.setState({data: {
-    //         labels: [
-    //             'Dancibility',
-    //             'Energy',
-    //             'Acousticness',
-    //             'Liveness',
-    //             'Valence'
-    //         ],
-    //         datasets: [{
-    //             hidden: false,
-    //             data: [danceCount,energyCount, acousticCount, liveCount, valenceCount],
-    //             backgroundColor: [
-    //                 '#66c2a4',
-    //                 '#41ae76',
-    //                 '#238b45',
-    //                 '#006d2c',
-    //                 '#00441b'
-    //                 ],
-    //                 hoverBackgroundColor: [
-    //                 '#edf8fb',
-    //                 '#edf8fb',
-    //                 '#edf8fb',
-    //                 '#edf8fb',
-    //                 '#edf8fb'
-    //                 ]
-    //         }]
-    //     },
-    //     compatibility: list[ind].key,
-    //     mostCompatibleIndex: list[ind].mostCompatibleIndex,
-    //     max: list[ind].max
-
-    //     })
-    // }
-
-    // generateUserCompButtons = () => {
-
-    //     let list = this.convertToInt(this.state.listOfUserCompatibilities);
-
-    //     let compButtons = list.map((i, index) =>
-    //         <li>
-    //             <Row>
-    //                 <Col>
-    //                     {i.value}
-    //                 </Col>
-    //                 <Col>
-    //                     <Button className="button" onClick={() => this.setOtherUsersDetails(index)} size="sm">
-    //                         Details
-    //                     </Button>
-    //                 </Col>
-    //             </Row>
-    //         </li>
-    //     )
-    //     return compButtons;
-    // }
-
     generateUserCompButtons = () => {
         // let list = this.convertToInt(this.state.listOfUserCompatibilities);
         let list = this.state.listOfUserCompatibilities;
 
         let compButtons = list.map((i, index) =>
-            <div>
-                <style jsx>{`
-                    .profile-link:hover{
-                        color: #1ed760;
-                        cursor: pointer;
-                    }
-                `}</style>
-                <li>
-                    <Row>
-                        <Col onClick={() => this.goToProfile(index) }>
-                            <div className="profile-link">
-                                {i.value}
+        <div className = 'usercard'>
+
+            <style jsx>{`
+
+                .profile-link:hover{
+                    color: #1ed760;
+                    cursor: pointer;
+
+                }
+                .profile-link{
+                  text-align: center;
+                    font-size: 1.25vw;
+                    overflow-x: auto;
+                }
+                .usercard{
+                  padding-bottom: 30px;
+
+                }
+                .usercardphoto{
+                  text-align: center;
+                }
+                .percent{
+                  padding-left: 50px;
+                  padding-top:10px;
+                  font-size:120px ;
+                }
+                .percent:hover{
+                    color: #1ed760;
+                    cursor: pointer;
+
+
+                }
+                .cardimage-top{
+                  object-fit:cover;
+                }
+
+            `}</style>
+
+
+              <Card border="dark" style={{ height: '200px'}} text="white">
+              <Card.Img className = "cardimage" src="https://media.gettyimages.com/photos/colorful-clouds-on-dramatic-sunset-sky-picture-id888845986?b=1&k=6&m=888845986&s=612x612&w=0&h=IyxUtRdQEQGV-DwLn9HaGJdhZRGZFVg3vXcefQRrIqI=" alt="Card image" style={{ height: '200px'}}/>
+              <Card.ImgOverlay>
+                <Row>
+
+                    <Col onClick={() => this.setOtherUsersDetails(index)} >
+
+                        <div className = 'percent' >
+                            {Math.round(i.key)}
                             </div>
-                        </Col>
-                        <Col>
-                            <Button className="button" onClick={() => this.setOtherUsersDetails(index)} size="sm">
-                                Details
-                            </Button>
-                        </Col>
-                    </Row>
-                </li>
-            </div>
+
+                    </Col>
+
+                    <Col onClick={() => this.goToProfile(index) }  style={{fontSize: '1.1vw', paddingTop: '20px', whiteSpace: 'nowrap', overflowX: 'auto'}}>
+                        <div className="profile-link">
+                            {i.value}
+
+                        </div>
+                        <div className = "usercardphoto">
+                        <Image src={this.state.userImage} roundedCircle/>
+                        </div>
+
+                    </Col>
+
+
+                  </Row>
+                   </Card.ImgOverlay>
+                </Card>
+
+
+        </div>
         )
         return compButtons;
     }
@@ -1400,8 +1387,8 @@ class User extends Component {
                 </Col>
                 <Col>
                     <Doughnut data={this.state.data}
-                        width={500}
-                        height={500}
+                        width={300}
+                        height={300}
                         options={{
                             maintainAspectRatio: false,
                             plugins: {
@@ -1464,6 +1451,17 @@ class User extends Component {
         this.convertToInt(this.state.listOfUserCompatibilities);
     }
 
+    openNav() {
+        // document.getElementById("mySidepanel").style.width = "250px";
+        this.setState({showPlaylists: true})
+    }
+
+        /* Set the width of the sidebar to 0 (hide it) */
+    closeNav() {
+        // document.getElementById("mySidepanel").style.width = "0";
+        this.setState({showPlaylists: false})
+    }
+
     render() {
         let playlists;
         if (typeof (this.state.playlists) != 'undefined') {
@@ -1471,18 +1469,14 @@ class User extends Component {
                 playlists = this.state.playlists.map((i, index) =>
 
                 <div>
-                    <li>
                     <Row>
-
                         <Col>
                         <Button className = "button" onClick={() => this.getPlaylistTracks(index)} variant="success" size="sm">
                             {i.name}
                         </Button>
 
                         </Col>
-                        </Row>
-
-                        </li>
+                    </Row>
                     </div>
                 )
             } else {
@@ -1533,11 +1527,11 @@ class User extends Component {
 
         }
 
-        let userDetailsChart;
-        if(this.state.showChart){
-            console.log("generating chart");
-            userDetailsChart = this.generateUserChart();
-        }
+        // let userDetailsChart;
+        // if(this.state.showChart){
+        //     console.log("generating chart");
+        //     userDetailsChart = this.generateUserChart();
+        // }
 
 
         this.assigntop100tracknames();
@@ -1547,7 +1541,12 @@ class User extends Component {
         if (this.state.compatibility < 0) {
             message = ''
         } else if ((this.state.compatibility) == 'generating') {
-            message = `Generating compatibility. Status:`
+            if(this.state.loading){
+                // message = `Generating compatibility. Status:`
+                message = '';
+            } else{
+                message = '';
+            }
             status = `${this.state.status}`
         } else if (this.state.compatibility > 0) {
             status = ''
@@ -1663,6 +1662,276 @@ class User extends Component {
             );
         }
 
+        let playlistsBox = (
+            <Col xs={6}>
+                <Card style={{ height: '550px', backgroundColor: '#121212' }} text="white" >
+                    <Card.Header>Playlists: </Card.Header>
+                        <div className="overflow-auto" style={{  maxHeight:"480px" }}>
+                    <Card.Body>
+                        <Card.Text>
+
+
+                            <ul>{playlists}</ul>
+
+                        </Card.Text>
+                    </Card.Body>
+                        </div>
+                </Card>
+            </Col>
+        );
+
+        let leftSide;
+        let rightSide;
+        if(this.state.beforeSelection){
+            leftSide = (
+                // {playlistsBox}
+                <Col>
+                <Card style={{ height: '550px', backgroundColor: '#121212' }} text="white" >
+                    <Card.Header>Playlists: </Card.Header>
+                        <div className="overflow-auto" style={{  maxHeight:"480px" }}>
+                    <Card.Body>
+                        <Card.Text>
+
+
+                            <ul>{playlists}</ul>
+
+                        </Card.Text>
+                    </Card.Body>
+                        </div>
+                </Card>
+                </Col>
+            );
+            if(!this.state.loading){
+                rightSide = (
+                    <Col>
+                        <p style={{color: 'white', fontSize: '50pt'}}>Choose a playlist to find compatible users near you</p>
+                    </Col>
+                );
+            }
+        } else{
+            let toggle;
+            if(this.state.showPlaylists){
+                console.log("toggle true")
+                toggle = (
+                    <Col md="auto">
+                        <div id="mySidepanel" className="sidepanel" style={{width: '20vw'}}>
+                            <a className="closebtn" onClick={() => this.closeNav()} style={{color: 'white'}}>&times;</a>
+                            {playlists}
+                        </div>
+                    </Col>
+                );
+            } else{
+                console.log("toggle false")
+                toggle = (
+                    <Col md="auto">
+                        <button className="openbtn" onClick={() => this.openNav()}>
+                            &#9776;
+                        </button>
+                    </Col>
+                );
+            }
+
+            leftSide = (
+                <Col md="auto">
+                    <style jsx> {`
+                         /* The sidepanel menu */
+                        .sidepanel {
+                            // height: 250px; /* Specify a height */
+                            // width: 0; /* 0 width - change this with JavaScript */
+                            // position: fixed; /* Stay in place */
+                            // z-index: 1; /* Stay on top */
+                            // top: 0;
+                            // left: 0;
+                            // background-color: #111; /* Black*/
+                            // overflow-x: hidden; /* Disable horizontal scroll */
+                            // padding-top: 60px; /* Place content 60px from the top */
+                            // transition: 0.5s; /* 0.5 second transition effect to slide in the sidepanel */
+
+                            border: 3px solid black;
+                            padding: 15px;
+                            background-color: #111;
+                            // width: 50%;
+                            height: 75vh;
+                            position: -webkit-sticky;
+                            position: sticky;
+                            top: 0;
+                            overflow-y: scroll;
+                        }
+
+                         /* The sidepanel links */
+                        .sidepanel a {
+                            padding: 8px 8px 8px 32px;
+                            text-decoration: none;
+                            font-size: 25px;
+                            color: #818181;
+                            display: block;
+                            transition: 0.3s;
+                        }
+
+                         /* When you mouse over the navigation links, change their color */
+                        .sidepanel a:hover {
+                            color: #f1f1f1;
+                        }
+
+                         /* Position and style the close button (top right corner) */
+                        .sidepanel .closebtn {
+                            position: absolute;
+                            top:-10px;
+                            right:-10px;
+                            left:-10px;
+                            bottom:-10px;
+                            font-size: 36px;
+                            margin-left: 50px;
+                            margin-right: 15px;
+                            margin-top: 5px;
+                            text-align: right;
+                            cursor: pointer;
+                        }
+
+                         /* Style the button that is used to open the sidepanel */
+                        .openbtn {
+                            font-size: 20px;
+                            cursor: pointer;
+                            background-color: #111;
+                            color: white;
+                            padding: 10px 15px;
+                            border: none;
+                        }
+
+                        .openbtn:hover {
+                            background-color: #444;
+                        }
+                    `}
+                    </style>
+                        {toggle}
+                </Col>
+            );
+            rightSide = (
+                <Col>
+                    <Card bg="dark" style={{ height: '550px', width: '35vw' }} text="white" >
+                    <Card.Header>Compatible Users:</Card.Header>
+                    <div className="overflow-auto" style={{  maxHeight:"480px" }}>
+
+                        <Card.Body>
+                            <Card.Text>
+                                {userCompButtons}
+                            </Card.Text>
+                        </Card.Body>
+                        </div>
+                    </Card>
+                </Col>
+            );
+        }
+
+        let compData;
+        if(this.state.showCompData){
+            compData = (
+                <Col style={{width: '30vw', color: 'white'}}>
+                    <div className="sweet-loading">
+                        <ScaleLoader
+                            css={override}
+                            size={5}
+                            height={30}
+                            width={10}
+                            radius={5}
+                            //size={"150px"} this also works
+                            color={"#1DB954"}
+                            loading={this.state.loading}
+                            />
+                        </div>
+                        {/* <Col> */}
+                        <Row>
+                            {status}
+                            {message}
+                        </Row>
+                        {/* </Col>
+                        <Col> */}
+                        <Row style={{padding: '30px'}}>
+                            <Doughnut data={this.state.data}
+                                width={300}
+                                height={300}
+                                options={{
+                                    maintainAspectRatio: false,
+                                    plugins: {
+                                                labels: { render: 'label',
+                                                    fontColor: 'white'}
+                                    },
+                                    legend: {
+                                        display: false
+                                    }
+                                }}
+                                getElementsAtEvent={elems =>{
+                                    if(elems.length != 0){
+                                        if(elems[0]._index == 0){
+                                            console.log(elems[0]._index);
+                                            this.state.showDance = true;
+                                            this.state.showEnergy = false;
+                                            this.state.showAcoustic = false;
+                                            this.state.showLive = false;
+                                            this.state.showValence = false;
+                                            console.log('showDance: ' + this.state.showDance);
+                                            this.forceUpdate();
+                                        } else if(elems[0]._index == 1){
+                                            this.state.showDance = false;
+                                            this.state.showEnergy = true;
+                                            this.state.showAcoustic = false;
+                                            this.state.showLive = false;
+                                            this.state.showValence = false;
+                                            this.forceUpdate();
+                                        } else if(elems[0]._index == 2){
+                                            this.state.showDance = false;
+                                            this.state.showEnergy = false;
+                                            this.state.showAcoustic = true;
+                                            this.state.showLive = false;
+                                            this.state.showValence = false;
+                                            this.forceUpdate();
+                                        } else if(elems[0]._index == 3){
+                                            this.state.showDance = false;
+                                            this.state.showEnergy = false;
+                                            this.state.showAcoustic = false;
+                                            this.state.showLive = true;
+                                            this.state.showValence = false;
+                                            this.forceUpdate();
+                                        } else if(elems[0]._index == 4){
+                                            this.state.showDance = false;
+                                            this.state.showEnergy = false;
+                                            this.state.showAcoustic = false;
+                                            this.state.showLive = false;
+                                            this.state.showValence = true;
+                                            this.forceUpdate();
+                                        }
+                                    }
+                                }}
+                            />
+                        </Row>
+                    <Row style={{color: 'white', paddingTop: '35px', paddingLeft: '100px'}}>
+                        {visibleList}
+                    </Row>
+                </Col>
+            );
+        } else if(this.state.loading){
+            compData = (
+                <Col style={{width: '30vw', color: 'white'}}>
+                    <div className="sweet-loading">
+                        <ScaleLoader
+                            css={override}
+                            size={5}
+                            height={30}
+                            width={10}
+                            radius={5}
+                            //size={"150px"} this also works
+                            color={"#1DB954"}
+                            loading={this.state.loading}
+                            />
+                    </div>
+                    <Row>
+                        {status}
+                        {message}
+                    </Row>
+                </Col>
+            );
+        }
+
         return (
             <html>
                 <div className="testclass">
@@ -1734,65 +2003,17 @@ class User extends Component {
                             </Col>
                         </Row>
                     <Row>
-                      <Col>
+                        {leftSide}
+                        {rightSide}
+                        {compData}
+                        
 
-
-                        <Card style={{ height: '550px', backgroundColor: '#121212' }} text="white" >
-                        <Card.Header>Playlists: </Card.Header>
-                            <div className="overflow-auto" style={{  maxHeight:"480px" }}>
-                        <Card.Body>
-                          <Card.Text>
-
-
-                              <ul>{playlists}</ul>
-
-                          </Card.Text>
-                        </Card.Body>
-                          </div>
-                      </Card>
-
-
-
-
-                      </Col>
-                      
-                      <Col>
-                        <Card bg="dark" style={{ height: '550px' }} text="white" >
-                        <Card.Header>Compatible Users:</Card.Header>
-                        <div className="overflow-auto" style={{  maxHeight:"480px" }}>
-
-                            <Card.Body>
-                              <Card.Text>
-                                  {/* <ul >{list_ofUsers}</ul> */}
-                                  <ul>{userCompButtons}</ul>
-                              </Card.Text>
-                            </Card.Body>
-                            </div>
-                        </Card>
-                      </Col>
 
                     </Row>
                     <Row>
-                    <Col>
-                      <div className="sweet-loading">
-                        <ScaleLoader
-                            css={override}
-                            size={5}
-                            height={30}
-                            width={10}
-                            radius={5}
-                            //size={"150px"} this also works
-                            color={"#1DB954"}
-                            loading={this.state.loading}
-                            />
-                        </div>
-                        <div style={{paddingTop: '20px', color: 'white'}}>
-                            <p>{message}</p>
-                            <p>{status}</p>
-                        </div>
-                      </Col>
+                    
                     </Row>
-                    <Row>
+                    {/* <Row>
                         <Col>
                             <div style={{paddingTop: '150px!important'}}>
                                 <Doughnut data={this.state.data}
@@ -1856,7 +2077,7 @@ class User extends Component {
                         <Col style={{color: 'white', paddingTop: '35px', paddingLeft: '100px'}}>
                             {visibleList}
                         </Col>
-                    </Row>
+                    </Row> */}
                     {/* <Row>
                         {userDetailsChart}
                     </Row> */}
