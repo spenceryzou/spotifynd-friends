@@ -102,6 +102,11 @@
     transform: translateY(-3px);
 }
 
+.navbar{
+  font-family: "circular";
+
+}
+
 
 .title {
     font-family: "circular";
