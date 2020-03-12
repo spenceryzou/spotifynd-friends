@@ -120,7 +120,7 @@
     background-size: 150%;
     background-repeat: no-repeat;
     background-image: url("/Layer8full.png");
-    background-position: -700px -550px;
+    background-position: -700px -450px;
     z-index: -1;
     -webkit-animation: bouncein 2s; /* Safari, Chrome and Opera > 12.1 */
     -moz-animation: bouncein 2s; /* Firefox < 16 */
