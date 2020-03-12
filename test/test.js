@@ -52,11 +52,16 @@ describe('<User />', () => {
     const comp = <User />;
     let componentDidMountStub = null;
     beforeEach(() => {
-        componentDidMountStub = sinon.stub(User.prototype, 'componentDidMount');
+        // componentDidMountStub = sinon.stub(comp, 'componentDidMount').callsFake(function() {
+        //     // Does nothing
+        // });
+        User.prototype.componentDidMount = () => {
+
+        }
     });
-    afterEach(() => {
-        componentDidMountStub.restore();
-    });
+    // afterEach(() => {
+    //     componentDidMountStub.restore();
+    // });
     it('convertToInt returns array of same length as argument', () => {
         const wrapper = shallow(comp);
         const instance = wrapper.instance();
