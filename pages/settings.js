@@ -4,6 +4,7 @@ import Dropdown from 'react-bootstrap/Dropdown'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import InputGroup from 'react-bootstrap/InputGroup'
 import { FormGroup, ControlLabel, FormControl, Card ,Container, Row, Col} from "react-bootstrap";
 import Image from 'react-bootstrap/Image'
 import Header from '../components/Header'
@@ -431,6 +432,11 @@ assignPlaylistTracksName = async(items) => {
             this.state.location = userLocation
             console.log(this.state.location)
           }
+          if(userInstagram != null){
+            this.state.instagram = userInstagram
+            console.log(this.state.instagram)
+
+          }
           
 
 
@@ -618,7 +624,8 @@ assignPlaylistTracksName = async(items) => {
           <Row >
 
           <Col>
-              <Form  >
+              <Form >
+                
 
 
                 <Form.Group controlId="exampleForm.ControlSelect1">
@@ -643,17 +650,34 @@ assignPlaylistTracksName = async(items) => {
                   </Form.Control>
                 </Form.Group>
 
-    
-                  <Form.Group controlId="exampleForm.ControlInput1">
-                  <Form.Label class="text-white">Link to Instagram</Form.Label>
-                    <Form.Control  defaultValue={this.state.instagram} 
-                    as ="input"
-                    onChange ={this.handleInstagramChange}
-                    placeholder="https://www.instagram.com/placeholder/" 
+               
+
                     
-                    >
-                    </Form.Control>
-                    </Form.Group>
+                  <Form.Group role="form">
+                  <Form.Label class="text-white">Enter Instagram Username</Form.Label>
+
+                  <InputGroup className="mb-3">
+                <InputGroup.Prepend>
+              <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
+            </InputGroup.Prepend>
+
+                  
+                  <Form.Control  className="form-control"
+                  defaultValue={this.state.instagram = null ? -1 : this.state.instagram}
+                  as ="textarea"
+                  rows = "1"
+                  onChange ={this.handleInstagramChange}
+                  placeholder="Username" >
+                  </Form.Control>
+
+                  </InputGroup>
+
+
+                  <Button className="btn btn-primary btn-large centerButton" 
+                  type="submit">Return Home</Button>
+                  </Form.Group>
+                
+
 
 
 

@@ -47,7 +47,10 @@ class Profile extends Component {
                 duration_ms: 0,
             },
             is_playing: "Paused",
-            progress_ms: 0
+            progress_ms: 0,
+            instagram: '',
+            instagramUrl: '',
+            hasInstagram:''
 
         }
         const firebaseConfig = {
@@ -91,9 +94,21 @@ class Profile extends Component {
         dbRef.child(user).once("value", snapshot => {
             if (snapshot.exists()) {
 
+                const userInstagram = snapshot.val().instagram;
+                const userTopPlaylist = snapshot.val().topPlaylist;
+
                 console.log(snapshot.key)
                 console.log(snapshot.val().topPlaylist)
+                
+
+                if(userTopPlaylist != null){
                 this.setState({topID: snapshot.val().topPlaylist})
+                }
+
+                if(userInstagram != null){
+                    this.setState({instagram: snapshot.val().instagram})
+
+                }
                 console.log(this.state.listOfUsers)
 
             }
@@ -102,6 +117,31 @@ class Profile extends Component {
     }
 
 
+    checkIfInstagramLinked = (instagramUsername) => {
+
+        
+        if(instagramUsername != ''){
+
+            return (<div>
+            <h1><b>{this.state.user}</b></h1>
+     
+                                     
+             <a href={this.state.instagramUrl}  target="_blank" >{this.state.hasInstagram}</a> </div> )
+
+        }
+
+        return (<div>
+            <h1><b>{this.state.user}</b></h1>
+     
+                                     
+             <p >{this.state.hasInstagram}</p> </div>
+            
+            )
+        
+
+        
+    }
+
 
 
     render() {
@@ -109,6 +149,25 @@ class Profile extends Component {
         var message = '';
         message = "https://open.spotify.com/embed/playlist/" + this.state.topID 
         console.log(message);
+
+        this.state.hasInstagram = "User hasn't linked their instagram"
+        var instagramUser = this.state.instagram
+
+
+        if(instagramUser != ''){
+
+            this.state.hasInstagram = "@" + this.state.instagram 
+
+            this.state.instagramUrl = 'https://www.instagram.com/' + instagramUser
+
+        }
+
+
+
+
+
+
+        
         return (
 
             <html>
@@ -151,18 +210,26 @@ class Profile extends Component {
                   <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet" /> 
                 </head>
                 <Header props={this.state.access_token} />
+                
 
                 <div>
+                    
                   <Container>
+                      
+                  
 
-
+                
                   <Row>
                             <Col md="auto" style={{paddingBottom: '20px'}}>
                                 <Image src={this.state.userImage} roundedCircle/>
                             </Col>
                             <Col style={{color: 'white', paddingBottom: '20px'}}>
+
+
+                                {this.checkIfInstagramLinked(this.state.instagram)}
+     
                              
-                                <h1><b>{this.state.user}</b></h1>
+                                
                             </Col>
                         </Row>
           
@@ -175,7 +242,6 @@ class Profile extends Component {
 
                             <Card.Body>
                               <Card.Text>
-                                  
                                   <iframe src={message} width="300" height="380" frameborder="100" allowtransparency="true" 
                                   allow="encrypted-media" className={styles.centeri} ></iframe>
                               </Card.Text>
@@ -205,6 +271,7 @@ class Profile extends Component {
                   <footer className="footer">
 
                     <div class="container-fluid text-center text-md-left">
+                        
 
                         <div class="row">
 
