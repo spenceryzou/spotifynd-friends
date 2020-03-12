@@ -23,45 +23,6 @@ class Spotify extends Component {
 
   }
 
-
- 
-  /*componentWillMount= () => {
-    let url = window.location.href;
-    let access_token = '';
-    let refresh_token = '';
-    if (url.indexOf('code') > -1) {
-      let code = url.split('code=')[1].split("&")[0].trim();
-      var authOptions = {
-        url: 'https://accounts.spotify.com/api/token',
-        form: {
-          code: code,
-          redirect_uri: redirect_uri,
-          grant_type: 'authorization_code'
-        },
-        headers: {
-          'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
-        },
-        json: true
-      };
-
-      request.post(authOptions, (error, response, body) => {
-        if (!error && response.statusCode === 200) {
-          access_token = body.access_token,
-            refresh_token = body.refresh_token;
-          this.setState({
-            access_token: access_token,
-            refresh_token: refresh_token
-          });
-          Router.push({
-            pathname: '/user',
-            query: { access_token } //may be unnecessary
-          }, '/user'
-          )
-        }
-     })
-    }
-  }*/
-
   componentDidMount = () => {
     let url = window.location.href;
     let access_token = '';
