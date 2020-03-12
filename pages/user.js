@@ -3,7 +3,7 @@ import Router from 'next/router'
 import { css } from "@emotion/core"
 import ScaleLoader from "react-spinners/ScaleLoader"
 import Header from '../components/Header'
-import {Modal,Button, Container, Row, Col, Card} from "react-bootstrap";
+import {Modal,Button, Container, Row, Col, Card, Carousel} from "react-bootstrap";
 import Image from 'react-bootstrap/Image'
 import { Doughnut } from 'react-chartjs-2';
 import 'chartjs-plugin-labels'
@@ -85,6 +85,8 @@ class User extends Component {
             show: false,
             showOtherUsers: false,
             showChart: false,
+            beforeSelection: true,
+            showPlaylists: true,
             data: {
 
                 labels: [
@@ -1115,13 +1117,12 @@ class User extends Component {
             this.compareWithOtherUser(this.state.listOfUsers[i]);
         }
 
-
         this.setState({
-            showOtherUsers: true
+            showOtherUsers: true,
+            beforeSelection: false
         })
 
     }
-
 
     refresh = () => {
         var authOptions = {
@@ -1177,8 +1178,6 @@ class User extends Component {
         }
     }
 
-
-
     assigntop100tracknames = () => {
         if (typeof (this.state.playlistTracks) != 'undefined') {
             if (this.state.playlistTracks != 0) {
@@ -1218,68 +1217,6 @@ class User extends Component {
             show: !this.state.show
         })
     }
-
-    // setUserData = (ind) => {
-    //     let compList = this.state.listOfUserCompatabilities;
-    //     let danceCount = compList[ind].danceCount;
-    //     let energyCount = compList[ind].energyCount;
-    //     let acousticCount = compList[ind].acousticCount;
-    //     let liveCount = compList[ind].liveCount;
-    //     let valenceCount = compList[ind].valenceCount;
-    //     this.setState({data: {
-    //         labels: [
-    //             'Dancibility',
-    //             'Energy',
-    //             'Acousticness',
-    //             'Liveness',
-    //             'Valence'
-    //         ],
-    //         datasets: [{
-    //             hidden: false,
-    //             data: [danceCount,energyCount, acousticCount, liveCount, valenceCount],
-    //             backgroundColor: [
-    //                 '#66c2a4',
-    //                 '#41ae76',
-    //                 '#238b45',
-    //                 '#006d2c',
-    //                 '#00441b'
-    //                 ],
-    //                 hoverBackgroundColor: [
-    //                 '#edf8fb',
-    //                 '#edf8fb',
-    //                 '#edf8fb',
-    //                 '#edf8fb',
-    //                 '#edf8fb'
-    //                 ]
-    //         }]
-    //     },
-    //     compatibility: list[ind].key,
-    //     mostCompatibleIndex: list[ind].mostCompatibleIndex,
-    //     max: list[ind].max
-
-    //     })
-    // }
-
-    // generateUserCompButtons = () => {
-
-    //     let list = this.convertToInt(this.state.listOfUserCompatibilities);
-
-    //     let compButtons = list.map((i, index) =>
-    //         <li>
-    //             <Row>
-    //                 <Col>
-    //                     {i.value}
-    //                 </Col>
-    //                 <Col>
-    //                     <Button className="button" onClick={() => this.setOtherUsersDetails(index)} size="sm">
-    //                         Details
-    //                     </Button>
-    //                 </Col>
-    //             </Row>
-    //         </li>
-    //     )
-    //     return compButtons;
-    // }
 
     generateUserCompButtons = () => {
         // let list = this.convertToInt(this.state.listOfUserCompatibilities);
@@ -1457,6 +1394,17 @@ class User extends Component {
         this.convertToInt(this.state.listOfUserCompatibilities);
     }
 
+    openNav() {
+        // document.getElementById("mySidepanel").style.width = "250px";
+        this.setState({showPlaylists: true})
+    }
+        
+        /* Set the width of the sidebar to 0 (hide it) */
+    closeNav() {
+        // document.getElementById("mySidepanel").style.width = "0";
+        this.setState({showPlaylists: false})
+    } 
+
     render() {
         let playlists;
         if (typeof (this.state.playlists) != 'undefined') {
@@ -1464,18 +1412,14 @@ class User extends Component {
                 playlists = this.state.playlists.map((i, index) =>
 
                 <div>
-                    <li>
                     <Row>
-
                         <Col>
                         <Button className = "button" onClick={() => this.getPlaylistTracks(index)} variant="success" size="sm">
                             {i.name}
                         </Button>
 
                         </Col>
-                        </Row>
-
-                        </li>
+                    </Row>
                     </div>
                 )
             } else {
@@ -1656,6 +1600,164 @@ class User extends Component {
             );
         }
 
+        let playlistsBox = (
+            <Col xs={6}>
+                <Card style={{ height: '550px', backgroundColor: '#121212' }} text="white" >
+                    <Card.Header>Playlists: </Card.Header>
+                        <div className="overflow-auto" style={{  maxHeight:"480px" }}>
+                    <Card.Body>
+                        <Card.Text>
+
+
+                            <ul>{playlists}</ul>
+
+                        </Card.Text>
+                    </Card.Body>
+                        </div>
+                </Card>
+            </Col>
+        );
+
+        let leftSide;
+        let rightSide;
+        if(this.state.beforeSelection){
+            leftSide = (
+                // {playlistsBox}
+                <Col>
+                <Card style={{ height: '550px', backgroundColor: '#121212' }} text="white" >
+                    <Card.Header>Playlists: </Card.Header>
+                        <div className="overflow-auto" style={{  maxHeight:"480px" }}>
+                    <Card.Body>
+                        <Card.Text>
+
+
+                            <ul>{playlists}</ul>
+
+                        </Card.Text>
+                    </Card.Body>
+                        </div>
+                </Card>
+                </Col>      
+            );
+            rightSide = (
+                <Col>
+                    <p style={{color: 'white', fontSize: '50pt'}}>Choose a playlist to find compatible users near you</p>
+                </Col>
+            );
+        } else{
+            let toggle;
+            if(this.state.showPlaylists){
+                console.log("toggle true")
+                toggle = (
+                    <Col md="auto">
+                        <div id="mySidepanel" className="sidepanel" style={{width: '20vw'}}>
+                            <a className="closebtn" onClick={() => this.closeNav()} style={{color: 'white'}}>&times;</a>
+                            {playlists}
+                        </div>
+                    </Col>
+                );
+            } else{
+                console.log("toggle false")
+                toggle = (
+                    <Col md="auto">
+                        <button className="openbtn" onClick={() => this.openNav()}>
+                            &#9776;
+                        </button>
+                    </Col>
+                );
+            }
+
+            leftSide = (
+                <Col md="auto">
+                    <style jsx> {`
+                         /* The sidepanel menu */
+                        .sidepanel {
+                            // height: 250px; /* Specify a height */
+                            // width: 0; /* 0 width - change this with JavaScript */
+                            // position: fixed; /* Stay in place */
+                            // z-index: 1; /* Stay on top */
+                            // top: 0;
+                            // left: 0;
+                            // background-color: #111; /* Black*/
+                            // overflow-x: hidden; /* Disable horizontal scroll */
+                            // padding-top: 60px; /* Place content 60px from the top */
+                            // transition: 0.5s; /* 0.5 second transition effect to slide in the sidepanel */
+                        
+                            border: 3px solid black;
+                            padding: 15px;
+                            background-color: #111;
+                            // width: 50%;
+                            height: 75vh;
+                            position: -webkit-sticky;
+                            position: sticky;
+                            top: 0;
+                            overflow-y: scroll;
+                        }
+                         
+                         /* The sidepanel links */
+                        .sidepanel a {
+                            padding: 8px 8px 8px 32px;
+                            text-decoration: none;
+                            font-size: 25px;
+                            color: #818181;
+                            display: block;
+                            transition: 0.3s;
+                        }
+                         
+                         /* When you mouse over the navigation links, change their color */
+                        .sidepanel a:hover {
+                            color: #f1f1f1;
+                        }  
+                         
+                         /* Position and style the close button (top right corner) */
+                        .sidepanel .closebtn {
+                            position: absolute;
+                            top:-10px;
+                            right:-10px;
+                            left:-10px;
+                            bottom:-10px;
+                            font-size: 36px;
+                            margin-left: 50px;
+                            margin-right: 15px;
+                            margin-top: 5px;
+                            text-align: right;
+                            cursor: pointer;
+                        }
+                         
+                         /* Style the button that is used to open the sidepanel */
+                        .openbtn {
+                            font-size: 20px;
+                            cursor: pointer;
+                            background-color: #111;
+                            color: white;
+                            padding: 10px 15px;
+                            border: none;
+                        }
+                         
+                        .openbtn:hover {
+                            background-color: #444;
+                        } 
+                    `}
+                    </style>
+                        {toggle}
+                </Col>
+            );
+            rightSide = (
+                <Col>
+                    <Card bg="dark" style={{ height: '550px' }} text="white" >
+                    <Card.Header>Compatible Users:</Card.Header>
+                    <div className="overflow-auto" style={{  maxHeight:"480px" }}>
+
+                        <Card.Body>
+                            <Card.Text>
+                                <ul>{userCompButtons}</ul>
+                            </Card.Text>
+                        </Card.Body>
+                        </div>
+                    </Card>
+                </Col>
+            );
+        }
         return (
             <html>
                 <div className="testclass">
@@ -1727,42 +1829,10 @@ class User extends Component {
                             </Col>
                         </Row>
                     <Row>
-                      <Col>
-
-
-                        <Card style={{ height: '550px', backgroundColor: '#121212' }} text="white" >
-                        <Card.Header>Playlists: </Card.Header>
-                            <div className="overflow-auto" style={{  maxHeight:"480px" }}>
-                        <Card.Body>
-                          <Card.Text>
-
-
-                              <ul>{playlists}</ul>
-
-                          </Card.Text>
-                        </Card.Body>
-                          </div>
-                      </Card>
-
-
-
-
-                      </Col>
+                      {leftSide}
+                      {rightSide}
                       
-                      <Col>
-                        <Card bg="dark" style={{ height: '550px' }} text="white" >
-                        <Card.Header>Compatible Users:</Card.Header>
-                        <div className="overflow-auto" style={{  maxHeight:"480px" }}>
-
-                            <Card.Body>
-                              <Card.Text>
-                                  {/* <ul >{list_ofUsers}</ul> */}
-                                  <ul>{userCompButtons}</ul>
-                              </Card.Text>
-                            </Card.Body>
-                            </div>
-                        </Card>
-                      </Col>
+                      
 
                     </Row>
                     <Row>
