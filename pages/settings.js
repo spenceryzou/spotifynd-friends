@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
-import Dropdown from 'react-bootstrap/Dropdown'
-import DropdownButton from 'react-bootstrap/DropdownButton'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import InputGroup from 'react-bootstrap/InputGroup'
-import { FormGroup, ControlLabel, FormControl, Card ,Container, Row, Col} from "react-bootstrap";
-import {Modal} from "react-bootstrap";
+import { FormGroup, ControlLabel, FormControl, Card, Container, Row, Col } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import Image from 'react-bootstrap/Image'
 import Header from '../components/Header'
 import axios from 'axios';
@@ -16,7 +14,6 @@ import Footer from '../components/Footer'
 var auth = require('firebase/auth');
 var database = require('firebase/database');
 var firebase = require('firebase/app');
-//var admin = require("firebase-admin");
 var redirect_uri;
 
 
@@ -41,43 +38,42 @@ class Settings extends Component {
       location: 'no location set, please set on below',
       image: '',
       userImage: '',
-      displayName: '',
-      display:  null,
+      display: null,
       playlistUpdated: false,
-      percentage:0,
+      percentage: 0,
       data: {
 
         labels: [
-            'Dancibility',
-            'Energy',
-            'Acousticness',
-            'Liveness',
-            'Valence'
+          'Dancibility',
+          'Energy',
+          'Acousticness',
+          'Liveness',
+          'Valence'
         ],
         datasets: [{
-            hidden: true,
-            data: [0, 0, 0, 0, 0],
-            backgroundColor: [
-                '#66c2a4',
-                '#41ae76',
-                '#238b45',
-                '#006d2c',
-                '#00441b'
-                ],
-                hoverBackgroundColor: [
-                '#edf8fb',
-                '#edf8fb',
-                '#edf8fb',
-                '#edf8fb',
-                '#edf8fb'
-            ]
+          hidden: true,
+          data: [0, 0, 0, 0, 0],
+          backgroundColor: [
+            '#66c2a4',
+            '#41ae76',
+            '#238b45',
+            '#006d2c',
+            '#00441b'
+          ],
+          hoverBackgroundColor: [
+            '#edf8fb',
+            '#edf8fb',
+            '#edf8fb',
+            '#edf8fb',
+            '#edf8fb'
+          ]
         }]
-    },
-    trackFeatures: [],
-    genres: [],
-    artistID: [],
-    name: [],
-    artist: [],
+      },
+      trackFeatures: [],
+      genres: [],
+      artistID: [],
+      name: [],
+      artist: [],
 
     }
     const firebaseConfig = {
@@ -96,17 +92,15 @@ class Settings extends Component {
     console.log(firebase)
   }
 
-  static getInitialProps({query}){
-    console.log("query " + JSON.stringify({query}))
-    return {query}
+  static getInitialProps({ query }) {
+    console.log("query " + JSON.stringify({ query }))
+    return { query }
   }
 
   componentDidMount = () => {
-
-    //var userRef = firebase.database().ref("users/" + this.state.user + '/spotify_id')
-    if(!window.sessionStorage.access_token){
-      Router.push({pathname: '/'})
-    } else{
+    if (!window.sessionStorage.access_token) {
+      Router.push({ pathname: '/' })
+    } else {
       this.getUserPlaylists();
     }
 
@@ -128,43 +122,41 @@ class Settings extends Component {
 
   writeUserLocation = (userid, userlocation) => {
     firebase.database().ref('users/' + this.state.user).update({
-        'location': userlocation,
+      'location': userlocation,
 
-      }, function (error) {
-        if (error) {
-          // The write failed...
-        } else {
-          console.log("Updated location: " + userlocation);
-        }
+    }, function (error) {
+      if (error) {
+        // The write failed...
+      } else {
+        console.log("Updated location: " + userlocation);
       }
+    }
     );
   }
 
   writeUserImage = (userid, userImage) => {
-    firebase.database().ref('users/' + this.state.user).update({
-        'image': userImage,
-        
-      }, function (error) {
-        if (error) {
-          // The write failed...
-        } else {
-          console.log("Updated location: " + userImage);
-        }
+    firebase.database().ref('users/' + userid).update({
+      'image': userImage
+    }, function (error) {
+      if (error) {
+        // The write failed...
+      } else {
+        console.log("Updated location: " + userImage);
       }
+    }
     );
   }
 
   writeUserTopPlaylist = (userid, top_playlist) => {
-    var database = firebase.database();
     firebase.database().ref('users/' + userid).update({
-        'topPlaylist': top_playlist,
-      }, function (error) {
-        if (error) {
-          // The write failed...
-        } else {
-          console.log("Updated top playlist: " + top_playlist);
-        }
+      'topPlaylist': top_playlist,
+    }, function (error) {
+      if (error) {
+        // The write failed...
+      } else {
+        console.log("Updated top playlist: " + top_playlist);
       }
+    }
     );
   }
 
@@ -172,37 +164,31 @@ class Settings extends Component {
     playlistImage = (<img src={this.state.image} />)
   }
 
-  handlePlaylistChange = async(event) => {
-
+  handlePlaylistChange = async (event) => {
     let playlist = this.state.playlists.find(p => p.name === event.target.value)
     console.log("value: " + event.target.value)
     console.log("playlist: " + playlist.name)
     this.state.topPlaylist = playlist
     this.writeUserTopPlaylist(this.state.user, this.state.topPlaylist.id)
 
-    let url = window.location.href;
-    if (url.indexOf('localhost') > -1) {
-        redirect_uri = 'http://localhost:3000/index'
-    }
-
     let access_token = window.sessionStorage.access_token
 
     if (access_token != "") {
-        var options = {
-            url: 'https://api.spotify.com/v1/playlists/' + this.state.topPlaylist.id,
-            headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
-            json: true
-        };
+      var options = {
+        url: 'https://api.spotify.com/v1/playlists/' + this.state.topPlaylist.id,
+        headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
+        json: true
+      };
 
-        request.get(options, (error, response, body) => {
-            console.log(error);
-            console.log(body);
+      request.get(options, (error, response, body) => {
+        console.log(error);
+        console.log(body);
 
-            this.setState({
-                playlistTracks: body.tracks.items
-            })
+        this.setState({
+          playlistTracks: body.tracks.items
+        })
 
-        });
+      });
     }
     this.getPlaylistTracks()
     console.log(this.state.playlisttracknames)
@@ -212,73 +198,73 @@ class Settings extends Component {
 
     console.log(JSON.stringify(event.target.value))
     console.log("top: " + this.state.topPlaylist.name)
-    //this.state.image = playlist.images[0].url
-    //this.state.display = playlist
     this.setState({
       image: playlist.images[0].url,
       display: playlist
     })
     console.log(this.state.image)
-    //this.forceUpdate();
   }
 
 
   getPlaylistTracks = () => {
-    this.setState({data: {
+    this.setState({
+      data: {
         labels: [
-            'Dance',
-            'Energy',
-            'Acoustic',
-            'Live',
-            'Valence'
+          'Dance',
+          'Energy',
+          'Acoustic',
+          'Live',
+          'Valence'
         ],
         datasets: [{
-            data: [0, 0, 0, 0, 0],
-            backgroundColor: [
+          data: [0, 0, 0, 0, 0],
+          backgroundColor: [
             '#FF6384',
             '#36A2EB',
             '#FFCE56',
             'Green',
             'Orange',
             'Purple'
-            ],
-            hoverBackgroundColor: [
+          ],
+          hoverBackgroundColor: [
             '#FF6384',
             '#36A2EB',
             '#FFCE56',
             'Grey',
             'Cyan',
             'Brown'
-            ]
-        }]}})
+          ]
+        }]
+      }
+    })
     console.log(this.state.topPlaylist)
     var tracksOptions = {
-        url: this.state.topPlaylist.tracks.href,
-        headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
-        json: true
+      url: this.state.topPlaylist.tracks.href,
+      headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
+      json: true
     };
 
     console.log('user right before tracks request: ' + this.state.user)
 
     // use the access token to access the Spotify Web API
     request.get(tracksOptions, (error, response, body) => {
-        console.log(body);
-        console.log('this.state.playlists' + this.state.topPlaylist)
-        this.assignPlaylistTracksName(body.items);
+      console.log(body);
+      console.log('this.state.playlists' + this.state.topPlaylist)
+      this.assignPlaylistTracksName(body.items);
 
-      });
+    });
 
 
-}
+  }
 
-assignPlaylistTracksName = async(items) => {
-  if (typeof (items) != 'undefined') {
+  assignPlaylistTracksName = async (items) => {
+    if (typeof (items) != 'undefined') {
       if (items != 0) {
-          this.state.playlisttracknames = items.map((i) =>
-              <li>{i.track.id}</li>
-          )
+        this.state.playlisttracknames = items.map((i) =>
+          <li>{i.track.id}</li>
+        )
       } else {
-          this.state.playlisttracknames = <p>No playlists to display</p>
+        this.state.playlisttracknames = <p>No playlists to display</p>
       }
       console.log("playlist track names: " + this.state.playlisttracknames.length)
 
@@ -290,96 +276,79 @@ assignPlaylistTracksName = async(items) => {
         name: [],
         artist: []
 
-    })
-    //create arrays with selected playlist attributes
-    var plstL = this.state.playlisttracknames.length - 1;
-    this.state.percentage = 0;
-    for (let i = 0; i < this.state.playlisttracknames.length; i++) {
-      this.state.percentage = (i/plstL)*100
-      this.state.percentage = this.state.percentage.toFixed(1)
-
+      })
+      //create arrays with selected playlist attributes
+      var plstL = this.state.playlisttracknames.length - 1;
+      this.state.percentage = 0;
+      for (let i = 0; i < this.state.playlisttracknames.length; i++) {
+        this.state.percentage = (i / plstL) * 100
+        this.state.percentage = this.state.percentage.toFixed(1)
 
         var id = this.state.playlisttracknames[i].props.children;
         var trackOptions = {
-            method: 'GET',
-            url: `https://api.spotify.com/v1/tracks/${id}`,
-            headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
-            json: true
+          method: 'GET',
+          url: `https://api.spotify.com/v1/tracks/${id}`,
+          headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
+          json: true
         };
         var audioFeaturesOptions = {
-            method: 'GET',
-            url: `https://api.spotify.com/v1/audio-features/${id}`,
-            headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
-            json: true
+          method: 'GET',
+          url: `https://api.spotify.com/v1/audio-features/${id}`,
+          headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
+          json: true
         };
         await axios(audioFeaturesOptions)
-            .then((body) => {
-                this.setState({ trackFeatures: [...this.state.trackFeatures, body.data] })
-                console.log(this.state.trackFeatures);
-            });
+          .then((body) => {
+            this.setState({ trackFeatures: [...this.state.trackFeatures, body.data] })
+            console.log(this.state.trackFeatures);
+          });
 
         await axios(trackOptions)
-            .then((body) => {
-                if (body.data.artists != 0) {
-                    this.setState({
-                        artistID: [...this.state.artistID, body.data.artists[0].id],
-                        artist: [...this.state.artist, body.data.artists[0].name],
-                        name: [...this.state.name, body.data.name],
-                        status: "Analyzing Playlist 1: " + body.data.name
-                    })
-                    console.log(this.state.artistID);
-                    console.log(this.state.artist)
-                    console.log(this.state.name)
-                }
-            });
+          .then((body) => {
+            if (body.data.artists != 0) {
+              this.setState({
+                artistID: [...this.state.artistID, body.data.artists[0].id],
+                artist: [...this.state.artist, body.data.artists[0].name],
+                name: [...this.state.name, body.data.name],
+                status: "Analyzing Playlist 1: " + body.data.name
+              })
+              console.log(this.state.artistID);
+              console.log(this.state.artist)
+              console.log(this.state.name)
+            }
+          });
         var artistOptions = {
-            method: 'GET',
-            url: `https://api.spotify.com/v1/artists/${this.state.artistID[i]}`,
-            headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
-            json: true
+          method: 'GET',
+          url: `https://api.spotify.com/v1/artists/${this.state.artistID[i]}`,
+          headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
+          json: true
         };
         await axios(artistOptions)
-            .then((body) => {
-                this.setState({ genres: [...this.state.genres, body.data.genres] })
-                /*this.state.genres = body.genres.map((i) =>
-                <li>{i}</li>)*/
-                console.log(this.state.genres)
-            });
-    }
-
-    firebase.database().ref('users/' + this.state.user).update({
-      'trackFeatures': this.state.trackFeatures,
-      'genres': this.state.genres,
-      'artistID': this.state.artistID,
-      'name': this.state.name,
-      'artist': this.state.artist,
-
-    }, (error) => {
-      if (error) {
-        // The write failed...
-      } else {
-        console.log("Updated trackFeatures: ");
-        this.handleModal();
-        // this.setState({
-        //   playlistUpdated: false
-        // })
-
+          .then((body) => {
+            this.setState({ genres: [...this.state.genres, body.data.genres] })
+            console.log(this.state.genres)
+          });
       }
+
+      firebase.database().ref('users/' + this.state.user).update({
+        'trackFeatures': this.state.trackFeatures,
+        'genres': this.state.genres,
+        'artistID': this.state.artistID,
+        'name': this.state.name,
+        'artist': this.state.artist
+      }, (error) => {
+        if (error) {
+          // The write failed...
+        } else {
+          console.log("Updated trackFeatures: ");
+          this.handleModal();
+        }
+      });
     }
-
-  );
-
-
-
   }
 
 
-
-
-}
-
-
-  updatePlaylistStatus = () =>{
+  updatePlaylistStatus = () => {
     this.setState({
       playlistUpdated: !this.state.updatePlaylistStatus
     })
@@ -387,21 +356,17 @@ assignPlaylistTracksName = async(items) => {
   }
 
   handleLocationChange = (event) => {
-    //this.state.location = event.target.value;
     console.log(event.target.value)
     this.setState({
       location: event.target.value
     })
     this.writeUserLocation(this.state.user, event.target.value)
-
     console.log("Location" + this.state.location)
-    //this.forceUpdate();
   }
 
 
 
   handleInstagramChange = (event) => {
-    //this.state.location = event.target.value;
     console.log(event.target.value)
     this.setState({
       instagram: event.target.value
@@ -409,21 +374,19 @@ assignPlaylistTracksName = async(items) => {
     this.writeUserInstagram(this.state.user, event.target.value)
 
     console.log("Instagram" + this.state.instagram)
-    //this.forceUpdate();
   }
 
 
   writeUserInstagram = (userid, userInstagram) => {
     firebase.database().ref('users/' + this.state.user).update({
-        'instagram': userInstagram,
-
-      }, function (error) {
-        if (error) {
-          // The write failed...
-        } else {
-          console.log("Updated Instagram: " + userInstagram);
-        }
+      'instagram': userInstagram
+    }, function (error) {
+      if (error) {
+        // The write failed...
+      } else {
+        console.log("Updated Instagram: " + userInstagram);
       }
+    }
     );
   }
 
@@ -437,8 +400,6 @@ assignPlaylistTracksName = async(items) => {
   setTopPlaylist = (data) => {
     console.log("in test")
     console.log("data" + data.name)
-    // this.setState({topPlaylist: data})
-    // this.setState({location: data.id})
     this.state.topPlaylist = data
     console.log(this.state.topPlaylist)
   }
@@ -456,10 +417,10 @@ assignPlaylistTracksName = async(items) => {
       console.log('Access token:' + access_token)
       console.log(body);
       this.setState({ user: body.id })
-      if(body.images.length != 0){
-        this.setState({ userImage: body.images[0].url});
+      if (body.images.length != 0) {
+        this.setState({ userImage: body.images[0].url });
         this.writeUserImage(body.id, body.images[0].url);
-      } else{
+      } else {
         this.writeUserImage(body.id, 'https://www.palmcityyachts.com/wp/wp-content/uploads/palmcityyachts.com/2015/09/default-profile.png');
       }
       this.setState({displayName: body.display_name});
@@ -481,7 +442,7 @@ assignPlaylistTracksName = async(items) => {
             this.state.location = userLocation
             console.log(this.state.location)
           }
-          if(userInstagram != null){
+          if (userInstagram != null) {
             this.state.instagram = userInstagram
             console.log(this.state.instagram)
 
@@ -491,7 +452,7 @@ assignPlaylistTracksName = async(items) => {
 
           if (userTopPlaylist != null) {
             var options = {
-              url: 'https://api.spotify.com/v1/playlists/'+userTopPlaylist,
+              url: 'https://api.spotify.com/v1/playlists/' + userTopPlaylist,
               headers: { 'Authorization': 'Bearer ' + window.sessionStorage.access_token },
               json: true
             };
@@ -499,83 +460,53 @@ assignPlaylistTracksName = async(items) => {
             // use the access token to access the Spotify Web API
             request.get(options, (error, response, body) => {
               console.log(body)
-              this.setState( {
+              this.setState({
                 display: body,
                 image: body.images[0].url,
               })
-              //console.log(this.state.display)
             });
 
           }
         }
       });
 
-      // var locationVal
-
-      // firebase.database().ref('/users/' + this.state.user).once('value').then(function(snapshot)  {
-      //    locationVal = ( snapshot.val().location)
-      //    console.log(locationVal)
-      //  }
-      //  );
-      //  console.log(locationVal)
-      //  this.state.location = locationVal
-
-      // var playlistOptions = {
-      //   url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
-      //   qs: { limit: '10' },
-      //   headers: { 'Authorization': 'Bearer ' + access_token },
-      //   json: true
-      // };
-
-      // console.log('user right before playlist: ' + this.state.user)
-
-      // // use the access token to access the Spotify Web API
-      // request.get(playlistOptions, (error, response, body) => {
-      //   console.log(body);
-      //   this.setState({ playlists: body.items })
-      //   for (var i = 0; i < this.state.playlists.length; i++) {
-      //     this.state.playlists[i].key = i.id
-      //     console.log(this.state.playlists[i].key)
-      //   }
-      //   console.log('this.state.playlists' + this.state.playlists)
-      // });
       console.log('user: ' + this.state.user)
       var playlistOptions = {
-          url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
-          qs: { limit: '50' },
-          headers: { 'Authorization': 'Bearer ' + access_token },
-          json: true
+        url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
+        qs: { limit: '50' },
+        headers: { 'Authorization': 'Bearer ' + access_token },
+        json: true
       };
 
       console.log('user right before playlist: ' + this.state.user)
 
       // use the access token to access the Spotify Web API
       request.get(playlistOptions, (error, response, body) => {
-          console.log(body);
-          this.setState({ playlists: body.items })
-          for (var i = 0; i < this.state.playlists.length; i++) {
-              this.state.playlists[i].key = i.id
-              console.log(this.state.playlists[i].key)
-          }
-          console.log('this.state.playlists' + this.state.playlists)
+        console.log(body);
+        this.setState({ playlists: body.items })
+        for (var i = 0; i < this.state.playlists.length; i++) {
+          this.state.playlists[i].key = i.id
+          console.log(this.state.playlists[i].key)
+        }
+        console.log('this.state.playlists' + this.state.playlists)
 
-          let playlistsLeft = body.total - 50;
-          let numRequests = 1;
-          while(playlistsLeft > 0){
-              var playlistOptions = {
-                  url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
-                  qs: { limit: '50', offset: 50 * numRequests },
-                  headers: { 'Authorization': 'Bearer ' + access_token },
-                  json: true
-              };
+        let playlistsLeft = body.total - 50;
+        let numRequests = 1;
+        while (playlistsLeft > 0) {
+          var playlistOptions = {
+            url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
+            qs: { limit: '50', offset: 50 * numRequests },
+            headers: { 'Authorization': 'Bearer ' + access_token },
+            json: true
+          };
 
-              request.get(playlistOptions, (error, response, body) => {
-                  this.setState({playlists: this.state.playlists.concat(body.items)})
-              });
+          request.get(playlistOptions, (error, response, body) => {
+            this.setState({ playlists: this.state.playlists.concat(body.items) })
+          });
 
-              playlistsLeft -= 50;
-              numRequests++
-          }
+          playlistsLeft -= 50;
+          numRequests++
+        }
       });
     });
   }
@@ -584,7 +515,7 @@ assignPlaylistTracksName = async(items) => {
 
   handleModal = () => {
     this.setState({
-        playlistUpdated: !this.state.playlistUpdated
+      playlistUpdated: !this.state.playlistUpdated
     })
   }
 
@@ -612,8 +543,8 @@ assignPlaylistTracksName = async(items) => {
     );
 
 
-    let formItems = playlists.filter(function(obj){
-      if(obj.public){
+    let formItems = playlists.filter(function (obj) {
+      if (obj.public) {
         return obj
       }
     }).map((data) =>
@@ -625,7 +556,7 @@ assignPlaylistTracksName = async(items) => {
       </option>
     );
     let displayInfo = "no playlist set, please set on below"
-    if (this.state.display){
+    if (this.state.display) {
       console.log("This worked")
       displayInfo = this.state.display.name
     }
@@ -633,9 +564,9 @@ assignPlaylistTracksName = async(items) => {
 
     return (
       <html>
-      <div className = "testclass">
+        <div className="testclass">
 
-      <style jsx>{`
+          <style jsx>{`
           .container {
               margin: 50px;
           }
@@ -659,135 +590,133 @@ assignPlaylistTracksName = async(items) => {
 
           `}</style>
 
-        <Header props={''} />
-        <head>
-          <link
-            rel="stylesheet"
-            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-            crossorigin="anonymous"
-          />
-          <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet" />
+          <Header props={''} />
+          <head>
+            <link
+              rel="stylesheet"
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+              integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+              crossorigin="anonymous"
+            />
+            <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet" />
 
-        </head>
-        <div>
+          </head>
+          <div>
 
-              <Modal show={this.state.playlistUpdated}  backdrop="static" keyboard={false} >
+            <Modal show={this.state.playlistUpdated} backdrop="static" keyboard={false} >
               <Modal.Header > Hi {this.state.user}</Modal.Header>
               <Modal.Body>
-                  Please wait while your playlist is done being processed
+                Please wait while your playlist is done being processed
                   <p>{this.state.percentage}% Done</p>
 
               </Modal.Body>
             </Modal>
 
-              </div>
-        <div >
+          </div>
+          <div >
 
-        <Container className= "testclass">
-          <Row>
-            <Col>
-            <Card className="bg-dark text-white" text="white">
-                <Card.Img src="https://thumbor.forbes.com/thumbor/960x0/https%3A%2F%2Fspecials-images.forbesimg.com%2Fimageserve%2F750037840%2F960x0.jpg%3Ffit%3Dscale" alt="Card image" fluid  />
-                <Card.ImgOverlay>
-                  <Card.Title>Welcome, {this.state.displayName}</Card.Title>
-                  <Card.Text>
-                    Your current chosen top playlist is : {displayInfo}
-                  </Card.Text>
-                  <Card.Text>Your current location is : {this.state.location}</Card.Text>
-                </Card.ImgOverlay>
-                </Card>
-            </Col>
-            <Col>
-              <img src={this.state.image} class="img-thumbnail" height="360" width="360" />
-            </Col>
-
-          </Row>
-          <Row >
-
-          <Col>
-              <Form >
+            <Container className="testclass">
+              <Row>
+                <Col>
+                  <Card className="bg-dark text-white" text="white">
+                    <Card.Img src="https://thumbor.forbes.com/thumbor/960x0/https%3A%2F%2Fspecials-images.forbesimg.com%2Fimageserve%2F750037840%2F960x0.jpg%3Ffit%3Dscale" alt="Card image" fluid />
+                    <Card.ImgOverlay>
+                      <Card.Title>Welcome, {this.state.user}</Card.Title>
+                      <Card.Text>
+                        Your current chosen top playlist is : {displayInfo}
+                      </Card.Text>
+                      <Card.Text>Your current location is : {this.state.location}</Card.Text>
+                    </Card.ImgOverlay>
+                  </Card>
+                </Col>
+                <Col>
+                  <img src={this.state.image} class="img-thumbnail" height="360" width="360" />
+                </Col>
 
 
+              </Row>
+              <Row >
 
-                <Form.Group controlId="exampleForm.ControlSelect1" style={{paddingTop: '20px'}}>
-                  <Form.Label class="text-white"  >Set a new Location. You will be compared with users in your area</Form.Label>
-                  <Form.Control defaultValue={-1}
-                    as="select"
-                    onChange={this.handleLocationChange}
-                  >
-                    <option disabled value={-1} key={-1}>Select a Location</option>
-                    {items2}
-                  </Form.Control>
-                </Form.Group>
-
-                <Form.Group controlId="exampleForm.ControlSelect2">
-
-                  <Form.Label class="text-white">Select a new Playlist. This is the playlist others will see and be compared with</Form.Label>
-
-                  <Form.Control defaultValue={-1}
-                    as="select"
-
-                    onChange={this.handlePlaylistChange}
-
-                    placeholder="select a playlist">
-
-                    <option disabled value={-1} key={-1}>Select a Playlist</option>
-                    {formItems}
-
-                  </Form.Control>
+                <Col>
+                  <Form >
 
 
 
+                    <Form.Group controlId="exampleForm.ControlSelect1" style={{ paddingTop: '20px' }}>
+                      <Form.Label class="text-white"  >Set a new Location. You will be compared with users in your area</Form.Label>
+                      <Form.Control defaultValue={-1}
+                        as="select"
+                        onChange={this.handleLocationChange}
+                      >
+                        <option disabled value={-1} key={-1}>Select a Location</option>
+                        {items2}
+                      </Form.Control>
+                    </Form.Group>
 
-                </Form.Group>
+                    <Form.Group controlId="exampleForm.ControlSelect2">
+
+                      <Form.Label class="text-white">Select a new Playlist. This is the playlist others will see and be compared with</Form.Label>
+
+                      <Form.Control defaultValue={-1}
+                        as="select"
+
+                        onChange={this.handlePlaylistChange}
+
+                        placeholder="select a playlist">
+
+                        <option disabled value={-1} key={-1}>Select a Playlist</option>
+                        {formItems}
+
+                      </Form.Control>
 
 
 
 
-
-
-                  <Form.Group role="form">
-                  <Form.Label class="text-white">Enter Instagram Username</Form.Label>
-
-                  <InputGroup className="mb-3">
-                <InputGroup.Prepend>
-              <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
-            </InputGroup.Prepend>
-
-
-                  <Form.Control  className="form-control"
-                  defaultValue={this.state.instagram = null ? -1 : this.state.instagram}
-                  as ="textarea"
-                  rows = "1"
-                  onChange ={this.handleInstagramChange}
-                  placeholder="Username" >
-                  </Form.Control>
-
-                  </InputGroup>
-                  </Form.Group>
+                    </Form.Group>
 
 
 
 
 
 
-              </Form>
-              <Button onClick= {()=>{this.goHome()}} variant="light">
-                  Back to Home
-              </Button>
+                    <Form.Group role="form">
+                      <Form.Label class="text-white">Enter Instagram Username</Form.Label>
 
-              </Col>
-          </Row>
+                      <InputGroup className="mb-3">
+                        <InputGroup.Prepend>
+                          <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
+                        </InputGroup.Prepend>
 
-        </Container>
 
+                        <Form.Control className="form-control"
+                          defaultValue={this.state.instagram = null ? -1 : this.state.instagram}
+                          as="textarea"
+                          rows="1"
+                          onChange={this.handleInstagramChange}
+                          placeholder="Username" >
+                        </Form.Control>
+
+                      </InputGroup>
+                    </Form.Group>
+
+
+
+
+
+
+                  </Form>
+                </Col>
+              </Row>
+
+
+            </Container>
+
+
+          </div>
 
         </div>
 
-      </div>
-
-          <Footer />
+        <Footer />
       </html>
 
     )

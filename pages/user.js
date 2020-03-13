@@ -5,27 +5,17 @@ import { css } from "@emotion/core"
 import ScaleLoader from "react-spinners/ScaleLoader"
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-import {Modal,Button, Container, Row, Col, Card, Carousel} from "react-bootstrap";
+import { Modal, Button, Container, Row, Col, Card} from "react-bootstrap";
 import Image from 'react-bootstrap/Image'
 import { Doughnut } from 'react-chartjs-2';
 import 'chartjs-plugin-labels';
-import styles from './user.module.css';
-import {MdKeyboardBackspace} from 'react-icons/md'
-import Profile from './profile'
-
-var auth = require('firebase/auth');
-var database = require('firebase/database');
-
 
 var firebase = require('firebase/app');
-var querystring = require('querystring');
-var request = require('request')
+require('firebase/database');
+var request = require('request');
 var axios = require("axios");
-var Chart = require('chart.js');
 var client_id = '2923d79235804ea58633989710346f3d';
 var client_secret = 'd4813d196edf4940b58ba0aeedbf9ebc';
-var redirect_uri = 'https://spotifynd-friends.herokuapp.com/';
-var scope = 'user-read-private user-read-email playlist-read-private';
 
 const override = css`
   display: block;
@@ -100,8 +90,8 @@ class User extends Component {
                         '#238b45',
                         '#006d2c',
                         '#00441b'
-                        ],
-                        hoverBackgroundColor: [
+                    ],
+                    hoverBackgroundColor: [
                         '#edf8fb',
                         '#edf8fb',
                         '#edf8fb',
@@ -127,6 +117,7 @@ class User extends Component {
             firebase.initializeApp(firebaseConfig)
         }
     }
+
     getData = () => ({
         labels: [
             'Dancibility',
@@ -137,21 +128,21 @@ class User extends Component {
         ],
         datasets: [{
             hidden: false,
-            data: [this.state.danceCount,this.state.energyCount, this.state.acousticCount, this.state.liveCount, this.state.valenceCount],
+            data: [this.state.danceCount, this.state.energyCount, this.state.acousticCount, this.state.liveCount, this.state.valenceCount],
             backgroundColor: [
                 '#66c2a4',
                 '#41ae76',
                 '#238b45',
                 '#006d2c',
                 '#00441b'
-                ],
-                hoverBackgroundColor: [
+            ],
+            hoverBackgroundColor: [
                 '#edf8fb',
                 '#edf8fb',
                 '#edf8fb',
                 '#edf8fb',
                 '#edf8fb'
-                ]
+            ]
         }]
     })
 
@@ -167,7 +158,7 @@ class User extends Component {
         var myLocation;
         dbRef.orderByValue().startAt(0).on("child_added", snapshot => {
             console.log('first');
-            if(snapshot.exists() && snapshot.key == this.state.user){
+            if (snapshot.exists() && snapshot.key == this.state.user) {
                 this.setState({
                     location: snapshot.child("location").val(),
                     userImage: snapshot.child("image").val()
@@ -180,7 +171,6 @@ class User extends Component {
         });
 
         dbRef.orderByValue().startAt(0).on("child_added", snapshot => {
-
             //ignore key if it is you
             if (snapshot.exists() && snapshot.key != this.state.user) {
                 let otherLocation = snapshot.child("location").val();
@@ -189,7 +179,7 @@ class User extends Component {
                 console.log(myLocation)
                 console.log(snapshot.child("trackFeatures").val())
 
-                if(otherLocation == myLocation){
+                if (otherLocation == myLocation) {
                     this.setState({ listOfUsers: [...this.state.listOfUsers, snapshot.key] })
                 }
                 console.log(this.state.listOfUsers)
@@ -197,66 +187,65 @@ class User extends Component {
 
         });
     }
-    convertToInt= (previousArray) => {
-      var arr = new Map();
-      for(var i =0;i<previousArray.length;i++){
-        arr.set(previousArray[i].key,previousArray[i].value);//set the value as the int
-      }
-      var intArray = [];
 
-    for(var i = 0; i < previousArray.length; i++){
-        intArray.push(parseInt(previousArray[i].key));
+    convertToInt = (previousArray) => {
+        var arr = new Map();
+        for (var i = 0; i < previousArray.length; i++) {
+            arr.set(previousArray[i].key, previousArray[i].value);//set the value as the int
+        }
+        var intArray = [];
+
+        for (var i = 0; i < previousArray.length; i++) {
+            intArray.push(parseInt(previousArray[i].key));
+        }
+
+        this.orderUsers(previousArray, 0, previousArray.length - 1);
+        return previousArray;
+
+    }
+    orderUsers = (arr, low, high) => {
+        //Quicksort by the compatability score but for now, pseudo sort by alphabet
+        //in the future will map with a key of the name maybe access the database for the compatability score?
+
+
+        //given an array of compatability scores sort that array
+
+        if (low < high) {
+            //pi is partiioining index
+            let pi = this.partition(arr, low, high);
+
+            this.orderUsers(arr, low, pi - 1);//before pi
+            this.orderUsers(arr, pi + 1, high);//after pi
+
+        }
     }
 
-    this.orderUsers(previousArray, 0, previousArray.length-1);
-    return previousArray;
+    partition = (arr, low, high) => {
+        //pivot = element to placed at right position
+        let pivot = arr[high];
+        let i = low - 1; //index of the smaller element
 
-    }
-    orderUsers = (arr,low,high) => {
-      //Quicksort by the compatability score but for now, pseuodo sort by alphabet
-      //in the future will map with a key of the name maybe access the database for the compatability score?
-
-
-      //given an array of compatability scores sort that array
-
-      if(low < high){
-        //pi is partiioining index
-        let pi = this.partition(arr, low, high);
-
-        this.orderUsers(arr, low, pi - 1);//before pi
-        this.orderUsers(arr, pi+1, high);//after pi
-
-      }
-    }
-
-    partition = (arr,low,high) => {
-      //pivot = element to placed at right position
-      let pivot = arr[high];
-      let i = low -1; //index of the smaller element
-
-      for(var j= low; j<= high-1;j++){
-        // if current element is smaller than the pivot
-        if(arr[j].key > pivot.key){
-          i++;
-          //swap arr[i] and arr[j]
-          let temp;
-          temp = arr[i];
-          arr[i] = arr[j];
-          arr[j]= temp;
-              }
-      }
-      //swap arr[i+1] and arr[high]
-      let temp;
-      temp = arr[i+1];
-      arr[i+1] = arr[high];
-      arr[high]= temp;
-      return (i+1);
+        for (var j = low; j <= high - 1; j++) {
+            // if current element is smaller than the pivot
+            if (arr[j].key > pivot.key) {
+                i++;
+                //swap arr[i] and arr[j]
+                let temp;
+                temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+        //swap arr[i+1] and arr[high]
+        let temp;
+        temp = arr[i + 1];
+        arr[i + 1] = arr[high];
+        arr[high] = temp;
+        return (i + 1);
 
     }
 
     writeUserData = (spotifyid) => {
-        var database = firebase.database();
-
         var dbRef = firebase.database().ref('users')
         console.log(this.state.user)
 
@@ -265,12 +254,10 @@ class User extends Component {
         dbRef.child(user_id).once("value", snapshot => {
             if (snapshot.exists()) {
                 const userLocation = snapshot.val().location;
-                this.setState({location: userLocation});
+                this.setState({ location: userLocation });
                 const userTopPlaylist = snapshot.val().topPlaylist;
                 const userSpotifyId = snapshot.val().spotify_id;
                 console.log("exists!", userData);
-
-
             }
         });
 
@@ -285,8 +272,6 @@ class User extends Component {
                 artistID: [],
                 name: [],
                 artist: []
-
-
             }, function (error) {
                 if (error) {
                     // The write failed...
@@ -294,11 +279,7 @@ class User extends Component {
                     // Data saved successfully!
                 }
             }
-
             );
-            //Add an alert to go to settings right here after creating there
-            //this.AlertDismissible();
-
         }
     }
 
@@ -309,14 +290,8 @@ class User extends Component {
 
 
     getUserPlaylists = () => {
-
-        let url = window.location.href;
-        if (url.indexOf('localhost') > -1) {
-            redirect_uri = 'http://localhost:3000/index'
-        }
-
         let access_token = window.sessionStorage.access_token;
-        this.setState({access_token})
+        this.setState({ access_token })
         var options = {
             url: 'https://api.spotify.com/v1/me',
             headers: { 'Authorization': 'Bearer ' + access_token },
@@ -328,77 +303,33 @@ class User extends Component {
                 console.log('Access token:' + access_token)
                 console.log(body);
                 this.setState({ user: body.id })
-                if(this.checkUserName(this.state.user)){
-                this.setState({displayName: body.display_name})
-                  var exist;
-                  firebase.database().ref(`users/${this.state.user}/location`).once("value", snapshot => {
-                      if (snapshot.exists()) {
-                          //checking if the account alrady exists
-                          console.log("exists!");
-                          firebase.database().ref(`users/${this.state.user}/topPlaylist`).once("value", snapshot => {
-                              if (snapshot.exists()) {
-                                  console.log("top playlist also exists")
-                              }
-                              else {
-                                  console.log("top playlist doesnt exist but location does")
-                                  this.handleModal();
-                              }
-                          });
 
-                      }
-                      else {
-
-                          console.log("does not exist");
-                          //if accont doesn't exit then open Modal
-                          this.handleModal();
-                      }
-                  });
-
-                  this.showDBusers()
-                  console.log('user: ' + this.state.user)
-                  var playlistOptions = {
-                      url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
-                      qs: { limit: '50' },
-                      headers: { 'Authorization': 'Bearer ' + access_token },
-                      json: true
-                  };
-
-                  console.log('user right before playlist: ' + this.state.user)
-
-                  // use the access token to access the Spotify Web API
-                  request.get(playlistOptions, (error, response, body) => {
-                      console.log(body);
-                      this.setState({ playlists: body.items })
-                      for (var i = 0; i < this.state.playlists.length; i++) {
-                          this.state.playlists[i].key = i.id
-                          console.log(this.state.playlists[i].key)
-                      }
-                      console.log('this.state.playlists' + this.state.playlists)
-
-                      let playlistsLeft = body.total - 50;
-                      let numRequests = 1;
-                      while (playlistsLeft > 0) {
-                          var playlistOptions = {
-                              url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
-                              qs: { limit: '50', offset: 50 * numRequests },
-                              headers: { 'Authorization': 'Bearer ' + access_token },
-                              json: true
-                          };
-
-                          request.get(playlistOptions, (error, response, body) => {
-                              this.setState({ playlists: this.state.playlists.concat(body.items) })
-                          });
-
-                          playlistsLeft -= 50;
-                          numRequests++
-                      }
-                  });
-                }
-
+                firebase.database().ref(`users/${this.state.user}/location`).once("value", snapshot => {
+                    if (snapshot.exists()) {
+                        //checking if the account already exists
+                        console.log("exists!");
+                        firebase.database().ref(`users/${this.state.user}/topPlaylist`).once("value", snapshot => {
+                            if (snapshot.exists()) {
+                                console.log("top playlist also exists")
+                            }
+                            else {
+                                console.log("top playlist doesnt exist but location does")
+                                this.handleModal();
+                            }
+                        });
+                    }
+                    else {
+                        console.log("does not exist");
+                        //if account doesn't exist then open Modal
+                        this.handleModal();
+                    }
+                });
+          
 
             });
         }
     }
+
     assignPlaylistTracksName = (items) => {
         if (typeof (items) != 'undefined') {
             if (items != 0) {
@@ -410,6 +341,7 @@ class User extends Component {
             }
         }
     }
+
     assignTrackFeatures = (items) => {
         if (typeof (items) != 'undefined') {
             if (items != 0) {
@@ -423,7 +355,6 @@ class User extends Component {
     }
 
     compareWithOtherUser = async (key) => {
-
         this.setState({ status: "Calculating score" })
         let compatibility = await this.calculateUserScore(key);
         this.setState({
@@ -460,9 +391,9 @@ class User extends Component {
             var dbRef = firebase.database().ref('users')
 
             dbRef.orderByValue().startAt(0).on("child_added", snapshot => {
-                if(snapshot.exists() && snapshot.key == key){
-                    //HERE CAN DO AN IF
-                    otherDisplayName = snapshot.child("displayName").val();
+
+                if (snapshot.exists() && snapshot.key == key) {
+
                     otherLength = snapshot.child("name").val().length;
                     otherTrackFeatures = snapshot.child("trackFeatures").val();
                     otherArtistID = snapshot.child("artistID").val();
@@ -505,7 +436,7 @@ class User extends Component {
                     if (!(this.state.genres[i].length === 0)) {
                         for (let k = 0; k < this.state.genres[i].length; k++) {
                             let found = false;
-                            if(otherGenres[j] != null){
+                            if (otherGenres[j] != null) {
                                 if (!(otherGenres[j].length === 0)) {
                                     for (let l = 0; l < otherGenres[j].length; l++) {
                                         if (this.state.genres[i][k] == otherGenres[j][l]) {
@@ -561,9 +492,8 @@ class User extends Component {
                 imin = 100 - imin;
                 console.log(this.state.name[i] + ": " + imin)
                 playlist1Total += imin;
-                if(max < imin){
+                if (max < imin) {
                     mostCompatibleIndex = i;
-                    // max = Math.round(imin);
                     max = imin;
                 }
                 console.log("playlist1 running total: " + playlist1Total)
@@ -589,7 +519,7 @@ class User extends Component {
                     differenceScore += 75;
                     if (this.state.artistID[i] == otherArtistID[j])
                         differenceScore -= 20;
-                    if(otherGenres[j] != null){
+                    if (otherGenres[j] != null) {
                         if (!(otherGenres[j].length === 0)) {
                             for (let l = 0; l < otherGenres[j].length; l++) {
                                 let found = false;
@@ -627,10 +557,8 @@ class User extends Component {
 
             var total;
             if (playlist1Total > playlist2Total)
-                // total = Math.round(playlist2Total)
                 total = playlist2Total;
             else
-                // total = Math.round(playlist1Total)
                 total = playlist1Total;
 
             var otherCompatibility = {
@@ -654,41 +582,41 @@ class User extends Component {
 
             console.log(otherCompatibility);
 
-
-            this.setState({ status: "All done! Click on a user's name to see their profile, or click the compatibility score to see more details."})
+            this.setState({ status: "All done! Click on a user's name to see their profile, or click the compatibility score to see more details." })
             resolve(otherCompatibility);
-
         })
     }
 
     getPlaylistTracks = (i) => {
-        this.setState({data: {
-            labels: [
-                'Dance',
-                'Energy',
-                'Acoustic',
-                'Live',
-                'Valence'
-            ],
-            datasets: [{
-                data: [0, 0, 0, 0, 0],
-                backgroundColor: [
-                '#FF6384',
-                '#36A2EB',
-                '#FFCE56',
-                'Green',
-                'Orange',
-                'Purple'
+        this.setState({
+            data: {
+                labels: [
+                    'Dance',
+                    'Energy',
+                    'Acoustic',
+                    'Live',
+                    'Valence'
                 ],
-                hoverBackgroundColor: [
-                '#FF6384',
-                '#36A2EB',
-                '#FFCE56',
-                'Grey',
-                'Cyan',
-                'Brown'
-                ]
-            }]},
+                datasets: [{
+                    data: [0, 0, 0, 0, 0],
+                    backgroundColor: [
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56',
+                        'Green',
+                        'Orange',
+                        'Purple'
+                    ],
+                    hoverBackgroundColor: [
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56',
+                        'Grey',
+                        'Cyan',
+                        'Brown'
+                    ]
+                }]
+            },
             danceNames: [],
             energyNames: [],
             acousticNames: [],
@@ -714,13 +642,8 @@ class User extends Component {
             console.log(body);
             console.log('this.state.playlists' + this.state.playlists)
             this.assignPlaylistTracksName(body.items);
-
-            //TAKING OUT TOP 50 TEST
-            //this.comparePlaylists();
-
             this.closeNav();
             this.getSelectedPlaylist();
-
         });
 
 
@@ -799,9 +722,9 @@ class User extends Component {
 
         }
 
-        this.setState({listOfUserCompatibilities: []})
+        this.setState({ listOfUserCompatibilities: [] })
         console.log("LENGTH FROM HERE: " + this.state.playlisttracknames.length)
-        for(var i = 0; i < this.state.listOfUsers.length; i++){
+        for (var i = 0; i < this.state.listOfUsers.length; i++) {
             this.compareWithOtherUser(this.state.listOfUsers[i]);
         }
 
@@ -818,13 +741,13 @@ class User extends Component {
         console.log(this.state.refresh_token);
 
         var authOptions = {
-              url: 'https://accounts.spotify.com/api/token',
-              headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
-              form: {
+            url: 'https://accounts.spotify.com/api/token',
+            headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
+            form: {
                 grant_type: 'refresh_token',
                 refresh_token: this.state.refresh_token
-              },
-              json: true
+            },
+            json: true
         };
 
         request.post(authOptions, (error, response, body) => {
@@ -849,17 +772,6 @@ class User extends Component {
     }
 
     goToProfile = (i) => {
-        // let profile = (
-        //     <div className="modal">
-        //         <div className="modal_content">
-        //         <span className="close" onClick={this.handleClick}>&times;    </span>
-        //         <p>I'm A Pop Up!!!</p>
-        //         </div>
-        //     </div>
-        // );
-
-        // this.setState({profile: profile})
-
         console.log(this.state.listOfUsers)
         let access_token = window.sessionStorage.access_token;
         console.log(access_token)
@@ -879,15 +791,13 @@ class User extends Component {
     }
 
     generateUserCompButtons = () => {
-        // let list = this.convertToInt(this.state.listOfUserCompatibilities);
         let list = this.state.listOfUserCompatibilities;
-        // this.state.showCompData = true;
         let access_token = this.state.access_token;
 
         let compButtons = list.map((i, index) =>
-        <div className = 'usercard'>
+            <div className='usercard'>
 
-            <style jsx>{`
+                <style jsx>{`
 
                 .profile-link:hover{
                     color: #1ed760;
@@ -965,46 +875,49 @@ class User extends Component {
             `}</style>
 
 
-              <Card border="dark" style={{ height: '200px'}} text="white">
-              <Card.Img className = "cardimage" src="https://media.gettyimages.com/photos/colorful-clouds-on-dramatic-sunset-sky-picture-id888845986?b=1&k=6&m=888845986&s=612x612&w=0&h=IyxUtRdQEQGV-DwLn9HaGJdhZRGZFVg3vXcefQRrIqI=" alt="Card image" style={{ height: '200px'}}/>
-              <Card.ImgOverlay>
-                <Row>
+                <Card border="dark" style={{ height: '200px' }} text="white">
+                    <Card.Img className="cardimage" src="https://media.gettyimages.com/photos/colorful-clouds-on-dramatic-sunset-sky-picture-id888845986?b=1&k=6&m=888845986&s=612x612&w=0&h=IyxUtRdQEQGV-DwLn9HaGJdhZRGZFVg3vXcefQRrIqI=" alt="Card image" style={{ height: '200px' }} />
+                    <Card.ImgOverlay>
+                        <Row>
 
-                    <Col onClick={() => this.setOtherUsersDetails(index)} >
+                            <Col onClick={() => this.setOtherUsersDetails(index)} >
 
-                        <div className = 'percent' >
-                            {Math.round(i.key)}
-                            <span className="tooltiptext">View Compatibility Details</span>
-                        </div>
-
-                    </Col>
-
-                    <Col style={{fontSize: '1.1vw', paddingTop: '20px', whiteSpace: 'nowrap', overflowX: 'auto'}}>
-                        <Link href={{
-                            pathname: '/profile',
-                            query: { access_token: access_token, user: i.value, displayName: i.displayName}} }
-                            passHref>
-                            <a target="_blank">
-                                <div className="profile-link" style={{color: 'white', overflowY:'hidden', overflowX:'hidden'}}>
-                                    <span className="tooltiptext">View User Profile</span>
-                                    {i.displayName}
+                                <div className='percent' >
+                                    {Math.round(i.key)}
+                                    <span className="tooltiptext">View Compatibility Details</span>
                                 </div>
-                            </a>
-                        </Link>
-                        <div className = "usercardphoto">
-                        <Image src={list[index].image} roundedCircle/>
-                        </div>
 
-                    </Col>
+                            </Col>
 
 
-                  </Row>
-                   </Card.ImgOverlay>
+                            <Col style={{ fontSize: '1.1vw', paddingTop: '20px', whiteSpace: 'nowrap', overflowX: 'auto' }}>
+                                <Link href={{
+                                    pathname: '/profile',
+                                    query: { access_token: access_token, user: i.value }
+                                }}
+                                    passHref>
+                                    <a target="_blank">
+                                        <div className="profile-link" style={{ color: 'white', overflowY: 'hidden', overflowX: 'hidden' }}>
+                                            <span className="tooltiptext">View User Profile</span>
+                                            {i.value}
+                                        </div>
+                                    </a>
+                                </Link>
+                                <div className="usercardphoto">
+                                    <Image src={list[index].image} roundedCircle />
+
+                                </div>
+
+                            </Col>
+
+
+                        </Row>
+                    </Card.ImgOverlay>
                 </Card>
 
 
-        </div>
-        )//return
+            </div>
+        )
         return compButtons;
     }
 
@@ -1040,14 +953,14 @@ class User extends Component {
                         '#238b45',
                         '#006d2c',
                         '#00441b'
-                        ],
-                        hoverBackgroundColor: [
+                    ],
+                    hoverBackgroundColor: [
                         '#edf8fb',
                         '#edf8fb',
                         '#edf8fb',
                         '#edf8fb',
                         '#edf8fb'
-                        ]
+                    ]
                 }]
             },
             danceNames: danceNames,
@@ -1076,15 +989,10 @@ class User extends Component {
         console.log(this.state.data)
         let status;
         let message;
-        // status = ''
-        // message = `These playlists are ${this.state.compatibility}% compatible!`
-        // message += "\n" + this.state.name[this.state.mostCompatibleIndex] + " by "
-        // + this.state.artist[this.state.mostCompatibleIndex]
-        // + ` is the most compatible song by ${this.state.max}%.`
         return (
             <Row>
-                <Col style={{textAlign: 'center'}}>
-                    <div style={{textAlign: 'center'}}>
+                <Col style={{ textAlign: 'center' }}>
+                    <div style={{ textAlign: 'center' }}>
                         {status}
                     </div>
                     {message}
@@ -1096,16 +1004,18 @@ class User extends Component {
                         options={{
                             maintainAspectRatio: false,
                             plugins: {
-                                        labels: { render: 'label',
-                                            fontColor: 'white'}
+                                labels: {
+                                    render: 'label',
+                                    fontColor: 'white'
+                                }
                             },
                             legend: {
                                 display: false
                             }
                         }}
-                        getElementsAtEvent={elems =>{
-                            if(elems.length != 0){
-                                if(elems[0]._index == 0){
+                        getElementsAtEvent={elems => {
+                            if (elems.length != 0) {
+                                if (elems[0]._index == 0) {
                                     console.log(elems[0]._index);
                                     this.state.showDance = true;
                                     this.state.showEnergy = false;
@@ -1114,28 +1024,28 @@ class User extends Component {
                                     this.state.showValence = false;
                                     console.log('showDance: ' + this.state.showDance);
                                     this.forceUpdate();
-                                } else if(elems[0]._index == 1){
+                                } else if (elems[0]._index == 1) {
                                     this.state.showDance = false;
                                     this.state.showEnergy = true;
                                     this.state.showAcoustic = false;
                                     this.state.showLive = false;
                                     this.state.showValence = false;
                                     this.forceUpdate();
-                                } else if(elems[0]._index == 2){
+                                } else if (elems[0]._index == 2) {
                                     this.state.showDance = false;
                                     this.state.showEnergy = false;
                                     this.state.showAcoustic = true;
                                     this.state.showLive = false;
                                     this.state.showValence = false;
                                     this.forceUpdate();
-                                } else if(elems[0]._index == 3){
+                                } else if (elems[0]._index == 3) {
                                     this.state.showDance = false;
                                     this.state.showEnergy = false;
                                     this.state.showAcoustic = false;
                                     this.state.showLive = true;
                                     this.state.showValence = false;
                                     this.forceUpdate();
-                                } else if(elems[0]._index == 4){
+                                } else if (elems[0]._index == 4) {
                                     this.state.showDance = false;
                                     this.state.showEnergy = false;
                                     this.state.showAcoustic = false;
@@ -1145,7 +1055,7 @@ class User extends Component {
                                 }
                             }
                         }}
-                        />
+                    />
                 </Col>
             </Row>
         )
@@ -1166,16 +1076,18 @@ class User extends Component {
     }
 
     openNav() {
-        // document.getElementById("mySidepanel").style.width = "250px";
-        this.setState({showPlaylists: true,
-        showCompData: false})
+        this.setState({
+            showPlaylists: true,
+            showCompData: false
+        })
     }
 
-        /* Set the width of the sidebar to 0 (hide it) */
+    /* Set the width of the sidebar to 0 (hide it) */
     closeNav() {
-        // document.getElementById("mySidepanel").style.width = "0";
-        this.setState({showPlaylists: false,
-        showCompData: true})
+        this.setState({
+            showPlaylists: false,
+            showCompData: true
+        })
     }
 
     render() {
@@ -1184,15 +1096,15 @@ class User extends Component {
             if (this.state.playlists.length != 0) {
                 playlists = this.state.playlists.map((i, index) =>
 
-                <div>
-                    <Row>
-                        <Col>
-                        <Button className = "button" onClick={() => this.getPlaylistTracks(index)} variant="success" size="sm">
-                            {i.name}
-                        </Button>
+                    <div>
+                        <Row>
+                            <Col>
+                                <Button className="button" onClick={() => this.getPlaylistTracks(index)} variant="success" size="sm">
+                                    {i.name}
+                                </Button>
 
-                        </Col>
-                    </Row>
+                            </Col>
+                        </Row>
                     </div>
                 )
             } else {
@@ -1206,72 +1118,48 @@ class User extends Component {
             if (this.state.listOfUsers.length != 0) {
 
                 list_ofUsers = this.state.listOfUsers.map((i, index) =>
-                <div>
-                    <li>
-                      <Row>
-                        <Col>  {i} </Col>
-                        <Col>
-                        <Button className = "button" onClick={() => this.goToProfile(index) }  variant="outline-secondary">
-                            Select User
+                    <div>
+                        <li>
+                            <Row>
+                                <Col>  {i} </Col>
+                                <Col>
+                                    <Button className="button" onClick={() => this.goToProfile(index)} variant="outline-secondary">
+                                        Select User
                         </Button>
-                        </Col>
-                        </Row>
+                                </Col>
+                            </Row>
                         </li>
                     </div>
                 )
             } else {
                 playlists = (
-                <div>
-                    <p>No users to compare with...there may be no users in your location, maybe you should choose a new location?</p>
-                    <p>Please go to Settings to change location or top playlist</p>
-                    <Button onClick= {()=>{this.goToSettings()}} variant="light">
-                          Settings
+
+                    <div>
+                        <p>No users to compare with...</p>
+                        <p>Please go to Settings to change location or top playlist</p>
+                        <Button onClick={() => { this.goToSettings() }} variant="light">
+                            Settings
+
                     </Button>
-                </div>
+                    </div>
                 )
             }
         }
 
         let userCompButtons;
-        if(this.state.showOtherUsers){
+        if (this.state.showOtherUsers) {
             console.log("SHOWING OTHER USERS")
             this.setUserCompList();
             userCompButtons = this.generateUserCompButtons();
-        } else{
+        } else {
             userCompButtons = "no users yet";
-            // userCompButtons = this.state.listOfUsers.map((i, index) =>
-            // <div>
-            //     <li>
-            //       <Row>
-            //         <Col>  {i} </Col>
-            //         </Row>
-            //         </li>
-            //         </div>
-            //       )
-
         }
-
-        // let userDetailsChart;
-        // if(this.state.showChart){
-        //     console.log("generating chart");
-        //     userDetailsChart = this.generateUserChart();
-        // }
 
         var message = ''
         var status = ''
-        let details;
-        if (this.state.compatibility < 0) {
-            message = ''
-        } else if ((this.state.compatibility) == 'generating') {
-            if(this.state.loading){
-                // message = `Generating compatibility. Status:`
-                message = '';
-            } else{
-                message = '';
-            }
-            status = `${this.state.status}`
+        if (this.state.compatibility == 'generating') {
+            status = this.state.status;
         } else if (this.state.compatibility > 0) {
-            status = ''
             message = `These playlists are ${Math.round(this.state.compatibility)}% compatible!`
             message += "\n" + this.state.name[this.state.mostCompatibleIndex] + " by " + this.state.artist[this.state.mostCompatibleIndex] + ` is the most compatible song by ${Math.round(this.state.max)}%.`
             message+= " Click on each slice of the donut! You'll be able to see exactly which songs you have in common with the chosen user."
@@ -1280,13 +1168,12 @@ class User extends Component {
         let danceList;
         if (typeof (this.state.danceNames) != 'undefined') {
             if (this.state.danceNames.length != 0) {
-                danceList = this.state.danceNames.map((i, index) =>
-
-                <div>
-                    <li>
-                        {i}
-                    </li>
-                </div>
+                danceList = this.state.danceNames.map((i) =>
+                    <div>
+                        <li>
+                            {i}
+                        </li>
+                    </div>
                 )
             }
         }
@@ -1294,13 +1181,12 @@ class User extends Component {
         let energyList;
         if (typeof (this.state.energyNames) != 'undefined') {
             if (this.state.energyNames.length != 0) {
-                energyList = this.state.energyNames.map((i, index) =>
-
-                <div>
-                    <li>
-                        {i}
-                    </li>
-                </div>
+                energyList = this.state.energyNames.map((i) =>
+                    <div>
+                        <li>
+                            {i}
+                        </li>
+                    </div>
                 )
             }
         }
@@ -1308,13 +1194,12 @@ class User extends Component {
         let acousticList;
         if (typeof (this.state.acousticNames) != 'undefined') {
             if (this.state.acousticNames.length != 0) {
-                acousticList = this.state.acousticNames.map((i, index) =>
-
-                <div>
-                    <li>
-                        {i}
-                    </li>
-                </div>
+                acousticList = this.state.acousticNames.map((i) =>
+                    <div>
+                        <li>
+                            {i}
+                        </li>
+                    </div>
                 )
             }
         }
@@ -1322,13 +1207,12 @@ class User extends Component {
         let liveList;
         if (typeof (this.state.liveNames) != 'undefined') {
             if (this.state.liveNames.length != 0) {
-                liveList = this.state.liveNames.map((i, index) =>
-
-                <div>
-                    <li>
-                        {i}
-                    </li>
-                </div>
+                liveList = this.state.liveNames.map((i) =>
+                    <div>
+                        <li>
+                            {i}
+                        </li>
+                    </div>
                 )
             }
         }
@@ -1336,122 +1220,97 @@ class User extends Component {
         let valenceList;
         if (typeof (this.state.valenceNames) != 'undefined') {
             if (this.state.valenceNames.length != 0) {
-                valenceList = this.state.valenceNames.map((i, index) =>
-
-                <div>
-                    <li>
-                        {i}
-                    </li>
-                </div>
+                valenceList = this.state.valenceNames.map((i) =>
+                    <div>
+                        <li>
+                            {i}
+                        </li>
+                    </div>
                 )
             }
         }
 
         let visibleList;
-        if(this.state.showDance){
+        if (this.state.showDance) {
             visibleList = (
                 <div>
-                    <p>{this.state.danceCount} {this.state.danceCount == 1 ? 'song is': 'songs are'} most compatibility in Dancibility:</p>
+                    <p>{this.state.danceCount} {this.state.danceCount == 1 ? 'song is' : 'songs are'} most compatibility in Dancibility:</p>
                     {danceList}
                 </div>
             );
-        } else if(this.state.showEnergy){
+        } else if (this.state.showEnergy) {
             visibleList = (
                 <div>
-                    <p>{this.state.energyCount} {this.state.energyCount == 1 ? 'song is': 'songs are'} most compatibility in Energy:</p>
+                    <p>{this.state.energyCount} {this.state.energyCount == 1 ? 'song is' : 'songs are'} most compatibility in Energy:</p>
                     {energyList}
                 </div>
             );
-        } else if(this.state.showAcoustic){
+        } else if (this.state.showAcoustic) {
             visibleList = (
                 <div>
-                    <p>{this.state.acousticCount} {this.state.acousticCount == 1 ? 'song is': 'songs are'} most compatibility in Acousticness:</p>
+                    <p>{this.state.acousticCount} {this.state.acousticCount == 1 ? 'song is' : 'songs are'} most compatibility in Acousticness:</p>
                     {acousticList}
                 </div>
             );
-        } else if(this.state.showLive){
+        } else if (this.state.showLive) {
             visibleList = (
                 <div>
-                    <p>{this.state.liveCount} {this.state.liveCount == 1 ? 'song is': 'songs are'} most compatibility in Liveness:</p>
+                    <p>{this.state.liveCount} {this.state.liveCount == 1 ? 'song is' : 'songs are'} most compatibility in Liveness:</p>
                     {liveList}
                 </div>
             );
-        } else if(this.state.showValence){
+        } else if (this.state.showValence) {
             visibleList = (
                 <div>
-                    <p>{this.state.valenceCount} {this.state.valenceCount == 1 ? 'song is': 'songs are'} most compatibility in Valence:</p>
+                    <p>{this.state.valenceCount} {this.state.valenceCount == 1 ? 'song is' : 'songs are'} most compatibility in Valence:</p>
                     {valenceList}
                 </div>
             );
         }
 
-        let playlistsBox = (
-            <Col xs={6}>
-                <Card style={{ height: '550px', backgroundColor: '#121212' }} text="white" >
-                    <Card.Header>Playlists: </Card.Header>
-                        <div className="overflow-auto" style={{  maxHeight:"480px" }}>
-                    <Card.Body>
-                        <Card.Text>
-
-
-                            <ul>{playlists}</ul>
-
-                        </Card.Text>
-                    </Card.Body>
-                        </div>
-                </Card>
-            </Col>
-        );
-
         let leftSide;
         let rightSide;
-        if(this.state.beforeSelection){
+        if (this.state.beforeSelection) {
             leftSide = (
-                // {playlistsBox}
                 <Col>
-                <Card style={{ height: '550px', backgroundColor: '#121212' }} text="white" >
-                    <Card.Header>Playlists: </Card.Header>
-                        <div className="overflow-auto" style={{  maxHeight:"480px" }}>
-                    <Card.Body>
-                        <Card.Text>
-
-
-                            <ul>{playlists}</ul>
-
-                        </Card.Text>
-                    </Card.Body>
+                    <Card style={{ height: '550px', backgroundColor: '#121212' }} text="white" >
+                        <Card.Header>Playlists: </Card.Header>
+                        <div className="overflow-auto" style={{ maxHeight: "480px" }}>
+                            <Card.Body>
+                                <Card.Text>
+                                    <ul>{playlists}</ul>
+                                </Card.Text>
+                            </Card.Body>
                         </div>
-                </Card>
+                    </Card>
                 </Col>
             );
-            if(!this.state.loading){
+            if (!this.state.loading) {
                 rightSide = (
                     <Col>
-                        <p style={{color: 'white', fontSize: '50pt'}}>Choose a playlist to find compatible users near you</p>
-                        <p style={{color: '#dedede', fontSize: '25pt'}}>Your selected playlist will be compared with the favorite playlists of people in your area</p>
-                        {/* <br/>
-                        <MdKeyboardBackspace style={{color: 'white'}} size={150}/></p> */}
+                        <p style={{ color: 'white', fontSize: '50pt' }}>Choose a playlist to find compatible users near you</p>
+                        <p style={{ color: '#dedede', fontSize: '25pt' }}>Your selected playlist will be compared with the favorite playlists of people in your area</p>
                         <p></p>
                     </Col>
                 );
             }
-        } else{
+        } else {
             let toggle;
-            if(this.state.showPlaylists){
+            if (this.state.showPlaylists) {
                 console.log("toggle true")
                 toggle = (
                     <Col md="auto">
-                        <div id="mySidepanel" className="sidepanel" style={{width: '20vw'}}>
+                        <div id="mySidepanel" className="sidepanel" style={{ width: '20vw' }}>
                             <Row>
-                                <a className="closebtn" onClick={() => this.closeNav()} style={{color: 'white'}}>&times;</a>
+                                <a className="closebtn" onClick={() => this.closeNav()} style={{ color: 'white' }}>&times;</a>
                             </Row>
-                            <Row style={{paddingTop: '20px', paddingRight: '20px'}}>
+                            <Row style={{ paddingTop: '20px', paddingRight: '20px' }}>
                                 <ul>{playlists}</ul>
                             </Row>
                         </div>
                     </Col>
                 );
-            } else{
+            } else {
                 console.log("toggle false")
                 toggle = (
                     <Col md="auto">
@@ -1553,20 +1412,19 @@ class User extends Component {
                         }
                     `}
                     </style>
-                        {toggle}
+                    {toggle}
                 </Col>
             );
             rightSide = (
                 <Col>
                     <Card bg="dark" style={{ height: '550px', width: '35vw' }} text="white" >
-                    <Card.Header>Compatible Users:</Card.Header>
-                    <div className="overflow-auto" style={{  maxHeight:"480px" }}>
-
-                        <Card.Body>
-                            <Card.Text>
-                                {userCompButtons}
-                            </Card.Text>
-                        </Card.Body>
+                        <Card.Header>Compatible Users:</Card.Header>
+                        <div className="overflow-auto" style={{ maxHeight: "480px" }}>
+                            <Card.Body>
+                                <Card.Text>
+                                    {userCompButtons}
+                                </Card.Text>
+                            </Card.Body>
                         </div>
                     </Card>
                 </Col>
@@ -1574,10 +1432,10 @@ class User extends Component {
         }
 
         let compData;
-        if(this.state.showCompData){
-            if(!this.state.hideCompData){
+        if (this.state.showCompData) {
+            if (!this.state.hideCompData) {
                 compData = (
-                    <Col style={{width: '30vw', color: 'white'}}>
+                    <Col style={{ width: '30vw', color: 'white' }}>
                         <div className="sweet-loading">
                             <ScaleLoader
                                 css={override}
@@ -1588,77 +1446,80 @@ class User extends Component {
                                 //size={"150px"} this also works
                                 color={"#1DB954"}
                                 loading={this.state.loading}
-                                />
+                            />
+                        </div>
+                        {/* <Col> */}
+                        <Row style={{ textAlign: 'center' }}>
+                            <div style={{ textAlign: 'center' }}>
+                                {status}
                             </div>
-                            {/* <Col> */}
-                            <Row style={{textAlign: 'center'}}>
-                                <div style={{textAlign: 'center'}}>
-                                    {status}
 
-                                </div>
-                                {message}
+                            {message}
+                        </Row>
+                        {/* </Col>
+                            <Col> */}
+                        <Row style={{ padding: '30px' }}>
+                            <Doughnut data={this.state.data}
+                                width={300}
+                                height={300}
+                                options={{
+                                    maintainAspectRatio: false,
+                                    plugins: {
+                                        labels: {
+                                            render: 'label',
+                                            fontColor: 'white'
 
-                            </Row>
-
-                            <Row style={{padding: '30px'}}>
-                                <Doughnut data={this.state.data}
-                                    width={300}
-                                    height={300}
-                                    options={{
-                                        maintainAspectRatio: false,
-                                        plugins: {
-                                                    labels: { render: 'label',
-                                                        fontColor: 'white'}
-                                        },
-                                        legend: {
-                                            display: false
                                         }
-                                    }}
-                                    getElementsAtEvent={elems =>{
-                                        if(elems.length != 0){
-                                            if(elems[0]._index == 0){
-                                                console.log(elems[0]._index);
-                                                this.state.showDance = true;
-                                                this.state.showEnergy = false;
-                                                this.state.showAcoustic = false;
-                                                this.state.showLive = false;
-                                                this.state.showValence = false;
-                                                console.log('showDance: ' + this.state.showDance);
-                                                this.forceUpdate();
-                                            } else if(elems[0]._index == 1){
-                                                this.state.showDance = false;
-                                                this.state.showEnergy = true;
-                                                this.state.showAcoustic = false;
-                                                this.state.showLive = false;
-                                                this.state.showValence = false;
-                                                this.forceUpdate();
-                                            } else if(elems[0]._index == 2){
-                                                this.state.showDance = false;
-                                                this.state.showEnergy = false;
-                                                this.state.showAcoustic = true;
-                                                this.state.showLive = false;
-                                                this.state.showValence = false;
-                                                this.forceUpdate();
-                                            } else if(elems[0]._index == 3){
-                                                this.state.showDance = false;
-                                                this.state.showEnergy = false;
-                                                this.state.showAcoustic = false;
-                                                this.state.showLive = true;
-                                                this.state.showValence = false;
-                                                this.forceUpdate();
-                                            } else if(elems[0]._index == 4){
-                                                this.state.showDance = false;
-                                                this.state.showEnergy = false;
-                                                this.state.showAcoustic = false;
-                                                this.state.showLive = false;
-                                                this.state.showValence = true;
-                                                this.forceUpdate();
-                                            }
+                                    },
+                                    legend: {
+                                        display: false
+                                    }
+                                }}
+                                getElementsAtEvent={elems => {
+                                    if (elems.length != 0) {
+                                        if (elems[0]._index == 0) {
+                                            console.log(elems[0]._index);
+                                            this.state.showDance = true;
+                                            this.state.showEnergy = false;
+                                            this.state.showAcoustic = false;
+                                            this.state.showLive = false;
+                                            this.state.showValence = false;
+                                            console.log('showDance: ' + this.state.showDance);
+                                            this.forceUpdate();
+                                        } else if (elems[0]._index == 1) {
+                                            this.state.showDance = false;
+                                            this.state.showEnergy = true;
+                                            this.state.showAcoustic = false;
+                                            this.state.showLive = false;
+                                            this.state.showValence = false;
+                                            this.forceUpdate();
+                                        } else if (elems[0]._index == 2) {
+                                            this.state.showDance = false;
+                                            this.state.showEnergy = false;
+                                            this.state.showAcoustic = true;
+                                            this.state.showLive = false;
+                                            this.state.showValence = false;
+                                            this.forceUpdate();
+                                        } else if (elems[0]._index == 3) {
+                                            this.state.showDance = false;
+                                            this.state.showEnergy = false;
+                                            this.state.showAcoustic = false;
+                                            this.state.showLive = true;
+                                            this.state.showValence = false;
+                                            this.forceUpdate();
+                                        } else if (elems[0]._index == 4) {
+                                            this.state.showDance = false;
+                                            this.state.showEnergy = false;
+                                            this.state.showAcoustic = false;
+                                            this.state.showLive = false;
+                                            this.state.showValence = true;
+                                            this.forceUpdate();
                                         }
-                                    }}
-                                />
-                            </Row>
-                        <Row style={{color: 'white', paddingTop: '35px', paddingLeft: '100px'}}>
+                                    }
+                                }}
+                            />
+                        </Row>
+                        <Row style={{ color: 'white', paddingTop: '35px', paddingLeft: '100px' }}>
                             {visibleList}
                         </Row>
                     </Col>
@@ -1667,52 +1528,54 @@ class User extends Component {
             } else {
                 console.log("hiding chart")
                 compData = (
-                <div>
-                    <style jsx>{`
+                    <div>
+                        <style jsx>{`
                         .comp-data{
                             transition: '0.5s'
                             x-index: '1200px'
                         }
                     `}</style>
-                    <Col style={{width: '30vw', color: 'white'}} className="comp-data">
-                        <div className="sweet-loading">
-                            <ScaleLoader
-                                css={override}
-                                size={5}
-                                height={30}
-                                width={10}
-                                radius={5}
-                                //size={"150px"} this also works
-                                color={"#1DB954"}
-                                loading={this.state.loading}
+                        <Col style={{ width: '30vw', color: 'white' }} className="comp-data">
+                            <div className="sweet-loading">
+                                <ScaleLoader
+                                    css={override}
+                                    size={5}
+                                    height={30}
+                                    width={10}
+                                    radius={5}
+                                    //size={"150px"} this also works
+                                    color={"#1DB954"}
+                                    loading={this.state.loading}
                                 />
                             </div>
                             {/* <Col> */}
-                            <Row style={{textAlign: 'center'}}>
-                                <div style={{textAlign: 'center'}}>
+                            <Row style={{ textAlign: 'center' }}>
+                                <div style={{ textAlign: 'center' }}>
                                     {status}
                                 </div>
                                 {message}
                             </Row>
                             {/* </Col>
                             <Col> */}
-                            <Row style={{padding: '30px'}}>
+                            <Row style={{ padding: '30px' }}>
                                 <Doughnut data={this.state.data}
                                     width={300}
                                     height={300}
                                     options={{
                                         maintainAspectRatio: false,
                                         plugins: {
-                                                    labels: { render: 'label',
-                                                        fontColor: 'white'}
+                                            labels: {
+                                                render: 'label',
+                                                fontColor: 'white'
+                                            }
                                         },
                                         legend: {
                                             display: false
                                         }
                                     }}
-                                    getElementsAtEvent={elems =>{
-                                        if(elems.length != 0){
-                                            if(elems[0]._index == 0){
+                                    getElementsAtEvent={elems => {
+                                        if (elems.length != 0) {
+                                            if (elems[0]._index == 0) {
                                                 console.log(elems[0]._index);
                                                 this.state.showDance = true;
                                                 this.state.showEnergy = false;
@@ -1721,28 +1584,28 @@ class User extends Component {
                                                 this.state.showValence = false;
                                                 console.log('showDance: ' + this.state.showDance);
                                                 this.forceUpdate();
-                                            } else if(elems[0]._index == 1){
+                                            } else if (elems[0]._index == 1) {
                                                 this.state.showDance = false;
                                                 this.state.showEnergy = true;
                                                 this.state.showAcoustic = false;
                                                 this.state.showLive = false;
                                                 this.state.showValence = false;
                                                 this.forceUpdate();
-                                            } else if(elems[0]._index == 2){
+                                            } else if (elems[0]._index == 2) {
                                                 this.state.showDance = false;
                                                 this.state.showEnergy = false;
                                                 this.state.showAcoustic = true;
                                                 this.state.showLive = false;
                                                 this.state.showValence = false;
                                                 this.forceUpdate();
-                                            } else if(elems[0]._index == 3){
+                                            } else if (elems[0]._index == 3) {
                                                 this.state.showDance = false;
                                                 this.state.showEnergy = false;
                                                 this.state.showAcoustic = false;
                                                 this.state.showLive = true;
                                                 this.state.showValence = false;
                                                 this.forceUpdate();
-                                            } else if(elems[0]._index == 4){
+                                            } else if (elems[0]._index == 4) {
                                                 this.state.showDance = false;
                                                 this.state.showEnergy = false;
                                                 this.state.showAcoustic = false;
@@ -1754,16 +1617,18 @@ class User extends Component {
                                     }}
                                 />
                             </Row>
-                        <Row style={{color: 'white', paddingTop: '35px', paddingLeft: '100px'}}>
-                            {visibleList}
-                        </Row>
-                    </Col>
-                </div>
+                            <Row style={{ color: 'white', paddingTop: '35px', paddingLeft: '100px' }}>
+                                {visibleList}
+                            </Row>
+                        </Col>
+                    </div>
                 );
             }
-        } else if(this.state.loading){
+
+        } else if (this.state.loading) {
+
             compData = (
-                <Col style={{width: '30vw', color: 'white'}}>
+                <Col style={{ width: '30vw', color: 'white' }}>
                     <div className="sweet-loading">
                         <ScaleLoader
                             css={override}
@@ -1774,10 +1639,10 @@ class User extends Component {
                             //size={"150px"} this also works
                             color={"#1DB954"}
                             loading={this.state.loading}
-                            />
+                        />
                     </div>
-                    <Row style={{textAlign: 'center'}}>
-                        <div style={{textAlign: 'center'}}>
+                    <Row style={{ textAlign: 'center' }}>
+                        <div style={{ textAlign: 'center' }}>
                             {status}
                         </div>
                         {message}
@@ -1789,8 +1654,8 @@ class User extends Component {
         return (
             <html>
                 <div className="testclass">
-                <div>
-                <style jsx>{`
+                    <div>
+                        <style jsx>{`
                     .container {
                         margin: 50px;
                     }
@@ -1813,145 +1678,61 @@ class User extends Component {
                     //https://stackoverflow.com/questions/15167545/how-to-crop-a-rectangular-image-into-a-square-with-css
 
                 `}</style>
-                <head>
-                  <link
-                    rel="stylesheet"
-                    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-                    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-                    crossorigin="anonymous"
-                  />
-                  <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet" />
-                </head>
-                <Header props={''} />
-                <div>
 
-                    {/* <Button onClick= {()=>{this.handleModal()}}> open modal </Button>*/}
+                        <head>
+                            <link
+                                rel="stylesheet"
+                                href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+                                integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+                                crossorigin="anonymous"
+                            />
+                            <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet" />
+                        </head>
+                        <Header props={''} />
+                        <div>
+                            <Modal show={this.state.show} onHide={() => { this.handleModal() }} backdrop="static" keyboard={false} >
+                                <Modal.Header > Hi {this.state.user}!! Welcome to our Spotifynd Friends </Modal.Header>
+                                <Modal.Body>
+                                    Before you do anything else, there are a few steps you need to take.
+                                    1. Go to Settings
+                                    2. Set your personal location and choose your favorite playlist.
+                                    The location will help us connect you with people also in your area and the playlist will
+                                    be displayed to these people!
 
-                    <Modal show={this.state.show} onHide={() => { this.handleModal() }} backdrop="static" keyboard={false} >
-                        <Modal.Header > Hi {this.state.user}!! Welcome to Spotifynd Friends </Modal.Header>
-                        <Modal.Body>
-                            Before you do anything else, there are a few steps you need to take.
-                            1. Go to Settings
-                            2. Set your personal location and choose your favorite playlist.
-                            The location will help us connect you with people also in your area and the playlist will
-                            be displayed to these people!
 
 
                         </Modal.Body>
-                        <Modal.Footer>
-                        <Button onClick= {()=>{this.goToSettings()}} variant="light">
-                          Settings
+                                <Modal.Footer>
+                                    <Button onClick={() => { this.goToSettings() }} variant="light">
+                                        Settings
                         </Button>
-                        </Modal.Footer>
-                    </Modal>
-                </div>
-                <div>
-                  <Container>
-                        <Row>
-                            <Col md="auto" style={{paddingBottom: '20px'}}>
-                                <Image src={this.state.userImage} roundedCircle/>
-                            </Col>
-                            <Col style={{color: 'white', paddingBottom: '20px'}}>
-                                <p style={{fontSize: 'small'}}>USER</p>
-                                <h1><b>{this.state.displayName}</b></h1>
-                            </Col>
-                        </Row>
-                    <Row>
-                        {leftSide}
-                        {rightSide}
-                        {compData}
 
-
-
-                    </Row>
-                    <Row>
-
-                    </Row>
-                    {/* <Row>
-                        <Col>
-                            <div style={{paddingTop: '150px!important'}}>
-                                <Doughnut data={this.state.data}
-                                width={500}
-                                height={500}
-                                options={{
-                                    maintainAspectRatio: false,
-                                    plugins: {
-                                                labels: { render: 'label',
-                                                    fontColor: 'white'}
-                                    },
-                                    legend: {
-                                        display: false
-                                    }
-                                }}
-                                getElementsAtEvent={elems =>{
-                                    if(elems.length != 0){
-                                        if(elems[0]._index == 0){
-                                            console.log(elems[0]._index);
-                                            this.state.showDance = true;
-                                            this.state.showEnergy = false;
-                                            this.state.showAcoustic = false;
-                                            this.state.showLive = false;
-                                            this.state.showValence = false;
-                                            console.log('showDance: ' + this.state.showDance);
-                                            this.forceUpdate();
-                                        } else if(elems[0]._index == 1){
-                                            this.state.showDance = false;
-                                            this.state.showEnergy = true;
-                                            this.state.showAcoustic = false;
-                                            this.state.showLive = false;
-                                            this.state.showValence = false;
-                                            this.forceUpdate();
-                                        } else if(elems[0]._index == 2){
-                                            this.state.showDance = false;
-                                            this.state.showEnergy = false;
-                                            this.state.showAcoustic = true;
-                                            this.state.showLive = false;
-                                            this.state.showValence = false;
-                                            this.forceUpdate();
-                                        } else if(elems[0]._index == 3){
-                                            this.state.showDance = false;
-                                            this.state.showEnergy = false;
-                                            this.state.showAcoustic = false;
-                                            this.state.showLive = true;
-                                            this.state.showValence = false;
-                                            this.forceUpdate();
-                                        } else if(elems[0]._index == 4){
-                                            this.state.showDance = false;
-                                            this.state.showEnergy = false;
-                                            this.state.showAcoustic = false;
-                                            this.state.showLive = false;
-                                            this.state.showValence = true;
-                                            this.forceUpdate();
-                                        }
-                                    }
-                                }}
-                                />
-                            </div>
-                        </Col>
-                        <Col style={{color: 'white', paddingTop: '35px', paddingLeft: '100px'}}>
-                            {visibleList}
-                        </Col>
-                    </Row> */}
-                    {/* <Row>
-                        {userDetailsChart}
-                    </Row> */}
-
-                  </Container>
-
+                                </Modal.Footer>
+                            </Modal>
+                        </div>
+                        <div>
+                            <Container>
+                                <Row>
+                                    <Col md="auto" style={{ paddingBottom: '20px' }}>
+                                        <Image src={this.state.userImage} roundedCircle />
+                                    </Col>
+                                    <Col style={{ color: 'white', paddingBottom: '20px' }}>
+                                        <p style={{ fontSize: 'small' }}>USER</p>
+                                        <h1><b>{this.state.user}</b></h1>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    {leftSide}
+                                    {rightSide}
+                                    {compData}
+                                </Row>
+                            </Container>
+                        </div>
+                    </div>
 
                 </div>
-
-            </div>
-            </div>
-                  {/* <footer className="testclass">
-                      {/* <div class="container"> */}
-                        {/* <Col>
-                            <p>Spotifynd Friends</p>
-                        </Col> */}
-                      {/* </div> */}
-                  {/* </footer> */}
-                  <Footer />
-        </html>
+                <Footer />
+            </html>
         )
     }
 };
