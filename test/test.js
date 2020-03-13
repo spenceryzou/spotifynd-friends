@@ -79,6 +79,16 @@ describe('<User />', () => {
         expect(wrapper.state().playlisttracknames.props.children).equal('No playlists to display');
     })
 
+    it('assignTrackFeatures returns no playlists to display when items is empty', () => {
+        window.sessionStorage.setItem('access_token',"");
+        const wrapper = mount(comp);
+        const instance = wrapper.instance();
+        sinon.stub(instance, 'getUserPlaylists');
+        let items = [];
+        instance.assignTrackFeatures(items);
+        expect(wrapper.state().playlisttracknames.props.children).equal('No playlists to display');
+    })
+
     it('convertToInt returns array of same length as argument', () => {
         const wrapper = shallow(comp);
         const instance = wrapper.instance();
