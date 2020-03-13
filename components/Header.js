@@ -8,7 +8,6 @@ const linkStyle = {
 
 const Header = (props) => {
   let access_token = props.props
-  console.log("access token from header: " + access_token)
   return(
     <div>
       <style jsx>{`
