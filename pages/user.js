@@ -39,6 +39,7 @@ class User extends Component {
         this.state = {
             access_token: '',
             user: '',
+            displayName: '',
             userImage: 'https://www.palmcityyachts.com/wp/wp-content/uploads/palmcityyachts.com/2015/09/default-profile.png',
             location: '',
             playlists: [],
@@ -327,6 +328,7 @@ class User extends Component {
                 console.log('Access token:' + access_token)
                 console.log(body);
                 this.setState({ user: body.id })
+                this.setState({displayName: body.display_name})
                 var exist;
                 firebase.database().ref(`users/${this.state.user}/location`).once("value", snapshot => {
                     if (snapshot.exists()) {
@@ -434,6 +436,7 @@ class User extends Component {
             var playlist1Total = 0;
             var playlist2Total = 0;
 
+            var otherDisplayName;
             var otherLength;
             var otherTrackFeatures;
             var otherArtistID;
@@ -455,6 +458,8 @@ class User extends Component {
 
             dbRef.orderByValue().startAt(0).on("child_added", snapshot => {
                 if(snapshot.exists() && snapshot.key == key){
+                    //HERE CAN DO AN IF
+                    otherDisplayName = snapshot.child("displayName").val();
                     otherLength = snapshot.child("name").val().length;
                     otherTrackFeatures = snapshot.child("trackFeatures").val();
                     otherArtistID = snapshot.child("artistID").val();
@@ -639,7 +644,8 @@ class User extends Component {
                 value: key,
                 mostCompatibleIndex: mostCompatibleIndex,
                 max: max,
-                image: image
+                image: image,
+                displayName: displayName
             };
 
             console.log(otherCompatibility);
@@ -972,12 +978,12 @@ class User extends Component {
                     <Col style={{fontSize: '1.1vw', paddingTop: '20px', whiteSpace: 'nowrap', overflowX: 'auto'}}>
                         <Link href={{
                             pathname: '/profile',
-                            query: { access_token: access_token, user: i.value}} }
+                            query: { access_token: access_token, user: i.value, displayName: i.displayName}} }
                             passHref>
                             <a target="_blank">
                                 <div className="profile-link" style={{color: 'white', overflowY:'hidden', overflowX:'hidden'}}>
                                     <span className="tooltiptext">View User Profile</span>
-                                    {i.value}
+                                    {i.displayName}
                                 </div>
                             </a>
                         </Link>
@@ -1831,7 +1837,7 @@ class User extends Component {
                             </Col>
                             <Col style={{color: 'white', paddingBottom: '20px'}}>
                                 <p style={{fontSize: 'small'}}>USER</p>
-                                <h1><b>{this.state.user}</b></h1>
+                                <h1><b>{this.state.displayName}</b></h1>
                             </Col>
                         </Row>
                     <Row>
