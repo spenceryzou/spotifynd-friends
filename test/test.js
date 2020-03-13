@@ -76,8 +76,6 @@ describe('<User />', () => {
         sinon.stub(instance, 'getUserPlaylists');
         let items = [];
         instance.assignPlaylistTracksName(items);
-        let state = wrapper.state().playlisttracknames;
-        console.log(state)
         expect(wrapper.state().playlisttracknames.props.children).equal('No playlists to display');
     })
 
@@ -98,6 +96,9 @@ describe('<User />', () => {
         }
         let emptyArr = [];
         expect(instance.convertToInt(arr1).length).equal(arr1.length);
+        expect(instance.convertToInt(arr2).length).equal(arr2.length);
+        expect(instance.convertToInt(arr3).length).equal(arr3.length);
+        expect(instance.convertToInt(emptyArr).length).equal(emptyArr.length);
     })
 })
 
