@@ -106,6 +106,20 @@ class Settings extends Component {
 
   }
 
+  writeUserDisplayName = (userid, displayName) => {
+    firebase.database().ref('users/' + this.state.user).update({
+        'displayName': displayName,
+
+      }, function (error) {
+        if (error) {
+          // The write failed...
+        } else {
+          console.log("Updated displayName: " + displayName);
+        }
+      }
+    );
+  }
+
   writeUserLocation = (userid, userlocation) => {
     firebase.database().ref('users/' + this.state.user).update({
       'location': userlocation,
@@ -409,6 +423,8 @@ class Settings extends Component {
       } else {
         this.writeUserImage(body.id, 'https://www.palmcityyachts.com/wp/wp-content/uploads/palmcityyachts.com/2015/09/default-profile.png');
       }
+      this.setState({displayName: body.display_name});
+      this.writeUserDisplayName(body.id, body.display_name);
       console.log('user: ' + this.state.user)
 
       var dbRef = firebase.database().ref('users')
@@ -503,7 +519,14 @@ class Settings extends Component {
     })
   }
 
-
+    goHome = () => {
+      let access_token = window.sessionStorage.access_token;
+      Router.push({
+          pathname: '/user',
+          query: { access_token }
+      }, '/user'
+      )
+    } 
 
   render() {
     let playlists = this.state.playlists;
@@ -537,6 +560,7 @@ class Settings extends Component {
       console.log("This worked")
       displayInfo = this.state.display.name
     }
+
 
     return (
       <html>
@@ -608,6 +632,7 @@ class Settings extends Component {
                 <Col>
                   <img src={this.state.image} class="img-thumbnail" height="360" width="360" />
                 </Col>
+
 
               </Row>
               <Row >
@@ -682,6 +707,7 @@ class Settings extends Component {
                   </Form>
                 </Col>
               </Row>
+
 
             </Container>
 

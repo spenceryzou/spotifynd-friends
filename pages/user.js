@@ -29,6 +29,7 @@ class User extends Component {
         this.state = {
             access_token: '',
             user: '',
+            displayName: '',
             userImage: 'https://www.palmcityyachts.com/wp/wp-content/uploads/palmcityyachts.com/2015/09/default-profile.png',
             location: '',
             playlists: [],
@@ -302,6 +303,7 @@ class User extends Component {
                 console.log('Access token:' + access_token)
                 console.log(body);
                 this.setState({ user: body.id })
+
                 firebase.database().ref(`users/${this.state.user}/location`).once("value", snapshot => {
                     if (snapshot.exists()) {
                         //checking if the account already exists
@@ -322,46 +324,8 @@ class User extends Component {
                         this.handleModal();
                     }
                 });
+          
 
-                this.showDBusers()
-                console.log('user: ' + this.state.user)
-                var playlistOptions = {
-                    url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
-                    qs: { limit: '50' },
-                    headers: { 'Authorization': 'Bearer ' + access_token },
-                    json: true
-                };
-
-                console.log('user right before playlist: ' + this.state.user)
-
-                // use the access token to access the Spotify Web API
-                request.get(playlistOptions, (error, response, body) => {
-                    console.log(body);
-                    this.setState({ playlists: body.items })
-                    for (var i = 0; i < this.state.playlists.length; i++) {
-                        this.state.playlists[i].key = i.id
-                        console.log(this.state.playlists[i].key)
-                    }
-                    console.log('this.state.playlists' + this.state.playlists)
-
-                    let playlistsLeft = body.total - 50;
-                    let numRequests = 1;
-                    while (playlistsLeft > 0) {
-                        var playlistOptions = {
-                            url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
-                            qs: { limit: '50', offset: 50 * numRequests },
-                            headers: { 'Authorization': 'Bearer ' + access_token },
-                            json: true
-                        };
-
-                        request.get(playlistOptions, (error, response, body) => {
-                            this.setState({ playlists: this.state.playlists.concat(body.items) })
-                        });
-
-                        playlistsLeft -= 50;
-                        numRequests++
-                    }
-                });
             });
         }
     }
@@ -407,6 +371,7 @@ class User extends Component {
             var playlist1Total = 0;
             var playlist2Total = 0;
 
+            var otherDisplayName;
             var otherLength;
             var otherTrackFeatures;
             var otherArtistID;
@@ -427,7 +392,9 @@ class User extends Component {
             var dbRef = firebase.database().ref('users')
 
             dbRef.orderByValue().startAt(0).on("child_added", snapshot => {
+
                 if (snapshot.exists() && snapshot.key == key) {
+
                     otherLength = snapshot.child("name").val().length;
                     otherTrackFeatures = snapshot.child("trackFeatures").val();
                     otherArtistID = snapshot.child("artistID").val();
@@ -437,6 +404,7 @@ class User extends Component {
             });
 
             console.log("comparing with " + key);
+            console.log("display name: " + otherDisplayName);
             console.log("TRACK FEATURES: " + otherTrackFeatures);
             console.log("playlisttracknames.length: " + this.state.playlisttracknames.length);
             console.log("other genres: " + otherGenres[0]);
@@ -609,7 +577,8 @@ class User extends Component {
                 value: key,
                 mostCompatibleIndex: mostCompatibleIndex,
                 max: max,
-                image: image
+                image: image,
+                displayName: otherDisplayName
             };
 
             console.log(otherCompatibility);
@@ -854,7 +823,7 @@ class User extends Component {
                     padding: 5px 0;
                     border-radius: 6px;
                     font-size: 10pt;
-                    
+
                     /* Position the tooltip text - see examples below! */
                     position: absolute;
                     z-index: 1;
@@ -878,7 +847,7 @@ class User extends Component {
                     color: #1ed760;
                     cursor: pointer;
                 }
-                
+
                 .percent:hover .tooltiptext{
                     visibility: visible;
                 }
@@ -892,13 +861,13 @@ class User extends Component {
                     padding: 5px 0;
                     border-radius: 6px;
                     font-size: 10pt;
-                    
+
                     /* Position the tooltip text - see examples below! */
                     position: absolute;
                     z-index: 1;
                 }
 
-                
+
 
                 .cardimage-top{
                   object-fit:cover;
@@ -921,6 +890,7 @@ class User extends Component {
 
                             </Col>
 
+
                             <Col style={{ fontSize: '1.1vw', paddingTop: '20px', whiteSpace: 'nowrap', overflowX: 'auto' }}>
                                 <Link href={{
                                     pathname: '/profile',
@@ -936,6 +906,7 @@ class User extends Component {
                                 </Link>
                                 <div className="usercardphoto">
                                     <Image src={list[index].image} roundedCircle />
+
                                 </div>
 
                             </Col>
@@ -1090,7 +1061,17 @@ class User extends Component {
             </Row>
         )
     }
+    checkUserName = (userID) =>{
+      var chars = ['.','#','$','*','[',']'];
+      for(let x of chars){
+        if(userID.includes(x)){
+          Router.push({pathname: '/loginError'});
+          return false;
+        }
+      }
+      return true;
 
+    }
     setUserCompList = () => {
         this.convertToInt(this.state.listOfUserCompatibilities);
     }
@@ -1153,11 +1134,13 @@ class User extends Component {
                 )
             } else {
                 playlists = (
+
                     <div>
                         <p>No users to compare with...</p>
                         <p>Please go to Settings to change location or top playlist</p>
                         <Button onClick={() => { this.goToSettings() }} variant="light">
                             Settings
+
                     </Button>
                     </div>
                 )
@@ -1180,6 +1163,7 @@ class User extends Component {
         } else if (this.state.compatibility > 0) {
             message = `These playlists are ${Math.round(this.state.compatibility)}% compatible!`
             message += "\n" + this.state.name[this.state.mostCompatibleIndex] + " by " + this.state.artist[this.state.mostCompatibleIndex] + ` is the most compatible song by ${Math.round(this.state.max)}%.`
+            message+= +"Click on each slice of the donut! You'll be able to see exactly which songs you have in common with the chosen user."
         }
 
         let danceList;
@@ -1422,7 +1406,7 @@ class User extends Component {
                             text-align: center;
                             padding: 5px 0;
                             border-radius: 6px;
-                            
+
                             /* Position the tooltip text - see examples below! */
                             position: absolute;
                             z-index: 1;
@@ -1470,6 +1454,7 @@ class User extends Component {
                             <div style={{ textAlign: 'center' }}>
                                 {status}
                             </div>
+
                             {message}
                         </Row>
                         {/* </Col>
@@ -1484,6 +1469,7 @@ class User extends Component {
                                         labels: {
                                             render: 'label',
                                             fontColor: 'white'
+
                                         }
                                     },
                                     legend: {
@@ -1548,7 +1534,7 @@ class User extends Component {
                         .comp-data{
                             transition: '0.5s'
                             x-index: '1200px'
-                        } 
+                        }
                     `}</style>
                         <Col style={{ width: '30vw', color: 'white' }} className="comp-data">
                             <div className="sweet-loading">
@@ -1639,7 +1625,9 @@ class User extends Component {
                     </div>
                 );
             }
+
         } else if (this.state.loading) {
+
             compData = (
                 <Col style={{ width: '30vw', color: 'white' }}>
                     <div className="sweet-loading">
@@ -1691,6 +1679,7 @@ class User extends Component {
                     //https://stackoverflow.com/questions/15167545/how-to-crop-a-rectangular-image-into-a-square-with-css
 
                 `}</style>
+
                         <head>
                             <link
                                 rel="stylesheet"
@@ -1712,11 +1701,13 @@ class User extends Component {
                                     be displayed to these people!
 
 
+
                         </Modal.Body>
                                 <Modal.Footer>
                                     <Button onClick={() => { this.goToSettings() }} variant="light">
                                         Settings
                         </Button>
+
                                 </Modal.Footer>
                             </Modal>
                         </div>
@@ -1739,6 +1730,7 @@ class User extends Component {
                             </Container>
                         </div>
                     </div>
+
                 </div>
                 <Footer />
             </html>
