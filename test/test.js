@@ -7,6 +7,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Spotify from '../pages/index.js';
 import User from '../pages/user.js';
+import {Modal} from 'react-bootstrap';
 let jsdom = require('jsdom-global')(
     undefined,
     {
@@ -48,56 +49,85 @@ describe('<Spotify />', () => {
     // })
 });
 
-/*describe('<User />', () => {
+describe('<User />', () => {
     const comp = <User />;
     let componentDidMountStub = null;
-    beforeEach(() => {
-        // componentDidMountStub = sinon.stub(comp, 'componentDidMount').callsFake(function() {
-        //     // Does nothing
-        // });
-        User.prototype.componentDidMount = () => {
 
-        }
-        User.prototype.get100 = () => {
-            
-        }
-    });
     // afterEach(() => {
     //     componentDidMountStub.restore();
     // });
-
+    beforeEach(function () {
+        var store = {};
+      
+        sinon.stub(window.sessionStorage, 'getItem').callsFake(function (key) {
+          return store[key];
+        });
+        sinon.stub(window.sessionStorage, 'setItem').callsFake(function (key, value) {
+          return store[key] = value + '';
+        });
+        sinon.stub(window.sessionStorage, 'clear').callsFake(function () {
+            store = {};
+        });
+      });
 
     it('assignPlaylistTracksNames returns no playlists to display when items is empty', () => {
+        window.sessionStorage.setItem('access_token',"");
         const wrapper = mount(comp);
         const instance = wrapper.instance();
         sinon.stub(instance, 'getUserPlaylists');
         let items = [];
         instance.assignPlaylistTracksName(items);
-        let state = wrapper.state().playlisttracknames;
-        console.log(state)
         expect(wrapper.state().playlisttracknames.props.children).equal('No playlists to display');
     })
 
+    it('assignTrackFeatures returns no playlists to display when items is empty', () => {
+        window.sessionStorage.setItem('access_token',"");
+        const wrapper = mount(comp);
+        const instance = wrapper.instance();
+        sinon.stub(instance, 'getUserPlaylists');
+        let items = [];
+        instance.assignTrackFeatures(items);
+        expect(wrapper.state().playlisttracknames.props.children).equal('No playlists to display');
+    })
 
-    // it('convertToInt returns array of same length as argument', () => {
-    //     const wrapper = shallow(comp);
-    //     const instance = wrapper.instance();
-    //     let arr1 = [];
-    //     for(let i = 0; i < 2; i++){
-    //         arr1.push({key: i});
-    //     }
-    //     let arr2 = [];
-    //     for(let i = 0; i < 10; i++){
-    //         arr2.push({key: i});
-    //     }
-    //     let arr3 = [];
-    //     for(let i = 0; i < 50; i++){
-    //         arr3.push({key: i});
-    //     }
-    //     let emptyArr = [];
-    //     expect(instance.convertToInt(arr1).length).equal(arr1.length);
-    // })
-})*/
+    it('convertToInt returns array of same length as argument', () => {
+        const wrapper = shallow(comp);
+        const instance = wrapper.instance();
+        let arr1 = [];
+        for(let i = 0; i < 2; i++){
+            arr1.push({key: i});
+        }
+        let arr2 = [];
+        for(let i = 0; i < 10; i++){
+            arr2.push({key: i});
+        }
+        let arr3 = [];
+        for(let i = 0; i < 50; i++){
+            arr3.push({key: i});
+        }
+        let emptyArr = [];
+        expect(instance.convertToInt(arr1).length).equal(arr1.length);
+        expect(instance.convertToInt(arr2).length).equal(arr2.length);
+        expect(instance.convertToInt(arr3).length).equal(arr3.length);
+        expect(instance.convertToInt(emptyArr).length).equal(emptyArr.length);
+    })
+
+    it('handleModal will turn this.state.show from false to true', () => {
+        const wrapper = shallow(comp);
+        const instance = wrapper.instance();
+        instance.setState({show: true});
+        instance.handleModal();
+        expect(instance.state.show).equals(false);
+    })
+
+    it('handleModal will turn this.state.show from true to false', () => {
+        const wrapper = shallow(comp);
+        const instance = wrapper.instance();
+        instance.setState({show: false});
+        instance.handleModal();
+        expect(instance.state.show).equals(true);
+    })
+})
 
 
 // describe('<User />', () => {

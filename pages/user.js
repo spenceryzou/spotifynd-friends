@@ -408,7 +408,6 @@ class User extends Component {
             } else {
                 this.state.playlisttracknames = <p>No playlists to display</p>
             }
-            console.log("playlist track names: " + this.state.playlisttracknames.length)
         }
     }
     assignTrackFeatures = (items) => {

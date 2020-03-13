@@ -8,7 +8,6 @@ const linkStyle = {
 
 const Footer = (props) => {
   let access_token = props.props
-  console.log("access token from header: " + access_token)
   return(
     <footer className="footer">
 
