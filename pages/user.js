@@ -1267,6 +1267,7 @@ class User extends Component {
             status = ''
             message = `These playlists are ${Math.round(this.state.compatibility)}% compatible!`
             message += "\n" + this.state.name[this.state.mostCompatibleIndex] + " by " + this.state.artist[this.state.mostCompatibleIndex] + ` is the most compatible song by ${Math.round(this.state.max)}%.`
+            message+= +"Click on each slice of the donut! You'll be able to see exactly which songs you have in common with the chosen user."
         }
 
         let danceList;
@@ -1586,11 +1587,12 @@ class User extends Component {
                             <Row style={{textAlign: 'center'}}>
                                 <div style={{textAlign: 'center'}}>
                                     {status}
+
                                 </div>
                                 {message}
+
                             </Row>
-                            {/* </Col>
-                            <Col> */}
+
                             <Row style={{padding: '30px'}}>
                                 <Doughnut data={this.state.data}
                                     width={300}
