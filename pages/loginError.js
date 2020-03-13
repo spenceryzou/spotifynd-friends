@@ -41,7 +41,7 @@ class LoginError extends Component{
                 `}</style>
 
           <head>
-            <link href="https://fonts.googleapis.com/css?family=Roboto:700&display=swap" rel="stylesheet"></link>
+          <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet" />
           </head>
 
 
