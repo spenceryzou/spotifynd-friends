@@ -469,6 +469,7 @@ class User extends Component {
             });
 
             console.log("comparing with " + key);
+            console.log("display name: " + otherDisplayName);
             console.log("TRACK FEATURES: " + otherTrackFeatures);
             console.log("playlisttracknames.length: " + this.state.playlisttracknames.length);
             console.log("other genres: " + otherGenres[0]);
@@ -645,7 +646,7 @@ class User extends Component {
                 mostCompatibleIndex: mostCompatibleIndex,
                 max: max,
                 image: image,
-                displayName: displayName
+                displayName: otherDisplayName
             };
 
             console.log(otherCompatibility);
