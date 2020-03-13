@@ -588,7 +588,14 @@ assignPlaylistTracksName = async(items) => {
     })
   }
 
-
+    goHome = () => {
+      let access_token = window.sessionStorage.access_token;
+      Router.push({
+          pathname: '/user',
+          query: { access_token }
+      }, '/user'
+      )
+    } 
 
   render() {
     let playlists = this.state.playlists;
@@ -622,6 +629,7 @@ assignPlaylistTracksName = async(items) => {
       console.log("This worked")
       displayInfo = this.state.display.name
     }
+
 
     return (
       <html>
@@ -765,6 +773,10 @@ assignPlaylistTracksName = async(items) => {
 
 
               </Form>
+              <Button onClick= {()=>{this.goHome()}} variant="light">
+                  Back to Home
+              </Button>
+
               </Col>
           </Row>
 

@@ -79,6 +79,7 @@ Go to https://spotifynd-friends.herokuapp.com/
 
 ## Known Problems
 Navigating to the settings page via the navbar will sometimes take a while to load without informative feedback that it is loading.
+Spotify usernames that contain '.','#','[',']','*','$', will not be able to use our app.
 
 ## Contributing
 1. Fork it!  
