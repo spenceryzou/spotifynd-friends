@@ -38,6 +38,7 @@ class Profile extends Component {
             access_token: this.props.query.access_token,
             refresh_token: '',
             user: this.props.query.user,
+            displayName: this.props.query.displayName,
             userImage: 'https://www.palmcityyachts.com/wp/wp-content/uploads/palmcityyachts.com/2015/09/default-profile.png',
             playlists: [],
             item: {
@@ -157,7 +158,7 @@ class Profile extends Component {
         
         if(instagramUsername != ''){
             return (<div>
-            <h1><b>{this.state.user}</b></h1>
+            <h1><b>{this.state.displayName}</b></h1>
             <a><b>{this.state.location}</b></a>
             <button style={{fontFamily: 'Roboto'}} onClick={ event => window.open(this.state.instagramUrl, "_blank")} className={styles.button}>
               <i className={styles.iconinstagram}></i>{this.state.hasInstagram}

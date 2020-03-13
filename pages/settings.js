@@ -41,6 +41,7 @@ class Settings extends Component {
       location: 'no location set, please set on below',
       image: '',
       userImage: '',
+      displayName: '',
       display:  null,
       playlistUpdated: false,
       percentage:0,
@@ -109,6 +110,20 @@ class Settings extends Component {
       this.getUserPlaylists();
     }
 
+  }
+
+  writeUserDisplayName = (userid, displayName) => {
+    firebase.database().ref('users/' + this.state.user).update({
+        'displayName': displayName,
+
+      }, function (error) {
+        if (error) {
+          // The write failed...
+        } else {
+          console.log("Updated displayName: " + displayName);
+        }
+      }
+    );
   }
 
   writeUserLocation = (userid, userlocation) => {
@@ -447,6 +462,8 @@ assignPlaylistTracksName = async(items) => {
       } else{
         this.writeUserImage(body.id, 'https://www.palmcityyachts.com/wp/wp-content/uploads/palmcityyachts.com/2015/09/default-profile.png');
       }
+      this.setState({displayName: body.display_name});
+      this.writeUserDisplayName(body.id, body.display_name);
       console.log('user: ' + this.state.user)
 
       var dbRef = firebase.database().ref('users')
@@ -673,7 +690,7 @@ assignPlaylistTracksName = async(items) => {
             <Card className="bg-dark text-white" text="white">
                 <Card.Img src="https://thumbor.forbes.com/thumbor/960x0/https%3A%2F%2Fspecials-images.forbesimg.com%2Fimageserve%2F750037840%2F960x0.jpg%3Ffit%3Dscale" alt="Card image" fluid  />
                 <Card.ImgOverlay>
-                  <Card.Title>Welcome, {this.state.user}</Card.Title>
+                  <Card.Title>Welcome, {this.state.displayName}</Card.Title>
                   <Card.Text>
                     Your current chosen top playlist is : {displayInfo}
                   </Card.Text>
