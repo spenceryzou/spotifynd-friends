@@ -327,69 +327,72 @@ class User extends Component {
                 console.log('Access token:' + access_token)
                 console.log(body);
                 this.setState({ user: body.id })
-                var exist;
-                firebase.database().ref(`users/${this.state.user}/location`).once("value", snapshot => {
-                    if (snapshot.exists()) {
-                        //checking if the account alrady exists
-                        console.log("exists!");
-                        firebase.database().ref(`users/${this.state.user}/topPlaylist`).once("value", snapshot => {
-                            if (snapshot.exists()) {
-                                console.log("top playlist also exists")
-                            }
-                            else {
-                                console.log("top playlist doesnt exist but location does")
-                                this.handleModal();
-                            }
-                        });
+                if(this.checkUserName(this.state.user)){
+                  var exist;
+                  firebase.database().ref(`users/${this.state.user}/location`).once("value", snapshot => {
+                      if (snapshot.exists()) {
+                          //checking if the account alrady exists
+                          console.log("exists!");
+                          firebase.database().ref(`users/${this.state.user}/topPlaylist`).once("value", snapshot => {
+                              if (snapshot.exists()) {
+                                  console.log("top playlist also exists")
+                              }
+                              else {
+                                  console.log("top playlist doesnt exist but location does")
+                                  this.handleModal();
+                              }
+                          });
 
-                    }
-                    else {
+                      }
+                      else {
 
-                        console.log("does not exist");
-                        //if accont doesn't exit then open Modal
-                        this.handleModal();
-                    }
-                });
+                          console.log("does not exist");
+                          //if accont doesn't exit then open Modal
+                          this.handleModal();
+                      }
+                  });
 
-                this.showDBusers()
-                console.log('user: ' + this.state.user)
-                var playlistOptions = {
-                    url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
-                    qs: { limit: '50' },
-                    headers: { 'Authorization': 'Bearer ' + access_token },
-                    json: true
-                };
+                  this.showDBusers()
+                  console.log('user: ' + this.state.user)
+                  var playlistOptions = {
+                      url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
+                      qs: { limit: '50' },
+                      headers: { 'Authorization': 'Bearer ' + access_token },
+                      json: true
+                  };
 
-                console.log('user right before playlist: ' + this.state.user)
+                  console.log('user right before playlist: ' + this.state.user)
 
-                // use the access token to access the Spotify Web API
-                request.get(playlistOptions, (error, response, body) => {
-                    console.log(body);
-                    this.setState({ playlists: body.items })
-                    for (var i = 0; i < this.state.playlists.length; i++) {
-                        this.state.playlists[i].key = i.id
-                        console.log(this.state.playlists[i].key)
-                    }
-                    console.log('this.state.playlists' + this.state.playlists)
+                  // use the access token to access the Spotify Web API
+                  request.get(playlistOptions, (error, response, body) => {
+                      console.log(body);
+                      this.setState({ playlists: body.items })
+                      for (var i = 0; i < this.state.playlists.length; i++) {
+                          this.state.playlists[i].key = i.id
+                          console.log(this.state.playlists[i].key)
+                      }
+                      console.log('this.state.playlists' + this.state.playlists)
 
-                    let playlistsLeft = body.total - 50;
-                    let numRequests = 1;
-                    while (playlistsLeft > 0) {
-                        var playlistOptions = {
-                            url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
-                            qs: { limit: '50', offset: 50 * numRequests },
-                            headers: { 'Authorization': 'Bearer ' + access_token },
-                            json: true
-                        };
+                      let playlistsLeft = body.total - 50;
+                      let numRequests = 1;
+                      while (playlistsLeft > 0) {
+                          var playlistOptions = {
+                              url: 'https://api.spotify.com/v1/users/' + this.state.user + '/playlists',
+                              qs: { limit: '50', offset: 50 * numRequests },
+                              headers: { 'Authorization': 'Bearer ' + access_token },
+                              json: true
+                          };
 
-                        request.get(playlistOptions, (error, response, body) => {
-                            this.setState({ playlists: this.state.playlists.concat(body.items) })
-                        });
+                          request.get(playlistOptions, (error, response, body) => {
+                              this.setState({ playlists: this.state.playlists.concat(body.items) })
+                          });
 
-                        playlistsLeft -= 50;
-                        numRequests++
-                    }
-                });
+                          playlistsLeft -= 50;
+                          numRequests++
+                      }
+                  });
+                }
+
             });
         }
     }
@@ -902,7 +905,7 @@ class User extends Component {
                     padding: 5px 0;
                     border-radius: 6px;
                     font-size: 10pt;
-                    
+
                     /* Position the tooltip text - see examples below! */
                     position: absolute;
                     z-index: 1;
@@ -926,7 +929,7 @@ class User extends Component {
                     color: #1ed760;
                     cursor: pointer;
                 }
-                
+
                 .percent:hover .tooltiptext{
                     visibility: visible;
                 }
@@ -940,13 +943,13 @@ class User extends Component {
                     padding: 5px 0;
                     border-radius: 6px;
                     font-size: 10pt;
-                    
+
                     /* Position the tooltip text - see examples below! */
                     position: absolute;
                     z-index: 1;
                 }
 
-                
+
 
                 .cardimage-top{
                   object-fit:cover;
@@ -1140,7 +1143,17 @@ class User extends Component {
             </Row>
         )
     }
+    checkUserName = (userID) =>{
+      var chars = ['.','#','$','*','[',']'];
+      for(let x of chars){
+        if(userID.includes(x)){
+          Router.push({pathname: '/loginError'});
+          return false;
+        }
+      }
+      return true;
 
+    }
     setUserCompList = () => {
         this.convertToInt(this.state.listOfUserCompatibilities);
     }
@@ -1202,7 +1215,7 @@ class User extends Component {
             } else {
                 playlists = (
                 <div>
-                    <p>No users to compare with...</p>
+                    <p>No users to compare with...there may be no users in your location, maybe you should choose a new location?</p>
                     <p>Please go to Settings to change location or top playlist</p>
                     <Button onClick= {()=>{this.goToSettings()}} variant="light">
                           Settings
@@ -1254,6 +1267,7 @@ class User extends Component {
             status = ''
             message = `These playlists are ${Math.round(this.state.compatibility)}% compatible!`
             message += "\n" + this.state.name[this.state.mostCompatibleIndex] + " by " + this.state.artist[this.state.mostCompatibleIndex] + ` is the most compatible song by ${Math.round(this.state.max)}%.`
+            message+= +"Click on each slice of the donut! You'll be able to see exactly which songs you have in common with the chosen user."
         }
 
         let danceList;
@@ -1525,7 +1539,7 @@ class User extends Component {
                             text-align: center;
                             padding: 5px 0;
                             border-radius: 6px;
-                            
+
                             /* Position the tooltip text - see examples below! */
                             position: absolute;
                             z-index: 1;
@@ -1573,11 +1587,12 @@ class User extends Component {
                             <Row style={{textAlign: 'center'}}>
                                 <div style={{textAlign: 'center'}}>
                                     {status}
+
                                 </div>
                                 {message}
+
                             </Row>
-                            {/* </Col>
-                            <Col> */}
+
                             <Row style={{padding: '30px'}}>
                                 <Doughnut data={this.state.data}
                                     width={300}
@@ -1640,7 +1655,7 @@ class User extends Component {
                             {visibleList}
                         </Row>
                     </Col>
-            
+
                 );
             } else {
                 console.log("hiding chart")
@@ -1650,7 +1665,7 @@ class User extends Component {
                         .comp-data{
                             transition: '0.5s'
                             x-index: '1200px'
-                        } 
+                        }
                     `}</style>
                     <Col style={{width: '30vw', color: 'white'}} className="comp-data">
                         <div className="sweet-loading">
@@ -1738,7 +1753,7 @@ class User extends Component {
                     </Col>
                 </div>
                 );
-            }  
+            }
         } else if(this.state.loading){
             compData = (
                 <Col style={{width: '30vw', color: 'white'}}>
@@ -1806,7 +1821,7 @@ class User extends Component {
                     {/* <Button onClick= {()=>{this.handleModal()}}> open modal </Button>*/}
 
                     <Modal show={this.state.show} onHide={() => { this.handleModal() }} backdrop="static" keyboard={false} >
-                        <Modal.Header > Hi {this.state.user}!! Welcome to our Spotifynd Friends </Modal.Header>
+                        <Modal.Header > Hi {this.state.user}!! Welcome to Spotifynd Friends </Modal.Header>
                         <Modal.Body>
                             Before you do anything else, there are a few steps you need to take.
                             1. Go to Settings
