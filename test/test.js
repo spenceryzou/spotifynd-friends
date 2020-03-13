@@ -127,32 +127,6 @@ describe('<User />', () => {
         instance.handleModal();
         expect(instance.state.show).equals(true);
     })
-     it('calculateUserCompatibility returns right compatibility', async () => {
-        const wrapper = mount(comp);
-        const instance = wrapper.instance()
-        instance.setState({trackFeatures: playlists.playlist1.success.body.trackFeatures,
-                    artistID: playlists.playlist1.success.body.artistID,
-                    artist: playlists.playlist1.success.body.artist, 
-                    name: playlists.playlist1.success.body.name,
-                    genres: playlists.playlist1.success.body.genres,
-                    playlisttracknames: playlists.playlist1.success.body.name
-                })
-        sinon.stub(instance, 'getfirebaseLength').callsFake(function () {
-            return playlists.playlist2.success.body.trackFeatures.length;
-        });
-        sinon.stub(instance, 'getfirebaseTrackFeatures').callsFake(function () {
-            return playlists.playlist2.success.body.trackFeatures;
-        });
-        sinon.stub(instance, 'getfirebaseArtistID').callsFake(function () {
-            return playlists.playlist2.success.body.artistID;
-        });
-        sinon.stub(instance, 'getfirebaseGenres').callsFake(function () {
-            return playlists.playlist2.success.body.genres;
-        });
-        sinon.stub(instance, 'getfirebaseImage');
-        let compatibility = await instance.calculateUserScore(1);
-        expect(compatibility.key).equal(64.69861666666667);
-    })
 })
 
 
