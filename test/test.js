@@ -7,6 +7,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Spotify from '../pages/index.js';
 import User from '../pages/user.js';
+import {Modal} from 'react-bootstrap';
 let jsdom = require('jsdom-global')(
     undefined,
     {
@@ -109,6 +110,22 @@ describe('<User />', () => {
         expect(instance.convertToInt(arr2).length).equal(arr2.length);
         expect(instance.convertToInt(arr3).length).equal(arr3.length);
         expect(instance.convertToInt(emptyArr).length).equal(emptyArr.length);
+    })
+
+    it('handleModal will turn this.state.show from false to true', () => {
+        const wrapper = shallow(comp);
+        const instance = wrapper.instance();
+        instance.setState({show: true});
+        instance.handleModal();
+        expect(instance.state.show).equals(false);
+    })
+
+    it('handleModal will turn this.state.show from true to false', () => {
+        const wrapper = shallow(comp);
+        const instance = wrapper.instance();
+        instance.setState({show: false});
+        instance.handleModal();
+        expect(instance.state.show).equals(true);
     })
 })
 
